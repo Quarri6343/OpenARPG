@@ -6,6 +6,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.BlockHitResult;
@@ -91,7 +92,7 @@ public class OpenARPG {
                 if(Minecraft.getInstance().getCameraEntity() instanceof Player){
                     cameraInstance.setXRot(45);
                     cameraInstance.setYRot(45);
-                    Vec3 eyePos = Minecraft.getInstance().getCameraEntity().getEyePosition();
+                    Vec3 eyePos = Minecraft.getInstance().player.getEyePosition();
                     event.getCamera().tick();
                     cameraInstance.setPosRaw(eyePos.x, eyePos.y, eyePos.z);
                     cameraInstance.setOldPosAndRot();
@@ -126,6 +127,10 @@ public class OpenARPG {
             
             int xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
             int yPos = (int) (Minecraft.getInstance().getWindow().getScreenHeight() - Minecraft.getInstance().mouseHandler.ypos());
+            yPos *= Minecraft.getInstance().getWindow().getHeight() / (double) Minecraft.getInstance().getWindow().getScreenHeight();
+            xPos *= Minecraft.getInstance().getWindow().getWidth() / (double) Minecraft.getInstance().getWindow().getScreenWidth();
+            
+            Minecraft.getInstance().mouseHandler.releaseMouse();
             
             Vector3f hitPos = ProjectionUtil.unProject(xPos, yPos);
             BlockHitResult result = ProjectionUtil.rayTrace(hitPos, cameraInstance);
@@ -133,14 +138,19 @@ public class OpenARPG {
                 return;
             }
             
-            LogUtils.getLogger().debug(result.getBlockPos().getX() + ":" + (result.getBlockPos().getY() + 1) + ":" + result.getBlockPos().getZ());
             Minecraft.getInstance().level.addParticle(ParticleTypes.EXPLOSION, result.getBlockPos().getX(), result.getBlockPos().getY() + 1, result.getBlockPos().getZ(), 0d, 0d, 0d);
+            Minecraft.getInstance().player.setPos(result.getBlockPos().getX(), result.getBlockPos().getY() + 1, result.getBlockPos().getZ());
         }
 
         @SubscribeEvent
         public static void onRenderWorld(RenderLevelStageEvent event) {
             if(event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL){
                 projectionMatrix = event.getProjectionMatrix();
+
+//                Vec3 eyePos = Minecraft.getInstance().player.getEyePosition();
+//                event.getCamera().tick();
+//                cameraInstance.setPosRaw(eyePos.x, eyePos.y, eyePos.z);
+//                cameraInstance.setOldPosAndRot();
             }
         }
 
