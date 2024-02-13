@@ -98,6 +98,8 @@ public class OpenARPG {
                     Minecraft.getInstance().setCameraEntity(cameraInstance);
                 }
             }
+
+            projectionMatrix = event.getRenderer().getProjectionMatrix(Minecraft.getInstance().options.fov().get());
         }
         
         @SubscribeEvent
@@ -126,12 +128,15 @@ public class OpenARPG {
             
             double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
             double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
-            yPos = Minecraft.getInstance().getWindow().getHeight() - yPos * Minecraft.getInstance().getWindow().getHeight() / (double) Minecraft.getInstance().getWindow().getScreenHeight();
-            xPos = xPos * Minecraft.getInstance().getWindow().getWidth() / (double) Minecraft.getInstance().getWindow().getScreenWidth();
+//            yPos = Minecraft.getInstance().getWindow().getHeight() - yPos * Minecraft.getInstance().getWindow().getHeight() / (double) Minecraft.getInstance().getWindow().getScreenHeight();
+//            xPos = xPos * Minecraft.getInstance().getWindow().getWidth() / (double) Minecraft.getInstance().getWindow().getScreenWidth();
             
             Minecraft.getInstance().mouseHandler.releaseMouse();
             
-            Vector3f hitPos = ProjectionUtil.unProject((int)xPos, (int)yPos);
+//            Vector3f hitPos = ProjectionUtil.unProject((int)xPos, (int)yPos);
+            Vec3 hitPos = ProjectionUtil.mouseToWorldRay((int)xPos, (int)yPos, Minecraft.getInstance().getWindow().getScreenWidth(), Minecraft.getInstance().getWindow().getScreenHeight());
+            
+            
             BlockHitResult result = ProjectionUtil.rayTrace(hitPos, cameraInstance);
             if(result.getType() == HitResult.Type.MISS){
                 return;
@@ -143,14 +148,6 @@ public class OpenARPG {
 
         @SubscribeEvent
         public static void onRenderWorld(RenderLevelStageEvent event) {
-            if(event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL){
-                projectionMatrix = event.getProjectionMatrix();
-
-//                Vec3 eyePos = Minecraft.getInstance().player.getEyePosition();
-//                event.getCamera().tick();
-//                cameraInstance.setPosRaw(eyePos.x, eyePos.y, eyePos.z);
-//                cameraInstance.setOldPosAndRot();
-            }
         }
 
         @SubscribeEvent
