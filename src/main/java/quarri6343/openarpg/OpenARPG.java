@@ -6,14 +6,16 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -27,7 +29,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.slf4j.Logger;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
@@ -128,12 +129,9 @@ public class OpenARPG {
             
             double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
             double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
-//            yPos = Minecraft.getInstance().getWindow().getHeight() - yPos * Minecraft.getInstance().getWindow().getHeight() / (double) Minecraft.getInstance().getWindow().getScreenHeight();
-//            xPos = xPos * Minecraft.getInstance().getWindow().getWidth() / (double) Minecraft.getInstance().getWindow().getScreenWidth();
             
             Minecraft.getInstance().mouseHandler.releaseMouse();
             
-//            Vector3f hitPos = ProjectionUtil.unProject((int)xPos, (int)yPos);
             Vec3 hitPos = ProjectionUtil.mouseToWorldRay((int)xPos, (int)yPos, Minecraft.getInstance().getWindow().getScreenWidth(), Minecraft.getInstance().getWindow().getScreenHeight());
             
             
@@ -147,7 +145,17 @@ public class OpenARPG {
         }
 
         @SubscribeEvent
-        public static void onRenderWorld(RenderLevelStageEvent event) {
+        public static void onRenderOverlay(RenderGuiOverlayEvent event) {
+            //debug
+            if(Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null){
+                return;
+            }
+            
+            double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
+            double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
+            double d0 = xPos * (double)Minecraft.getInstance().getWindow().getGuiScaledWidth() / (double)Minecraft.getInstance().getWindow().getScreenWidth();
+            double d1 = yPos * (double)Minecraft.getInstance().getWindow().getGuiScaledHeight() / (double)Minecraft.getInstance().getWindow().getScreenHeight();
+            event.getGuiGraphics().fill((int)d0 - 5, (int)d1 - 5, (int)d0 + 5, (int)d1 + 5, 0xFFFFFFFF);
         }
 
         @SubscribeEvent
