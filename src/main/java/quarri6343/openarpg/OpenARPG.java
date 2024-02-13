@@ -2,25 +2,18 @@ package quarri6343.openarpg;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.PackOutput;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.client.event.ViewportEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -32,8 +25,11 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.slf4j.Logger;
 
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
 import static quarri6343.openarpg.CreativeTabInit.addToTab;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -54,6 +50,9 @@ public class OpenARPG {
     public static final RegistryObject<EntityType<EntityCamera>> CAMERA = ENTITY_TYPES.register("camera", () -> EntityType.Builder.of(EntityCamera::new, MobCategory.MISC).build(MODID + ":camera"));
     
     private static EntityCamera cameraInstance;
+
+    public static Matrix4f projectionMatrix;
+    public static Matrix4f viewModelMatrix;
     
     public OpenARPG() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -112,6 +111,42 @@ public class OpenARPG {
                 cameraInstance.remove(Entity.RemovalReason.DISCARDED);
                 cameraInstance = null;
             }
+        }
+        
+        @SubscribeEvent
+        public static void onMouseClick(InputEvent.MouseButton.Pre event){
+            if(Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null){
+                return;
+            }
+            
+            event.setCanceled(true);
+            if(event.getButton() != GLFW_MOUSE_BUTTON_1){
+                return;
+            }
+            
+            int xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
+            int yPos = (int) (Minecraft.getInstance().getWindow().getScreenHeight() - Minecraft.getInstance().mouseHandler.ypos());
+            
+            Vector3f hitPos = ProjectionUtil.unProject(xPos, yPos);
+            BlockHitResult result = ProjectionUtil.rayTrace(hitPos, cameraInstance);
+            if(result.getType() == HitResult.Type.MISS){
+                return;
+            }
+            
+            LogUtils.getLogger().debug(result.getBlockPos().getX() + ":" + (result.getBlockPos().getY() + 1) + ":" + result.getBlockPos().getZ());
+            Minecraft.getInstance().level.addParticle(ParticleTypes.EXPLOSION, result.getBlockPos().getX(), result.getBlockPos().getY() + 1, result.getBlockPos().getZ(), 0d, 0d, 0d);
+        }
+
+        @SubscribeEvent
+        public static void onRenderWorld(RenderLevelStageEvent event) {
+            if(event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL){
+                projectionMatrix = event.getProjectionMatrix();
+            }
+        }
+
+        @SubscribeEvent
+        public static void onRenderPlayer(RenderPlayerEvent.Post event){
+            viewModelMatrix = event.getPoseStack().last().pose();
         }
     }
     
