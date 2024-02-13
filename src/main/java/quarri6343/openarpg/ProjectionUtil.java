@@ -1,6 +1,7 @@
 package quarri6343.openarpg;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
@@ -245,12 +246,14 @@ public class ProjectionUtil {
     }
 
     public static BlockHitResult rayTrace(Vector3f hitPos, Entity startPoint) {
-        Vec3 startPos = startPoint.getEyePosition();
+        Camera camera = Minecraft.getInstance().getEntityRenderDispatcher().camera;
+        Vec3 startPos = new Vec3(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+        LogUtils.getLogger().debug("eyelocation:" + startPoint.getEyePosition() + " location" + startPoint.getX() + ":" + startPoint.getY() + ":" +startPoint.getZ() + ":");
         hitPos.mul(2); // Double view range to ensure pos can be seen.
         Vec3 endPos = new Vec3(
                 (hitPos.x - startPos.x),
                 (hitPos.y - startPos.y),
                 (hitPos.z - startPos.z));
-        return Minecraft.getInstance().level.clip(new ClipContext(startPos, endPos, ClipContext.Block.VISUAL, ClipContext.Fluid.ANY, null));
+        return Minecraft.getInstance().level.clip(new ClipContext(startPos, new Vec3(hitPos), ClipContext.Block.VISUAL, ClipContext.Fluid.ANY, null));
     }
 }

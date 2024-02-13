@@ -92,9 +92,8 @@ public class OpenARPG {
                 if(Minecraft.getInstance().getCameraEntity() instanceof Player){
                     cameraInstance.setXRot(45);
                     cameraInstance.setYRot(45);
-                    Vec3 eyePos = Minecraft.getInstance().player.getEyePosition();
                     event.getCamera().tick();
-                    cameraInstance.setPosRaw(eyePos.x, eyePos.y, eyePos.z);
+                    cameraInstance.setPosRaw(Minecraft.getInstance().player.getX(), Minecraft.getInstance().player.getY(), Minecraft.getInstance().player.getZ());
                     cameraInstance.setOldPosAndRot();
                     Minecraft.getInstance().setCameraEntity(cameraInstance);
                 }
@@ -125,21 +124,21 @@ public class OpenARPG {
                 return;
             }
             
-            int xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
-            int yPos = (int) (Minecraft.getInstance().getWindow().getScreenHeight() - Minecraft.getInstance().mouseHandler.ypos());
-            yPos *= Minecraft.getInstance().getWindow().getHeight() / (double) Minecraft.getInstance().getWindow().getScreenHeight();
-            xPos *= Minecraft.getInstance().getWindow().getWidth() / (double) Minecraft.getInstance().getWindow().getScreenWidth();
+            double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
+            double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
+            yPos = Minecraft.getInstance().getWindow().getHeight() - yPos * Minecraft.getInstance().getWindow().getHeight() / (double) Minecraft.getInstance().getWindow().getScreenHeight();
+            xPos = xPos * Minecraft.getInstance().getWindow().getWidth() / (double) Minecraft.getInstance().getWindow().getScreenWidth();
             
             Minecraft.getInstance().mouseHandler.releaseMouse();
             
-            Vector3f hitPos = ProjectionUtil.unProject(xPos, yPos);
+            Vector3f hitPos = ProjectionUtil.unProject((int)xPos, (int)yPos);
             BlockHitResult result = ProjectionUtil.rayTrace(hitPos, cameraInstance);
             if(result.getType() == HitResult.Type.MISS){
                 return;
             }
             
-            Minecraft.getInstance().level.addParticle(ParticleTypes.EXPLOSION, result.getBlockPos().getX(), result.getBlockPos().getY() + 1, result.getBlockPos().getZ(), 0d, 0d, 0d);
-            Minecraft.getInstance().player.setPos(result.getBlockPos().getX(), result.getBlockPos().getY() + 1, result.getBlockPos().getZ());
+            Minecraft.getInstance().level.addParticle(ParticleTypes.EXPLOSION, result.getLocation().x, result.getLocation().y, result.getLocation().z, 0d, 0d, 0d);
+            Minecraft.getInstance().player.setPos(result.getLocation().x, result.getLocation().y, result.getLocation().z);
         }
 
         @SubscribeEvent
