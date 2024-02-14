@@ -7,10 +7,12 @@ import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.util.profiling.metrics.MetricCategory;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.PathNavigationRegion;
-import net.minecraft.world.level.pathfinder.*;
+import net.minecraft.world.level.pathfinder.BinaryHeap;
+import net.minecraft.world.level.pathfinder.Node;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.level.pathfinder.Target;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -43,7 +45,7 @@ public class PlayerPathFinder {
             return null;
         } else {
             Map<Target, BlockPos> map = pTargetPositions.stream().collect(Collectors.toMap((p_77448_) -> {
-                return this.nodeEvaluator.getGoal((double)p_77448_.getX(), (double)p_77448_.getY(), (double)p_77448_.getZ());
+                return this.nodeEvaluator.getGoal((double) p_77448_.getX(), (double) p_77448_.getY(), (double) p_77448_.getZ());
             }, Function.identity()));
             Path path = this.findPath(pRegion.getProfiler(), node, map, pMaxRange, pAccuracy, pSearchDepthMultiplier);
             this.nodeEvaluator.done();
@@ -64,9 +66,9 @@ public class PlayerPathFinder {
         Set<Node> set1 = ImmutableSet.of();
         int i = 0;
         Set<Target> set2 = Sets.newHashSetWithExpectedSize(set.size());
-        int j = (int)((float)this.maxVisitedNodes * pSearchDepthMultiplier);
+        int j = (int) ((float) this.maxVisitedNodes * pSearchDepthMultiplier);
 
-        while(!this.openSet.isEmpty()) {
+        while (!this.openSet.isEmpty()) {
             ++i;
             if (i >= j) {
                 break;
@@ -75,8 +77,8 @@ public class PlayerPathFinder {
             Node node = this.openSet.pop();
             node.closed = true;
 
-            for(Target target : set) {
-                if (node.distanceManhattan(target) <= (float)pAccuracy) {
+            for (Target target : set) {
+                if (node.distanceManhattan(target) <= (float) pAccuracy) {
                     target.setReached();
                     set2.add(target);
                 }
@@ -89,7 +91,7 @@ public class PlayerPathFinder {
             if (!(node.distanceTo(pNode) >= pMaxRange)) {
                 int k = this.nodeEvaluator.getNeighbors(this.neighbors, node);
 
-                for(int l = 0; l < k; ++l) {
+                for (int l = 0; l < k; ++l) {
                     Node node1 = this.neighbors[l];
                     float f = this.distance(node, node1);
                     node1.walkedDistance = node.walkedDistance + f;
@@ -125,7 +127,7 @@ public class PlayerPathFinder {
     private float getBestH(Node pNode, Set<Target> pTargets) {
         float f = Float.MAX_VALUE;
 
-        for(Target target : pTargets) {
+        for (Target target : pTargets) {
             float f1 = pNode.distanceTo(target);
             target.updateBest(f1, pNode);
             f = Math.min(f1, f);
@@ -142,7 +144,7 @@ public class PlayerPathFinder {
         Node node = pPoint;
         list.add(0, pPoint);
 
-        while(node.cameFrom != null) {
+        while (node.cameFrom != null) {
             node = node.cameFrom;
             list.add(0, node);
         }

@@ -2,18 +2,12 @@ package quarri6343.openarpg;
 
 
 import com.google.common.collect.ImmutableSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -21,12 +15,15 @@ import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.level.pathfinder.Node;
-import net.minecraft.world.level.pathfinder.NodeEvaluator;
 import net.minecraft.world.level.pathfinder.Path;
-import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+
+import javax.annotation.Nullable;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class PlayerPathNavigation {
     private static final int MAX_TIME_RECOMPUTE = 20;
@@ -50,7 +47,9 @@ public abstract class PlayerPathNavigation {
     protected PlayerNodeEvaluator nodeEvaluator;
     @Nullable
     private BlockPos targetPos;
-    /** Distance in which a path point counts as target-reaching */
+    /**
+     * Distance in which a path point counts as target-reaching
+     */
     private int reachRange;
     private float maxVisitedNodesMultiplier = 1.0F;
     private final PlayerPathFinder pathFinder;
@@ -130,7 +129,7 @@ public abstract class PlayerPathNavigation {
 
     @Nullable
     public Path createPath(BlockPos pPos, int pRegionOffset, int pAccuracy) {
-        return this.createPath(ImmutableSet.of(pPos), 8, false, pRegionOffset, (float)pAccuracy);
+        return this.createPath(ImmutableSet.of(pPos), 8, false, pRegionOffset, (float) pAccuracy);
     }
 
     /**
@@ -154,7 +153,7 @@ public abstract class PlayerPathNavigation {
     protected Path createPath(Set<BlockPos> pTargets, int pRegionOffset, boolean pOffsetUpward, int pAccuracy, float pFollowRange) {
         if (pTargets.isEmpty()) {
             return null;
-        } else if (this.player.getY() < (double)this.level.getMinBuildHeight()) {
+        } else if (this.player.getY() < (double) this.level.getMinBuildHeight()) {
             return null;
         } else if (!this.canUpdatePath()) {
             return null;
@@ -163,7 +162,7 @@ public abstract class PlayerPathNavigation {
         } else {
             this.level.getProfiler().push("pathfind");
             BlockPos blockpos = pOffsetUpward ? this.player.blockPosition().above() : this.player.blockPosition();
-            int i = (int)(pFollowRange + (float)pRegionOffset);
+            int i = (int) (pFollowRange + (float) pRegionOffset);
             PathNavigationRegion pathnavigationregion = new PathNavigationRegion(this.level, blockpos.offset(-i, -i, -i), blockpos.offset(i, i, i));
             Path path = this.pathFinder.findPath(pathnavigationregion, this.player, pTargets, pFollowRange, pAccuracy, this.maxVisitedNodesMultiplier);
             this.level.getProfiler().pop();
@@ -264,10 +263,10 @@ public abstract class PlayerPathNavigation {
         Vec3 vec3 = this.getTempMobPos();
         this.maxDistanceToWaypoint = this.player.getBbWidth() > 0.75F ? this.player.getBbWidth() / 2.0F : 0.75F - this.player.getBbWidth() / 2.0F;
         Vec3i vec3i = this.path.getNextNodePos();
-        double d0 = Math.abs(this.player.getX() - ((double)vec3i.getX() + (this.player.getBbWidth() + 1) / 2D)); //Forge: Fix MC-94054
-        double d1 = Math.abs(this.player.getY() - (double)vec3i.getY());
-        double d2 = Math.abs(this.player.getZ() - ((double)vec3i.getZ() + (this.player.getBbWidth() + 1) / 2D)); //Forge: Fix MC-94054
-        boolean flag = d0 <= (double)this.maxDistanceToWaypoint && d2 <= (double)this.maxDistanceToWaypoint && d1 < 1.0D; //Forge: Fix MC-94054
+        double d0 = Math.abs(this.player.getX() - ((double) vec3i.getX() + (this.player.getBbWidth() + 1) / 2D)); //Forge: Fix MC-94054
+        double d1 = Math.abs(this.player.getY() - (double) vec3i.getY());
+        double d2 = Math.abs(this.player.getZ() - ((double) vec3i.getZ() + (this.player.getBbWidth() + 1) / 2D)); //Forge: Fix MC-94054
+        boolean flag = d0 <= (double) this.maxDistanceToWaypoint && d2 <= (double) this.maxDistanceToWaypoint && d1 < 1.0D; //Forge: Fix MC-94054
         if (flag || this.canCutCorner(this.path.getNextNode().type) && this.shouldTargetNextNodeInDirection(vec3)) {
             this.path.advance();
         }
@@ -310,7 +309,7 @@ public abstract class PlayerPathNavigation {
         if (this.tick - this.lastStuckCheck > 100) {
             float f = this.player.getSpeed() >= 1.0F ? this.player.getSpeed() : this.player.getSpeed() * this.player.getSpeed();
             float f1 = f * 100.0F * 0.25F;
-            if (pPositionVec3.distanceToSqr(this.lastStuckCheckPos) < (double)(f1 * f1)) {
+            if (pPositionVec3.distanceToSqr(this.lastStuckCheckPos) < (double) (f1 * f1)) {
                 this.isStuck = true;
                 this.stop();
             } else {
@@ -329,10 +328,10 @@ public abstract class PlayerPathNavigation {
             } else {
                 this.timeoutCachedNode = vec3i;
                 double d0 = pPositionVec3.distanceTo(Vec3.atBottomCenterOf(this.timeoutCachedNode));
-                this.timeoutLimit = this.player.getSpeed() > 0.0F ? d0 / (double)this.player.getSpeed() * 20.0D : 0.0D;
+                this.timeoutLimit = this.player.getSpeed() > 0.0F ? d0 / (double) this.player.getSpeed() * 20.0D : 0.0D;
             }
 
-            if (this.timeoutLimit > 0.0D && (double)this.timeoutTimer > this.timeoutLimit * 3.0D) {
+            if (this.timeoutLimit > 0.0D && (double) this.timeoutTimer > this.timeoutLimit * 3.0D) {
                 this.timeoutPath();
             }
 
@@ -390,7 +389,7 @@ public abstract class PlayerPathNavigation {
      */
     protected void trimPath() {
         if (this.path != null) {
-            for(int i = 0; i < this.path.getNodeCount(); ++i) {
+            for (int i = 0; i < this.path.getNodeCount(); ++i) {
                 Node node = this.path.getNode(i);
                 Node node1 = i + 1 < this.path.getNodeCount() ? this.path.getNode(i + 1) : null;
                 BlockState blockstate = this.level.getBlockState(new BlockPos(node.x, node.y, node.z));
@@ -417,7 +416,7 @@ public abstract class PlayerPathNavigation {
     }
 
     protected static boolean isClearForMovementBetween(Mob pMob, Vec3 pPos1, Vec3 pPos2, boolean pAllowSwimming) {
-        Vec3 vec3 = new Vec3(pPos2.x, pPos2.y + (double)pMob.getBbHeight() * 0.5D, pPos2.z);
+        Vec3 vec3 = new Vec3(pPos2.x, pPos2.y + (double) pMob.getBbHeight() * 0.5D, pPos2.z);
         return pMob.level().clip(new ClipContext(pPos1, vec3, ClipContext.Block.COLLIDER, pAllowSwimming ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE, pMob)).getType() == HitResult.Type.MISS;
     }
 
@@ -443,8 +442,8 @@ public abstract class PlayerPathNavigation {
             return false;
         } else if (this.path != null && !this.path.isDone() && this.path.getNodeCount() != 0) {
             Node node = this.path.getEndNode();
-            Vec3 vec3 = new Vec3(((double)node.x + this.player.getX()) / 2.0D, ((double)node.y + this.player.getY()) / 2.0D, ((double)node.z + this.player.getZ()) / 2.0D);
-            return pPos.closerToCenterThan(vec3, (double)(this.path.getNodeCount() - this.path.getNextNodeIndex()));
+            Vec3 vec3 = new Vec3(((double) node.x + this.player.getX()) / 2.0D, ((double) node.y + this.player.getY()) / 2.0D, ((double) node.z + this.player.getZ()) / 2.0D);
+            return pPos.closerToCenterThan(vec3, (double) (this.path.getNodeCount() - this.path.getNextNodeIndex()));
         } else {
             return false;
         }

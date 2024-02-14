@@ -1,6 +1,5 @@
 package quarri6343.openarpg;
 
-import com.mojang.logging.LogUtils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
@@ -23,16 +22,15 @@ public class ProjectionUtil {
                 (hitPos.z - startPos.z));
         return Minecraft.getInstance().level.clip(new ClipContext(startPos, startPos.add(hitPos), ClipContext.Block.VISUAL, ClipContext.Fluid.ANY, null));
     }
-    
+
     //https://github.com/Muirrum/MatterOverdrive
-    public static Vec3 mouseToWorldRay(int mouseX, int mouseY, int width, int height)
-    {
-        double aspectRatio = ((double)width / (double)height);
+    public static Vec3 mouseToWorldRay(int mouseX, int mouseY, int width, int height) {
+        double aspectRatio = ((double) width / (double) height);
         double fov = ((Minecraft.getInstance().options.fov().get() / 2d)) * (Math.PI / 180);
         Entity renderViewEntity = Minecraft.getInstance().cameraEntity;
 
-        double a = -((double)mouseX / (double)width - 0.5) * 2;
-        double b = -((double)mouseY / (double)height - 0.5) * 2;
+        double a = -((double) mouseX / (double) width - 0.5) * 2;
+        double b = -((double) mouseY / (double) height - 0.5) * 2;
         double tanf = Math.tan(fov);
 
 
@@ -40,8 +38,8 @@ public class ProjectionUtil {
         float pitch = renderViewEntity.getXRot();
 
         Matrix4f rot = new Matrix4f();
-        rot.rotate(yawn * (float)(Math.PI / 180), new Vector3f(0, -1, 0));
-        rot.rotate(pitch * (float)(Math.PI / 180), new Vector3f(1, 0, 0));
+        rot.rotate(yawn * (float) (Math.PI / 180), new Vector3f(0, -1, 0));
+        rot.rotate(pitch * (float) (Math.PI / 180), new Vector3f(1, 0, 0));
         Vector4f foward = new Vector4f(0, 0, 1, 0);
         Vector4f up = new Vector4f(0, 1, 0, 0);
         Vector4f left = new Vector4f(1, 0, 0, 0);

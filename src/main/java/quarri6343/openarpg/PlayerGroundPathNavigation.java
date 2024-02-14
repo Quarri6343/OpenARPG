@@ -34,7 +34,7 @@ public class PlayerGroundPathNavigation extends PlayerPathNavigation {
     }
 
     protected Vec3 getTempMobPos() {
-        return new Vec3(this.player.getX(), (double)this.getSurfaceY(), this.player.getZ());
+        return new Vec3(this.player.getX(), (double) this.getSurfaceY(), this.player.getZ());
     }
 
     /**
@@ -43,14 +43,14 @@ public class PlayerGroundPathNavigation extends PlayerPathNavigation {
     public Path createPath(BlockPos pPos, int pAccuracy) {
         if (this.level.getBlockState(pPos).isAir()) {
             BlockPos blockpos;
-            for(blockpos = pPos.below(); blockpos.getY() > this.level.getMinBuildHeight() && this.level.getBlockState(blockpos).isAir(); blockpos = blockpos.below()) {
+            for (blockpos = pPos.below(); blockpos.getY() > this.level.getMinBuildHeight() && this.level.getBlockState(blockpos).isAir(); blockpos = blockpos.below()) {
             }
 
             if (blockpos.getY() > this.level.getMinBuildHeight()) {
                 return super.createPath(blockpos.above(), pAccuracy);
             }
 
-            while(blockpos.getY() < this.level.getMaxBuildHeight() && this.level.getBlockState(blockpos).isAir()) {
+            while (blockpos.getY() < this.level.getMaxBuildHeight() && this.level.getBlockState(blockpos).isAir()) {
                 blockpos = blockpos.above();
             }
 
@@ -61,7 +61,7 @@ public class PlayerGroundPathNavigation extends PlayerPathNavigation {
             return super.createPath(pPos, pAccuracy);
         } else {
             BlockPos blockpos1;
-            for(blockpos1 = pPos.above(); blockpos1.getY() < this.level.getMaxBuildHeight() && this.level.getBlockState(blockpos1).isSolid(); blockpos1 = blockpos1.above()) {
+            for (blockpos1 = pPos.above(); blockpos1.getY() < this.level.getMaxBuildHeight() && this.level.getBlockState(blockpos1).isSolid(); blockpos1 = blockpos1.above()) {
             }
 
             return super.createPath(blockpos1, pAccuracy);
@@ -81,12 +81,12 @@ public class PlayerGroundPathNavigation extends PlayerPathNavigation {
     private int getSurfaceY() {
         if (this.player.isInWater() && this.canFloat()) {
             int i = this.player.getBlockY();
-            BlockState blockstate = this.level.getBlockState(BlockPos.containing(this.player.getX(), (double)i, this.player.getZ()));
+            BlockState blockstate = this.level.getBlockState(BlockPos.containing(this.player.getX(), (double) i, this.player.getZ()));
             int j = 0;
 
-            while(blockstate.is(Blocks.WATER)) {
+            while (blockstate.is(Blocks.WATER)) {
                 ++i;
-                blockstate = this.level.getBlockState(BlockPos.containing(this.player.getX(), (double)i, this.player.getZ()));
+                blockstate = this.level.getBlockState(BlockPos.containing(this.player.getX(), (double) i, this.player.getZ()));
                 ++j;
                 if (j > 16) {
                     return this.player.getBlockY();
@@ -109,7 +109,7 @@ public class PlayerGroundPathNavigation extends PlayerPathNavigation {
                 return;
             }
 
-            for(int i = 0; i < this.path.getNodeCount(); ++i) {
+            for (int i = 0; i < this.path.getNodeCount(); ++i) {
                 Node node = this.path.getNode(i);
                 if (this.level.canSeeSky(new BlockPos(node.x, node.y, node.z))) {
                     this.path.truncateNodes(i);

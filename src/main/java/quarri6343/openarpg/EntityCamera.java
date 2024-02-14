@@ -1,6 +1,5 @@
 package quarri6343.openarpg;
 
-import net.minecraft.client.Camera;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -19,7 +18,7 @@ public class EntityCamera extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag pCompound) {
-        
+
     }
 
     @Override

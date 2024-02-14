@@ -2,7 +2,6 @@ package quarri6343.openarpg;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.telemetry.events.WorldLoadEvent;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -53,18 +52,18 @@ public class OpenARPG {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MODID);
 
     public static final RegistryObject<EntityType<EntityCamera>> CAMERA = ENTITY_TYPES.register("camera", () -> EntityType.Builder.of(EntityCamera::new, MobCategory.MISC).build(MODID + ":camera"));
-    
+
     private static EntityCamera cameraInstance;
 
     public static Matrix4f projectionMatrix;
     public static Matrix4f viewModelMatrix;
-    
+
     public static Vec3 destination;
     public static PlayerMoveControl playerMoveControl;
     public static PlayerJumpControl playerJumpControl;
     public static PlayerPathNavigation playerPathNavigation;
     public static PlayerMover playerMover;
-    
+
     public OpenARPG() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -78,7 +77,7 @@ public class OpenARPG {
         ENTITY_TYPES.register(modEventBus);
         CreativeTabInit.TABS.register(modEventBus);
     }
-    
+
     private void commonSetup(final FMLCommonSetupEvent event) {
         // Some common setup code
         LOGGER.info("HELLO FROM COMMON SETUP");
@@ -97,39 +96,38 @@ public class OpenARPG {
         public static void onCameraRotation(ViewportEvent.ComputeCameraAngles event) {
             projectionMatrix = event.getRenderer().getProjectionMatrix(Minecraft.getInstance().options.fov().get());
 
-            if(Minecraft.getInstance().options.getCameraType().isFirstPerson()){
+            if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
                 return;
             }
 //            event.setYaw(45);
 //            event.setPitch(45);
         }
-        
+
         @SubscribeEvent
-        public static void onClientTick(TickEvent.ClientTickEvent event){
-            if(Minecraft.getInstance().options.getCameraType().isFirstPerson()){
+        public static void onClientTick(TickEvent.ClientTickEvent event) {
+            if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
                 Minecraft.getInstance().setCameraEntity(Minecraft.getInstance().player);
-            }
-            else{
+            } else {
 //                    Minecraft.getInstance().gameRenderer.getMainCamera().tick();
                 cameraInstance.setOldPosAndRot();
                 cameraInstance.setXRot(45);
                 cameraInstance.setYRot(45);
                 cameraInstance.setPosRaw(Minecraft.getInstance().player.getX() + 3, Minecraft.getInstance().player.getY() + 3, Minecraft.getInstance().player.getZ() - 3);
-                
-                if(Minecraft.getInstance().getCameraEntity() instanceof Player){
+
+                if (Minecraft.getInstance().getCameraEntity() instanceof Player) {
                     Minecraft.getInstance().setCameraEntity(cameraInstance);
                 }
             }
         }
-        
+
         @SubscribeEvent
-        public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event){
+        public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
             cameraInstance = CAMERA.get().create(event.getEntity().level());
         }
 
         @SubscribeEvent
-        public static void onPlayerLoginClient(EntityJoinLevelEvent event){
-            if(Minecraft.getInstance().player == null)
+        public static void onPlayerLoginClient(EntityJoinLevelEvent event) {
+            if (Minecraft.getInstance().player == null)
                 return;
 
             playerMoveControl = new PlayerMoveControl(Minecraft.getInstance().player);
@@ -139,37 +137,37 @@ public class OpenARPG {
         }
 
         @SubscribeEvent
-        public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event){
-            if(cameraInstance != null){
+        public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+            if (cameraInstance != null) {
                 cameraInstance.remove(Entity.RemovalReason.DISCARDED);
                 cameraInstance = null;
             }
         }
-        
+
         @SubscribeEvent
-        public static void onMouseClick(InputEvent.MouseButton.Pre event){
-            if(Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null){
+        public static void onMouseClick(InputEvent.MouseButton.Pre event) {
+            if (Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null) {
                 return;
             }
-            
+
             event.setCanceled(true);
-            if(event.getButton() != GLFW_MOUSE_BUTTON_1){
+            if (event.getButton() != GLFW_MOUSE_BUTTON_1) {
                 return;
             }
-            
+
             double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
             double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
-            
+
             Minecraft.getInstance().mouseHandler.releaseMouse();
-            
-            Vec3 hitPos = ProjectionUtil.mouseToWorldRay((int)xPos, (int)yPos, Minecraft.getInstance().getWindow().getScreenWidth(), Minecraft.getInstance().getWindow().getScreenHeight());
-            
-            
+
+            Vec3 hitPos = ProjectionUtil.mouseToWorldRay((int) xPos, (int) yPos, Minecraft.getInstance().getWindow().getScreenWidth(), Minecraft.getInstance().getWindow().getScreenHeight());
+
+
             BlockHitResult result = ProjectionUtil.rayTrace(hitPos, cameraInstance);
-            if(result.getType() == HitResult.Type.MISS){
+            if (result.getType() == HitResult.Type.MISS) {
                 return;
             }
-            
+
             Minecraft.getInstance().level.addParticle(ParticleTypes.EXPLOSION, result.getLocation().x, result.getLocation().y, result.getLocation().z, 0d, 0d, 0d);
             destination = result.getLocation();
 //            Minecraft.getInstance().player.setPos(result.getLocation().x, result.getLocation().y, result.getLocation().z);
@@ -178,25 +176,25 @@ public class OpenARPG {
         @SubscribeEvent
         public static void onRenderOverlay(RenderGuiOverlayEvent event) {
             //debug
-            if(Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null){
+            if (Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null) {
                 return;
             }
-            
+
             double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
             double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
-            double d0 = xPos * (double)Minecraft.getInstance().getWindow().getGuiScaledWidth() / (double)Minecraft.getInstance().getWindow().getScreenWidth();
-            double d1 = yPos * (double)Minecraft.getInstance().getWindow().getGuiScaledHeight() / (double)Minecraft.getInstance().getWindow().getScreenHeight();
-            event.getGuiGraphics().fill((int)d0 - 5, (int)d1 - 5, (int)d0 + 5, (int)d1 + 5, 0xFFFFFFFF);
+            double d0 = xPos * (double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / (double) Minecraft.getInstance().getWindow().getScreenWidth();
+            double d1 = yPos * (double) Minecraft.getInstance().getWindow().getGuiScaledHeight() / (double) Minecraft.getInstance().getWindow().getScreenHeight();
+            event.getGuiGraphics().fill((int) d0 - 5, (int) d1 - 5, (int) d0 + 5, (int) d1 + 5, 0xFFFFFFFF);
         }
 
         @SubscribeEvent
-        public static void onRenderPlayer(RenderPlayerEvent.Post event){
+        public static void onRenderPlayer(RenderPlayerEvent.Post event) {
             viewModelMatrix = event.getPoseStack().last().pose();
         }
-        
+
         @SubscribeEvent
-        public static void onPlayerTick(TickEvent.ClientTickEvent event){
-            if(Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null){
+        public static void onPlayerTick(TickEvent.ClientTickEvent event) {
+            if (Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null) {
                 return;
             }
 
@@ -206,15 +204,14 @@ public class OpenARPG {
             playerMover.tick();
         }
     }
-    
+
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
 
         @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event)
-        {
-            
+        public static void onClientSetup(FMLClientSetupEvent event) {
+
         }
     }
 }

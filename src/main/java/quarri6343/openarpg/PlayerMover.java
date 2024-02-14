@@ -2,21 +2,8 @@ package quarri6343.openarpg;
 
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.control.LookControl;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
-
-import javax.annotation.Nullable;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
 
 public class PlayerMover {
     private final Player player;
@@ -52,7 +39,7 @@ public class PlayerMover {
                 double d1 = this.player.getY() - destination.y;
                 double d2 = this.player.getZ() - destination.z;
                 double d3 = d0 * d0 + d1 * d1 + d2 * d2;
-                if (!(d3 <= (double)(this.stopDistance * this.stopDistance))) {
+                if (!(d3 <= (double) (this.stopDistance * this.stopDistance))) {
                     this.navigation.moveTo(destination.x, destination.y, destination.z, this.speedModifier);
                 } else {
                     this.navigation.stop();

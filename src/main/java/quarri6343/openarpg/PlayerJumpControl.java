@@ -1,6 +1,5 @@
 package quarri6343.openarpg;
 
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.control.Control;
 import net.minecraft.world.entity.player.Player;
 
