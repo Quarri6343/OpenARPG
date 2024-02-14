@@ -32,6 +32,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.joml.Matrix4f;
 import org.slf4j.Logger;
+import quarri6343.openarpg.playerai.*;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
 import static quarri6343.openarpg.CreativeTabInit.addToTab;
@@ -59,10 +60,6 @@ public class OpenARPG {
     public static Matrix4f viewModelMatrix;
 
     public static Vec3 destination;
-    public static PlayerMoveControl playerMoveControl;
-    public static PlayerJumpControl playerJumpControl;
-    public static PlayerPathNavigation playerPathNavigation;
-    public static PlayerMover playerMover;
 
     public OpenARPG() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -126,17 +123,6 @@ public class OpenARPG {
         }
 
         @SubscribeEvent
-        public static void onPlayerLoginClient(EntityJoinLevelEvent event) {
-            if (Minecraft.getInstance().player == null)
-                return;
-
-            playerMoveControl = new PlayerMoveControl(Minecraft.getInstance().player);
-            playerJumpControl = new PlayerJumpControl(Minecraft.getInstance().player);
-            playerPathNavigation = new PlayerGroundPathNavigation(Minecraft.getInstance().player, Minecraft.getInstance().player.level());
-            playerMover = new PlayerMover(Minecraft.getInstance().player, 100, 1, 0);
-        }
-
-        @SubscribeEvent
         public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
             if (cameraInstance != null) {
                 cameraInstance.remove(Entity.RemovalReason.DISCARDED);
@@ -190,18 +176,6 @@ public class OpenARPG {
         @SubscribeEvent
         public static void onRenderPlayer(RenderPlayerEvent.Post event) {
             viewModelMatrix = event.getPoseStack().last().pose();
-        }
-
-        @SubscribeEvent
-        public static void onPlayerTick(TickEvent.ClientTickEvent event) {
-            if (Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null) {
-                return;
-            }
-
-            playerMoveControl.tick();
-            playerJumpControl.tick();
-            playerPathNavigation.tick();
-            playerMover.tick();
         }
     }
 

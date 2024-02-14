@@ -1,4 +1,4 @@
-package quarri6343.openarpg;
+package quarri6343.openarpg.playerai;
 
 
 import com.google.common.collect.ImmutableSet;

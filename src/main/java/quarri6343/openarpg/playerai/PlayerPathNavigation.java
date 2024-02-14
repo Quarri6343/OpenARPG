@@ -1,4 +1,4 @@
-package quarri6343.openarpg;
+package quarri6343.openarpg.playerai;
 
 
 import com.google.common.collect.ImmutableSet;
@@ -19,6 +19,7 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import quarri6343.openarpg.OpenARPG;
 
 import javax.annotation.Nullable;
 import java.util.Set;
@@ -249,7 +250,7 @@ public abstract class PlayerPathNavigation {
 //            DebugPackets.sendPathFindingPacket(this.level, this.player, this.path, this.maxDistanceToWaypoint);
             if (!this.isDone()) {
                 Vec3 vec32 = this.path.getNextEntityPos(this.player);
-                OpenARPG.playerMoveControl.setWantedPosition(vec32.x, this.getGroundY(vec32), vec32.z, this.speedModifier);
+                PlayerAIEventHandler.playerMoveControl.setWantedPosition(vec32.x, this.getGroundY(vec32), vec32.z, this.speedModifier);
             }
         }
     }

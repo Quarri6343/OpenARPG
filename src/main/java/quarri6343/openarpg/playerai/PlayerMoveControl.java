@@ -1,4 +1,4 @@
-package quarri6343.openarpg;
+package quarri6343.openarpg.playerai;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import quarri6343.openarpg.OpenARPG;
 
 public class PlayerMoveControl implements Control {
     public static final float MIN_SPEED = 5.0E-4F;
@@ -108,7 +109,7 @@ public class PlayerMoveControl implements Control {
             BlockState blockstate = this.player.level().getBlockState(blockpos);
             VoxelShape voxelshape = blockstate.getCollisionShape(this.player.level(), blockpos);
             if (d2 > (double) this.player.getStepHeight() && d0 * d0 + d1 * d1 < (double) Math.max(1.0F, this.player.getBbWidth()) || !voxelshape.isEmpty() && this.player.getY() < voxelshape.max(Direction.Axis.Y) + (double) blockpos.getY() && !blockstate.is(BlockTags.DOORS) && !blockstate.is(BlockTags.FENCES)) {
-                OpenARPG.playerJumpControl.jump();
+                PlayerAIEventHandler.playerJumpControl.jump();
                 this.operation = Operation.JUMPING;
             }
         } else if (this.operation == Operation.JUMPING) {
@@ -126,7 +127,7 @@ public class PlayerMoveControl implements Control {
      * @return true if the player can walk successfully to a given X and Z
      */
     private boolean isWalkable(float pRelativeX, float pRelativeZ) {
-        PlayerPathNavigation pathnavigation = OpenARPG.playerPathNavigation;
+        PlayerPathNavigation pathnavigation = PlayerAIEventHandler.playerPathNavigation;
         if (pathnavigation != null) {
             PlayerNodeEvaluator nodeevaluator = pathnavigation.getNodeEvaluator();
             if (nodeevaluator != null && nodeevaluator.getBlockPathType(this.player.level(), Mth.floor(this.player.getX() + (double) pRelativeX), this.player.getBlockY(), Mth.floor(this.player.getZ() + (double) pRelativeZ)) != BlockPathTypes.WALKABLE) {

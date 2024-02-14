@@ -1,4 +1,4 @@
-package quarri6343.openarpg;
+package quarri6343.openarpg.playerai;
 
 import net.minecraft.world.entity.ai.control.Control;
 import net.minecraft.world.entity.player.Player;
