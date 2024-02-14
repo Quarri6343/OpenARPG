@@ -95,21 +95,31 @@ public class OpenARPG {
     public static class ClientEventHandler {
         @SubscribeEvent
         public static void onCameraRotation(ViewportEvent.ComputeCameraAngles event) {
+            projectionMatrix = event.getRenderer().getProjectionMatrix(Minecraft.getInstance().options.fov().get());
+
+            if(Minecraft.getInstance().options.getCameraType().isFirstPerson()){
+                return;
+            }
+//            event.setYaw(45);
+//            event.setPitch(45);
+        }
+        
+        @SubscribeEvent
+        public static void onClientTick(TickEvent.ClientTickEvent event){
             if(Minecraft.getInstance().options.getCameraType().isFirstPerson()){
                 Minecraft.getInstance().setCameraEntity(Minecraft.getInstance().player);
             }
             else{
+//                    Minecraft.getInstance().gameRenderer.getMainCamera().tick();
+                cameraInstance.setOldPosAndRot();
+                cameraInstance.setXRot(45);
+                cameraInstance.setYRot(45);
+                cameraInstance.setPosRaw(Minecraft.getInstance().player.getX() + 3, Minecraft.getInstance().player.getY() + 3, Minecraft.getInstance().player.getZ() - 3);
+                
                 if(Minecraft.getInstance().getCameraEntity() instanceof Player){
-                    cameraInstance.setXRot(45);
-                    cameraInstance.setYRot(45);
-                    event.getCamera().tick();
-                    cameraInstance.setPosRaw(Minecraft.getInstance().player.getX(), Minecraft.getInstance().player.getY(), Minecraft.getInstance().player.getZ());
-                    cameraInstance.setOldPosAndRot();
                     Minecraft.getInstance().setCameraEntity(cameraInstance);
                 }
             }
-
-            projectionMatrix = event.getRenderer().getProjectionMatrix(Minecraft.getInstance().options.fov().get());
         }
         
         @SubscribeEvent
