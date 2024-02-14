@@ -2,6 +2,7 @@ package quarri6343.openarpg;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.telemetry.events.WorldLoadEvent;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -17,6 +18,8 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -55,6 +58,12 @@ public class OpenARPG {
 
     public static Matrix4f projectionMatrix;
     public static Matrix4f viewModelMatrix;
+    
+    public static Vec3 destination;
+    public static PlayerMoveControl playerMoveControl;
+    public static PlayerJumpControl playerJumpControl;
+    public static PlayerPathNavigation playerPathNavigation;
+    public static PlayerMover playerMover;
     
     public OpenARPG() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -109,6 +118,17 @@ public class OpenARPG {
         }
 
         @SubscribeEvent
+        public static void onPlayerLoginClient(EntityJoinLevelEvent event){
+            if(Minecraft.getInstance().player == null)
+                return;
+
+            playerMoveControl = new PlayerMoveControl(Minecraft.getInstance().player);
+            playerJumpControl = new PlayerJumpControl(Minecraft.getInstance().player);
+            playerPathNavigation = new PlayerGroundPathNavigation(Minecraft.getInstance().player, Minecraft.getInstance().player.level());
+            playerMover = new PlayerMover(Minecraft.getInstance().player, 100, 1, 0);
+        }
+
+        @SubscribeEvent
         public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event){
             if(cameraInstance != null){
                 cameraInstance.remove(Entity.RemovalReason.DISCARDED);
@@ -141,7 +161,8 @@ public class OpenARPG {
             }
             
             Minecraft.getInstance().level.addParticle(ParticleTypes.EXPLOSION, result.getLocation().x, result.getLocation().y, result.getLocation().z, 0d, 0d, 0d);
-            Minecraft.getInstance().player.setPos(result.getLocation().x, result.getLocation().y, result.getLocation().z);
+            destination = result.getLocation();
+//            Minecraft.getInstance().player.setPos(result.getLocation().x, result.getLocation().y, result.getLocation().z);
         }
 
         @SubscribeEvent
@@ -161,6 +182,18 @@ public class OpenARPG {
         @SubscribeEvent
         public static void onRenderPlayer(RenderPlayerEvent.Post event){
             viewModelMatrix = event.getPoseStack().last().pose();
+        }
+        
+        @SubscribeEvent
+        public static void onPlayerTick(TickEvent.ClientTickEvent event){
+            if(Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null){
+                return;
+            }
+
+            playerMoveControl.tick();
+            playerJumpControl.tick();
+            playerPathNavigation.tick();
+            playerMover.tick();
         }
     }
     
