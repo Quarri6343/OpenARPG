@@ -29,7 +29,7 @@ public class PlayerMover {
      * Keep ticking a continuous task that has already been started
      */
     public void tick() {
-        Vec3 destination = OpenARPG.destination;
+        Vec3 destination = OpenARPG.getDestination();
         if (destination != null) {
             this.player.lookAt(EntityAnchorArgument.Anchor.EYES, destination);
             if (--this.timeToRecalcPath <= 0) {
