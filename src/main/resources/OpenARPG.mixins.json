@@ -1,12 +1,13 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "quarri6343.OpenARPG.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "package": "quarri6343.openarpg.mixin",
+  "compatibilityLevel": "JAVA_16",
   "refmap": "OpenARPG.refmap.json",
   "mixins": [
   ],
   "client": [
+    "ItemEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

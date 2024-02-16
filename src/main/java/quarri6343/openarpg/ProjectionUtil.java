@@ -1,14 +1,16 @@
 package quarri6343.openarpg;
 
+import com.mojang.blaze3d.platform.Window;
+import icyllis.arc3d.core.Quaternion;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import org.joml.*;
+
+import java.lang.Math;
 
 public class ProjectionUtil {
 
@@ -54,5 +56,25 @@ public class ProjectionUtil {
                 .add(left.x * tanf * aspectRatio * a, left.y * tanf * aspectRatio * a, left.z * tanf * aspectRatio * a)
                 .add(up.x * tanf * b, up.y * tanf * b, up.z * tanf * b)
                 .normalize();
+    }
+
+    public static Vec3 worldToScreen(Vec3 pos)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        Camera cam = mc.gameRenderer.getMainCamera();
+        Vec3 o = cam.getPosition();
+
+        Vector3f pos1 = new Vector3f((float) (o.x - pos.x), (float) (o.y - pos.y), (float) (o.z - pos.z));
+        Quaternionf rot = new Quaternionf();
+        rot.set(cam.rotation());
+        rot.conjugate();
+        pos1.rotate(rot);
+
+        Window w = mc.getWindow();
+        float sc = w.getGuiScaledHeight() / 2f / pos1.z() / (float) Math.tan(Math.toRadians((mc.options.fov().get() / 2f)));
+        pos1.mul(-sc, -sc, 1f);
+        pos1.add(w.getGuiScaledWidth() / 2f, w.getGuiScaledHeight() / 2f, 0f);
+
+        return new Vec3(pos1);
     }
 }
