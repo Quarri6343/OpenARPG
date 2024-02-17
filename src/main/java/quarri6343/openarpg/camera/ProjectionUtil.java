@@ -4,8 +4,11 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -14,15 +17,28 @@ import org.joml.Vector4f;
 
 public class ProjectionUtil {
 
-    public static BlockHitResult rayTrace(Vec3 hitPos, Entity startPoint) {
+    private static final float REACH_DISTANCE = 30f;
+    
+    public static EntityHitResult rayTraceEntity(Vec3 hitVec){
+        
+        Vec3 position = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
+        Vec3 max = position.add(hitVec.x * REACH_DISTANCE, hitVec.y * REACH_DISTANCE, hitVec.z * REACH_DISTANCE);
+        AABB searchBox =
+                Minecraft.getInstance().player.getBoundingBox().inflate(10.0D, 10.0D, 10.0D);
+        
+        return ProjectileUtil.getEntityHitResult(Minecraft.getInstance().player, position, max, searchBox,
+                v -> true, REACH_DISTANCE * REACH_DISTANCE);
+    }
+    
+    public static BlockHitResult rayTrace(Vec3 hitVec, Entity startPoint) {
         Camera camera = Minecraft.getInstance().getEntityRenderDispatcher().camera;
         Vec3 startPos = new Vec3(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
-        hitPos = hitPos.multiply(100, 100, 100); // Double view range to ensure pos can be seen.
+        hitVec = hitVec.multiply(100, 100, 100); // Double view range to ensure pos can be seen.
         Vec3 endPos = new Vec3(
-                (hitPos.x - startPos.x),
-                (hitPos.y - startPos.y),
-                (hitPos.z - startPos.z));
-        return Minecraft.getInstance().level.clip(new ClipContext(startPos, startPos.add(hitPos), ClipContext.Block.VISUAL, ClipContext.Fluid.ANY, null));
+                (hitVec.x - startPos.x),
+                (hitVec.y - startPos.y),
+                (hitVec.z - startPos.z));
+        return Minecraft.getInstance().level.clip(new ClipContext(startPos, startPos.add(hitVec), ClipContext.Block.VISUAL, ClipContext.Fluid.ANY, null));
     }
 
     //https://github.com/Muirrum/MatterOverdrive

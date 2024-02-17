@@ -6,6 +6,7 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
+import quarri6343.openarpg.camera.PlayerAttackPacket;
 import quarri6343.openarpg.itempickup.ItemPickUpPacket;
 
 import java.util.Optional;
@@ -29,6 +30,8 @@ public class Network {
     public static void register() {
         INSTANCE.registerMessage(id(), ItemPickUpPacket.class, ItemPickUpPacket::encode, ItemPickUpPacket::decode,
                 ItemPickUpPacket::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+        INSTANCE.registerMessage(id(), PlayerAttackPacket.class, PlayerAttackPacket::encode, PlayerAttackPacket::decode,
+                PlayerAttackPacket::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
     }
 
     public static <MSG> void sendToServer(MSG message) {

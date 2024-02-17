@@ -2,8 +2,11 @@ package quarri6343.openarpg;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -79,6 +82,16 @@ public class OpenARPG {
 
     public static MinecraftServer getServer() {
         return server;
+    }
+
+    public static Entity getEntityById(int entityId) {
+        for (ServerLevel world : OpenARPG.getServer().getAllLevels()) {
+            Entity entity = world.getEntity(entityId);
+            if(entity != null) {
+                return entity;
+            }
+        }
+        return null;
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent

@@ -31,7 +31,9 @@ public class ItemPickUpPacket {
         ItemPickUpPacket packet = new ItemPickUpPacket();
         try {
             int entityID = buf.readInt();
-            packet.itemEntity = getEntityById(entityID);
+            if(OpenARPG.getEntityById(entityID) instanceof ItemEntity itemEntity){
+                packet.itemEntity = itemEntity;
+            }
         } catch (IllegalArgumentException | IndexOutOfBoundsException | NullPointerException e) {
             System.out.println("Exception while reading Packet: " + e);
             return packet;
@@ -52,16 +54,6 @@ public class ItemPickUpPacket {
             playerTouch(itemEntity, sender);
         });
         return true;
-    }
-
-    public static ItemEntity getEntityById(int entityId) {
-        for (ServerLevel world : OpenARPG.getServer().getAllLevels()) {
-            Entity entity = world.getEntity(entityId);
-            if (entity instanceof ItemEntity) {
-                return (ItemEntity) entity;
-            }
-        }
-        return null;
     }
 
     /**

@@ -5,6 +5,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,6 +16,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import quarri6343.openarpg.Network;
 import quarri6343.openarpg.OpenARPG;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
@@ -29,6 +31,9 @@ public class ThirdPersonEventHandler {
         if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
             Minecraft.getInstance().setCameraEntity(Minecraft.getInstance().player);
         } else {
+            if(cameraInstance == null) //after logout
+                return;
+            
 //                    Minecraft.getInstance().gameRenderer.getMainCamera().tick();
             cameraInstance.setOldPosAndRot();
             cameraInstance.setXRot(45);
@@ -70,10 +75,15 @@ public class ThirdPersonEventHandler {
 
         Minecraft.getInstance().mouseHandler.releaseMouse();
 
-        Vec3 hitPos = ProjectionUtil.mouseToWorldRay((int) xPos, (int) yPos, Minecraft.getInstance().getWindow().getScreenWidth(), Minecraft.getInstance().getWindow().getScreenHeight());
+        Vec3 hitVec = ProjectionUtil.mouseToWorldRay((int) xPos, (int) yPos, Minecraft.getInstance().getWindow().getScreenWidth(), Minecraft.getInstance().getWindow().getScreenHeight());
 
-
-        BlockHitResult result = ProjectionUtil.rayTrace(hitPos, cameraInstance);
+        EntityHitResult entityHitResult = ProjectionUtil.rayTraceEntity(hitVec);
+        if (entityHitResult != null && entityHitResult.getType() == HitResult.Type.ENTITY) {
+            Network.sendToServer(new PlayerAttackPacket(entityHitResult.getEntity()));
+            return;
+        }
+        
+        BlockHitResult result = ProjectionUtil.rayTrace(hitVec, cameraInstance);
         if (result.getType() == HitResult.Type.MISS) {
             return;
         }
