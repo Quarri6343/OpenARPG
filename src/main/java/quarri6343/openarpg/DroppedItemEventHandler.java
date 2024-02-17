@@ -30,6 +30,8 @@ public class DroppedItemEventHandler {
      */
     private static List<ClickableItemInfo> clickableItemInfoList = new ArrayList<>();
     
+    private static final float pickUpRange = 3f;
+    
     @SubscribeEvent
     public static void onPlayerPickUp(EntityItemPickupEvent event) {
         event.setCanceled(true);
@@ -101,14 +103,20 @@ public class DroppedItemEventHandler {
         double d1 = yPos * (double) Minecraft.getInstance().getWindow().getGuiScaledHeight() / (double) Minecraft.getInstance().getWindow().getScreenHeight();
         
         for (ClickableItemInfo clickableItemInfo : clickableItemInfoList) {
-            if(d0 > clickableItemInfo.minX() && d0 < clickableItemInfo.maxX()
-                && d1 > clickableItemInfo.minY() && d1 < clickableItemInfo.maxY()){
-                NetWork.sendToServer(new ItemPickUpPacket(clickableItemInfo.itemEntity()));
-
-                event.setCanceled(true); //移動しない
-                Minecraft.getInstance().mouseHandler.releaseMouse();
-                return;
+            if(!(d0 > clickableItemInfo.minX() && d0 < clickableItemInfo.maxX()
+                && d1 > clickableItemInfo.minY() && d1 < clickableItemInfo.maxY())){
+                continue;
             }
+            
+            if(Minecraft.getInstance().player.position().distanceToSqr(clickableItemInfo.itemEntity().position()) > pickUpRange){
+                continue;
+            }
+
+            NetWork.sendToServer(new ItemPickUpPacket(clickableItemInfo.itemEntity()));
+
+            event.setCanceled(true); //移動しない
+            Minecraft.getInstance().mouseHandler.releaseMouse();
+            return;
         }
     }
 }
