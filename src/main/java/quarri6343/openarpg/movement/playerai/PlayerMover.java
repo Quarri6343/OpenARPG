@@ -1,4 +1,4 @@
-package quarri6343.openarpg.playerai;
+package quarri6343.openarpg.movement.playerai;
 
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.util.Mth;

@@ -5,7 +5,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,14 +15,14 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import quarri6343.openarpg.Network;
 import quarri6343.openarpg.OpenARPG;
+import quarri6343.openarpg.ProjectionUtil;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
 import static quarri6343.openarpg.OpenARPG.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
-public class ThirdPersonEventHandler {
+public class CameraEventHandler {
     private static EntityCamera cameraInstance;
 
     @SubscribeEvent
@@ -57,40 +56,6 @@ public class ThirdPersonEventHandler {
             cameraInstance.remove(Entity.RemovalReason.DISCARDED);
             cameraInstance = null;
         }
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onMouseClick(InputEvent.MouseButton.Pre event) {
-        if (Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null) {
-            return;
-        }
-
-        event.setCanceled(true);
-        if (event.getButton() != GLFW_MOUSE_BUTTON_1) {
-            return;
-        }
-
-        double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
-        double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
-
-        Minecraft.getInstance().mouseHandler.releaseMouse();
-
-        Vec3 hitVec = ProjectionUtil.mouseToWorldRay((int) xPos, (int) yPos, Minecraft.getInstance().getWindow().getScreenWidth(), Minecraft.getInstance().getWindow().getScreenHeight());
-
-        EntityHitResult entityHitResult = ProjectionUtil.rayTraceEntity(hitVec);
-        if (entityHitResult != null && entityHitResult.getType() == HitResult.Type.ENTITY) {
-            Network.sendToServer(new PlayerAttackPacket(entityHitResult.getEntity()));
-            return;
-        }
-        
-        BlockHitResult result = ProjectionUtil.rayTrace(hitVec, cameraInstance);
-        if (result.getType() == HitResult.Type.MISS) {
-            return;
-        }
-
-        Minecraft.getInstance().level.addParticle(ParticleTypes.EXPLOSION, result.getLocation().x, result.getLocation().y, result.getLocation().z, 0d, 0d, 0d);
-        OpenARPG.setDestination(result.getLocation());
-//            Minecraft.getInstance().player.setPos(result.getLocation().x, result.getLocation().y, result.getLocation().z);
     }
 
     @SubscribeEvent

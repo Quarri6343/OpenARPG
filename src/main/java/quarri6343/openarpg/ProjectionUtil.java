@@ -1,4 +1,4 @@
-package quarri6343.openarpg.camera;
+package quarri6343.openarpg;
 
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Camera;
@@ -30,7 +30,7 @@ public class ProjectionUtil {
                 v -> true, REACH_DISTANCE * REACH_DISTANCE);
     }
     
-    public static BlockHitResult rayTrace(Vec3 hitVec, Entity startPoint) {
+    public static BlockHitResult rayTrace(Vec3 hitVec) {
         Camera camera = Minecraft.getInstance().getEntityRenderDispatcher().camera;
         Vec3 startPos = new Vec3(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
         hitVec = hitVec.multiply(100, 100, 100); // Double view range to ensure pos can be seen.

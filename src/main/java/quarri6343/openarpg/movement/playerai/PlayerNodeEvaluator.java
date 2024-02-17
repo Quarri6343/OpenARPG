@@ -1,4 +1,4 @@
-package quarri6343.openarpg.playerai;
+package quarri6343.openarpg.movement.playerai;
 
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;

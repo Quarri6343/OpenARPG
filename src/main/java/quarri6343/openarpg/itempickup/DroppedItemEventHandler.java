@@ -11,7 +11,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import quarri6343.openarpg.Network;
-import quarri6343.openarpg.camera.ProjectionUtil;
+import quarri6343.openarpg.ProjectionUtil;
 
 import java.util.ArrayList;
 import java.util.List;

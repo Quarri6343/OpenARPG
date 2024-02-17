@@ -1,4 +1,4 @@
-package quarri6343.openarpg.playerai;
+package quarri6343.openarpg.movement.playerai;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
@@ -7,7 +7,9 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import quarri6343.openarpg.OpenARPG;
+import quarri6343.openarpg.movement.playerai.*;
 
+//サブクラス同士が絡み合っているためわざとpackage privateにして対処
 @Mod.EventBusSubscriber(modid = OpenARPG.MODID, value = Dist.CLIENT)
 public class PlayerAIEventHandler {
     static PlayerPathNavigation playerPathNavigation;

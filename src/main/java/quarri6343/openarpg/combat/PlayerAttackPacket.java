@@ -1,12 +1,10 @@
-package quarri6343.openarpg.camera;
+package quarri6343.openarpg.combat;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraftforge.network.NetworkEvent;
 import quarri6343.openarpg.OpenARPG;
-import quarri6343.openarpg.itempickup.ItemPickUpPacket;
 
 import java.util.function.Supplier;
 
