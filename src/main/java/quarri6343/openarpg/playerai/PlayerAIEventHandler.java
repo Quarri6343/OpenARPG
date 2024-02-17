@@ -17,9 +17,9 @@ public class PlayerAIEventHandler {
 
     @SubscribeEvent
     public static void onPlayerJoinWorld(EntityJoinLevelEvent event) {
-        if(!event.getEntity().equals(Minecraft.getInstance().player))
+        if (!event.getEntity().equals(Minecraft.getInstance().player))
             return;
-        
+
         playerPathNavigation = new PlayerGroundPathNavigation(Minecraft.getInstance().player, Minecraft.getInstance().player.level());
         playerJumpControl = new PlayerJumpControl(Minecraft.getInstance().player);
         playerMoveControl = new PlayerMoveControl(Minecraft.getInstance().player);

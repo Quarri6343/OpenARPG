@@ -1,4 +1,4 @@
-package quarri6343.openarpg;
+package quarri6343.openarpg.itempickup;
 
 import net.minecraft.world.entity.item.ItemEntity;
 

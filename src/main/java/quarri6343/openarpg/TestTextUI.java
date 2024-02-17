@@ -17,10 +17,10 @@ public class TestTextUI extends Fragment implements ScreenCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @icyllis.modernui.annotation.Nullable ViewGroup container,
                              @icyllis.modernui.annotation.Nullable DataSet savedInstanceState) {
         var root = new AbsoluteLayout(requireContext());
-        
+
         return root;
     }
-    
+
     public boolean hasDefaultBackground() {
         return false;
     }

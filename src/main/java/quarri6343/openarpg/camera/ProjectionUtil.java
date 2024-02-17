@@ -1,16 +1,16 @@
-package quarri6343.openarpg;
+package quarri6343.openarpg.camera;
 
 import com.mojang.blaze3d.platform.Window;
-import icyllis.arc3d.core.Quaternion;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import org.joml.*;
-
-import java.lang.Math;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public class ProjectionUtil {
 
@@ -58,8 +58,7 @@ public class ProjectionUtil {
                 .normalize();
     }
 
-    public static Vec3 worldToScreen(Vec3 pos)
-    {
+    public static Vec3 worldToScreen(Vec3 pos) {
         Minecraft mc = Minecraft.getInstance();
         Camera cam = mc.gameRenderer.getMainCamera();
         Vec3 o = cam.getPosition();

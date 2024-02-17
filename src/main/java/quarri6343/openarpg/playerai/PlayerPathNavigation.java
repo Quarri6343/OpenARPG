@@ -19,7 +19,6 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import quarri6343.openarpg.OpenARPG;
 
 import javax.annotation.Nullable;
 import java.util.Set;

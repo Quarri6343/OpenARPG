@@ -1,4 +1,4 @@
-package quarri6343.openarpg;
+package quarri6343.openarpg.camera;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;

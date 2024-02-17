@@ -10,7 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import quarri6343.openarpg.OpenARPG;
 
 public class PlayerMoveControl implements Control {
     public static final float MIN_SPEED = 5.0E-4F;
