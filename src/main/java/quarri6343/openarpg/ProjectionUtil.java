@@ -3,13 +3,21 @@ package quarri6343.openarpg;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -34,11 +42,7 @@ public class ProjectionUtil {
         Camera camera = Minecraft.getInstance().getEntityRenderDispatcher().camera;
         Vec3 startPos = new Vec3(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
         hitVec = hitVec.multiply(100, 100, 100); // Double view range to ensure pos can be seen.
-        Vec3 endPos = new Vec3(
-                (hitVec.x - startPos.x),
-                (hitVec.y - startPos.y),
-                (hitVec.z - startPos.z));
-        return Minecraft.getInstance().level.clip(new ClipContext(startPos, startPos.add(hitVec), ClipContext.Block.VISUAL, ClipContext.Fluid.ANY, null));
+        return Minecraft.getInstance().level.clip(new ClipContextEX(startPos, startPos.add(hitVec), ClipContextEX.Block.NOTWALLORHIGHPLACE, ClipContext.Fluid.ANY, null));
     }
 
     //https://github.com/Muirrum/MatterOverdrive
@@ -91,5 +95,54 @@ public class ProjectionUtil {
         pos1.add(w.getGuiScaledWidth() / 2f, w.getGuiScaledHeight() / 2f, 0f);
 
         return new Vec3(pos1);
+    }
+
+    /**
+     * clipするとき専用のコリジョン判定を行えるようにするためのクラス
+     */
+    public static class ClipContextEX extends ClipContext {
+
+        private final ProjectionUtil.ClipContextEX.Block block2;
+
+        private final CollisionContext collisionContext2;
+        
+        public ClipContextEX(Vec3 pFrom, Vec3 pTo, ProjectionUtil.ClipContextEX.Block pBlock, Fluid pFluid, @Nullable Entity pEntity) {
+            super(pFrom, pTo, null, pFluid, pEntity);
+            this.block2 = pBlock;
+            this.collisionContext2 = pEntity == null ? CollisionContext.empty() : CollisionContext.of(pEntity);
+        }
+
+        @Override
+        public VoxelShape getBlockShape(BlockState pBlockState, BlockGetter pLevel, BlockPos pPos) {
+            return this.block2.get(pBlockState, pLevel, pPos, this.collisionContext2);
+        }
+
+        public static enum Block implements ClipContext.ShapeGetter {
+            NOTWALLORHIGHPLACE((pState, pBlock, pPos, pCollisionContext) -> {
+                if(Minecraft.getInstance().level == null || Minecraft.getInstance().player == null){
+                    return Shapes.empty();
+                }
+
+                if(!Minecraft.getInstance().level.getBlockState(pPos.above()).getShape(Minecraft.getInstance().level, pPos).isEmpty()){ //上のブロックに実体がある時、それは壁なので無視してスキャンを続ける
+                    return Shapes.empty();
+                }
+                
+                if(pPos.getY() > Minecraft.getInstance().player.getY() + 3){ //ブロックがプレイヤーに対して高過ぎるとき、無視してスキャンを続ける
+                    return Shapes.empty();
+                }
+
+                return pState.getShape(Minecraft.getInstance().level, pPos);
+            });
+
+            private final ClipContext.ShapeGetter shapeGetter;
+
+            private Block(ClipContext.ShapeGetter pShapeGetter) {
+                this.shapeGetter = pShapeGetter;
+            }
+
+            public VoxelShape get(BlockState pState, BlockGetter pBlock, BlockPos pPos, CollisionContext pCollisionContext) {
+                return this.shapeGetter.get(pState, pBlock, pPos, pCollisionContext);
+            }
+        }
     }
 }
