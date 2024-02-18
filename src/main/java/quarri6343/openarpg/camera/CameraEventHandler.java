@@ -1,7 +1,11 @@
 package quarri6343.openarpg.camera;
 
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
@@ -10,6 +14,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -27,7 +33,32 @@ public class CameraEventHandler {
     
     private static final float XROT = 53.1301024f;
     private static final float YROT = 45f;
+    
+    private static float renderTickCount;
 
+    @SubscribeEvent
+    public static void onCameraRotate(ViewportEvent.ComputeCameraAngles event) {
+        if(renderTickCount ++ % 60 == 0){
+            if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+                return;
+            }
+
+            if(Minecraft.getInstance().player == null || Minecraft.getInstance().level == null){
+                return;
+            }
+
+            Camera cam = Minecraft.getInstance().gameRenderer.getMainCamera();
+            Player player = Minecraft.getInstance().player;
+            int minX = Math.min(cam.getBlockPosition().getX(), player.getBlockX()) - 5;
+            int maxX = Math.max(cam.getBlockPosition().getX(), player.getBlockX()) + 5;
+            int minY = Math.min(cam.getBlockPosition().getY(), player.getBlockY()) - 5;
+            int maxY = Math.max(cam.getBlockPosition().getY(), player.getBlockY()) + 5;
+            int minZ = Math.min(cam.getBlockPosition().getZ(), player.getBlockZ()) - 5;
+            int maxZ = Math.max(cam.getBlockPosition().getZ(), player.getBlockZ()) + 5;
+            Minecraft.getInstance().levelRenderer.setBlocksDirty(minX, minY, minZ, maxX, maxY, maxZ);
+        }
+    }
+    
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
