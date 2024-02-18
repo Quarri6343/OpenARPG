@@ -31,7 +31,7 @@ public class PlayerMover {
     public void tick() {
         Vec3 destination = OpenARPG.getDestination();
         if (destination != null) {
-            this.player.lookAt(EntityAnchorArgument.Anchor.EYES, destination);
+//            this.player.lookAt(EntityAnchorArgument.Anchor.EYES, destination);
             if (--this.timeToRecalcPath <= 0) {
                 this.timeToRecalcPath = this.adjustedTickDelay(10);
                 double d0 = this.player.getX() - destination.x;

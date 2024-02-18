@@ -19,7 +19,11 @@ public class PlayerJumpControl implements Control {
      * Called to actually make the entity jump if isJumping is true.
      */
     public void tick() {
-        this.mob.setJumping(this.jump);
+//        this.mob.setJumping(this.jump);
+        if(this.jump){
+            this.mob.jumpFromGround();
+            this.mob.setOnGround(false);
+        }
         this.jump = false;
     }
 }

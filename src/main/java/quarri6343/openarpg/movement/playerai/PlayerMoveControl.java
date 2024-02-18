@@ -113,6 +113,9 @@ public class PlayerMoveControl implements Control {
             }
         } else if (this.operation == Operation.JUMPING) {
             this.player.setSpeed((float) (this.speedModifier * this.player.getAttributeValue(Attributes.MOVEMENT_SPEED)));
+            //追加
+            this.player.zza = (float) (this.speedModifier * this.player.getAttributeValue(Attributes.MOVEMENT_SPEED));
+            //
             if (this.player.onGround()) {
                 this.operation = Operation.WAIT;
             }
