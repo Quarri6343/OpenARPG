@@ -8,6 +8,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -64,8 +65,16 @@ public class CameraEventHandler {
         if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
             Minecraft.getInstance().setCameraEntity(Minecraft.getInstance().player);
         } else {
-            if(cameraInstance == null) //after logout
+            Level level = Minecraft.getInstance().level;
+            if(level == null){ //after logout
                 return;
+            }
+            
+            
+            if(cameraInstance == null || !level.equals(cameraInstance.level())){
+                cameraInstance = OpenARPG.CAMERA.get().create(level);
+                cameraInstance.setPosRaw(Minecraft.getInstance().player.getX(), Minecraft.getInstance().player.getY(), Minecraft.getInstance().player.getZ());
+            }
             
 //                    Minecraft.getInstance().gameRenderer.getMainCamera().tick();
             cameraInstance.setOldPosAndRot();
@@ -77,11 +86,6 @@ public class CameraEventHandler {
                 Minecraft.getInstance().setCameraEntity(cameraInstance);
             }
         }
-    }
-
-    @SubscribeEvent
-    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        cameraInstance = OpenARPG.CAMERA.get().create(event.getEntity().level());
     }
 
     @SubscribeEvent
