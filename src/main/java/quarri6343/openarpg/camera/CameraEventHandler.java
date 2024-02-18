@@ -24,6 +24,9 @@ import static quarri6343.openarpg.OpenARPG.MODID;
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class CameraEventHandler {
     private static EntityCamera cameraInstance;
+    
+    private static final float XROT = 53.1301024f;
+    private static final float YROT = 45f;
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -35,9 +38,9 @@ public class CameraEventHandler {
             
 //                    Minecraft.getInstance().gameRenderer.getMainCamera().tick();
             cameraInstance.setOldPosAndRot();
-            cameraInstance.setXRot(45);
-            cameraInstance.setYRot(45);
-            cameraInstance.setPosRaw(Minecraft.getInstance().player.getX() + 3, Minecraft.getInstance().player.getY() + 3, Minecraft.getInstance().player.getZ() - 3);
+            cameraInstance.setXRot(XROT);
+            cameraInstance.setYRot(YROT);
+            cameraInstance.setPosRaw(Minecraft.getInstance().player.getX(), Minecraft.getInstance().player.getY(), Minecraft.getInstance().player.getZ());
 
             if (Minecraft.getInstance().getCameraEntity() instanceof Player) {
                 Minecraft.getInstance().setCameraEntity(cameraInstance);

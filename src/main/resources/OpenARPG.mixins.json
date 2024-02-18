@@ -7,7 +7,8 @@
   "mixins": [
   ],
   "client": [
-    "ItemEntityRendererMixin"
+    "ItemEntityRendererMixin",
+    "CameraMixin"
   ],
   "injectors": {
     "defaultRequire": 1
