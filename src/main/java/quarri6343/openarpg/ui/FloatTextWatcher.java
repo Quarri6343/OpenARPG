@@ -2,9 +2,16 @@ package quarri6343.openarpg.ui;
 
 import icyllis.modernui.text.Editable;
 import icyllis.modernui.text.TextWatcher;
-import quarri6343.openarpg.Config;
+import quarri6343.openarpg.FloatConfig;
 
 public class FloatTextWatcher implements TextWatcher {
+    
+    private final FloatConfig config;
+
+    public FloatTextWatcher(FloatConfig config) {
+        this.config = config;
+    }
+
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         
@@ -22,7 +29,7 @@ public class FloatTextWatcher implements TextWatcher {
         }
         
         if(applyFlag){
-            Config.setMovementSpeedModifier(num); //TODO: generify
+            config.setValue(num);
         }
     }
 

@@ -10,7 +10,7 @@ import icyllis.modernui.view.LayoutInflater;
 import icyllis.modernui.view.View;
 import icyllis.modernui.view.ViewGroup;
 import icyllis.modernui.widget.*;
-import quarri6343.openarpg.Config;
+import quarri6343.openarpg.FloatConfig;
 
 import java.util.Objects;
 
@@ -20,6 +20,7 @@ import static icyllis.modernui.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 public class DebugSettingUI extends Fragment implements ScreenCallback {
 
     public static final int ID_TAB_CONTAINER = 0x0002;
+    private static final String title = "デバッグ設定";
     
     @Nullable
     @Override
@@ -33,7 +34,7 @@ public class DebugSettingUI extends Fragment implements ScreenCallback {
 
         //タイトル
         var titleText = new TextView(requireContext());
-        titleText.setText("デバッグ設定");
+        titleText.setText(title);
         titleText.setTextColor(0xFFC5C9ED);
         int titleTextHorizonSize = root.dp(350);
         int titleTextVerticalSize = root.dp(30);
@@ -52,7 +53,7 @@ public class DebugSettingUI extends Fragment implements ScreenCallback {
         var content = new LinearLayout(requireContext());
         content.setOrientation(LinearLayout.VERTICAL);
 
-        {
+        for (FloatConfig config : FloatConfig.values()) {
             //入力欄を入れる行
             var inputFieldColumn = new LinearLayout(requireContext());
             inputFieldColumn.setOrientation(LinearLayout.HORIZONTAL);
@@ -60,7 +61,7 @@ public class DebugSettingUI extends Fragment implements ScreenCallback {
 
             //入力欄の横のテキスト
             var inputFieldText = new TextView(requireContext());
-            String displayName = "プレイヤーの移動速度"; //TODO: generify
+            String displayName = config.getDisplayName();
             inputFieldText.setText(Objects.nonNull(displayName) ? displayName : "");
             int checkBoxTextHorizonSize = content.dp(320);
             int checkBoxTextVerticalSize = content.dp(30);
@@ -68,15 +69,18 @@ public class DebugSettingUI extends Fragment implements ScreenCallback {
             checkTextparams.setMarginsRelative(content.dp(16), content.dp(8), content.dp(16), content.dp(8));
             inputFieldText.setGravity(Gravity.START);
             inputFieldText.setGravity(Gravity.CENTER_VERTICAL);
+            
+            //テキストのツールチップ
+            inputFieldText.setTooltipText(config.getDescription());
 
             inputFieldColumn.addView(inputFieldText, checkTextparams);
 
             //入力欄
             var inputField = new EditText(requireContext());
             //入力欄が入力された時の処理
-            inputField.addTextChangedListener(new FloatTextWatcher()); //TODO: generify
+            inputField.addTextChangedListener(new FloatTextWatcher(config));
             //入力欄の初期テキスト
-            inputField.setText(String.valueOf(Config.getMovementSpeedModifier()), TextView.BufferType.EDITABLE); //TODO: generify
+            inputField.setText(String.valueOf(config.getValue()), TextView.BufferType.EDITABLE);
             //入力欄のその他処理
             int inputFieldHorizonSize = content.dp(100);
             int inputFieldVerticalSize = content.dp(30);

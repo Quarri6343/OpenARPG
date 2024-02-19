@@ -3,7 +3,7 @@ package quarri6343.openarpg.movement.playerai;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import quarri6343.openarpg.Config;
+import quarri6343.openarpg.FloatConfig;
 import quarri6343.openarpg.OpenARPG;
 
 public class PlayerMover {
@@ -37,7 +37,7 @@ public class PlayerMover {
                 double d2 = this.player.getZ() - destination.z;
                 double d3 = d0 * d0 + d1 * d1 + d2 * d2;
                 if (!(d3 <= (double) (this.stopDistance * this.stopDistance))) {
-                    PlayerAIEventHandler.playerPathNavigation.moveTo(destination.x, destination.y, destination.z, Config.getMovementSpeedModifier());
+                    PlayerAIEventHandler.playerPathNavigation.moveTo(destination.x, destination.y, destination.z, FloatConfig.MOVEMENTSPEED.getValue());
                 } else {
                     PlayerAIEventHandler.playerPathNavigation.stop();
                 }

@@ -127,7 +127,7 @@ public class ProjectionUtil {
                     return Shapes.empty();
                 }
                 
-                if(pPos.getY() > Minecraft.getInstance().player.getY() + Config.getMaxMoveHeight()){ //ブロックがプレイヤーに対して高過ぎるとき、無視してスキャンを続ける
+                if(pPos.getY() > Minecraft.getInstance().player.getY() + FloatConfig.MAXMOVEHEIGHT.getValue()){ //ブロックがプレイヤーに対して高過ぎるとき、無視してスキャンを続ける
                     return Shapes.empty();
                 }
 

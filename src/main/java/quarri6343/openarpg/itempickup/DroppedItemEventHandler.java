@@ -10,7 +10,7 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import quarri6343.openarpg.Config;
+import quarri6343.openarpg.FloatConfig;
 import quarri6343.openarpg.Network;
 import quarri6343.openarpg.ProjectionUtil;
 
@@ -52,7 +52,7 @@ public class DroppedItemEventHandler {
             return;
 
         clickableItemInfoList.clear();
-        float scale = Config.getDroppedItemScale();
+        float scale = FloatConfig.DROPPEDITEMSCALE.getValue();
         renderedItemEntityList.forEach(entity -> {
             Vec3 screenPos = ProjectionUtil.worldToScreen(entity.getPosition(event.getPartialTick()));
             String itemName = entity.getItem().getDisplayName().getString();
@@ -79,11 +79,11 @@ public class DroppedItemEventHandler {
                         maxX + 3, maxY + 3, 0xFFFFFFFF);
                 pose.popPose();
 
-                int minXUnscaled = (int) screenPos.x - textWidth / 2;
-                int minYUnscaled = (int) screenPos.y - textHeight / 2;
-                int maxXUnscaled = (int) screenPos.x + textWidth / 2;
-                int maxYUnscaled = (int) screenPos.y + textHeight / 2;
-                clickableItemInfoList.add(new ClickableItemInfo(minXUnscaled, minYUnscaled, maxXUnscaled, maxYUnscaled, entity));
+                int minXUnscaled = (int) (((int) screenPos.x - textWidth * scale / 2));
+                int minYUnscaled = (int) (((int) screenPos.y - textHeight * scale / 2));
+                int maxXUnscaled = (int) ((int) screenPos.x + textWidth * scale / 2);
+                int maxYUnscaled = (int) ((int) screenPos.y + textHeight * scale / 2);
+                clickableItemInfoList.add(new ClickableItemInfo(minXUnscaled - 3, minYUnscaled - 3, maxXUnscaled + 3, maxYUnscaled + 3, entity));
             }
         });
         renderedItemEntityList.clear();
