@@ -1,6 +1,7 @@
 package quarri6343.openarpg.combat;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -37,6 +38,10 @@ public class ClickToAttackEventHandler {
 
         EntityHitResult entityHitResult = ProjectionUtil.rayTraceEntity(hitVec);
         if (entityHitResult != null && entityHitResult.getType() == HitResult.Type.ENTITY) {
+            if(entityHitResult.getEntity().distanceToSqr(Minecraft.getInstance().player) >= Mth.square(Minecraft.getInstance().player.getEntityReach())){ //TODO:武器ごとに射程を変える
+                return;
+            }
+            
             Network.sendToServer(new PlayerAttackPacket(entityHitResult.getEntity()));
             event.setCanceled(true);
         }

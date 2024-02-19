@@ -1,5 +1,6 @@
 package quarri6343.openarpg;
 
+//TODO:CameraMixinのズームとか色々こちらに持ってくる
 public class Config {
     
     private static float movementSpeedModifier = 0.5f;
