@@ -10,7 +10,8 @@
   "client": [
     "ItemEntityRendererMixin",
     "CameraMixin",
-    "ModelBlockRendererMixin"
+    "ModelBlockRendererMixin",
+    "CameraTypeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
