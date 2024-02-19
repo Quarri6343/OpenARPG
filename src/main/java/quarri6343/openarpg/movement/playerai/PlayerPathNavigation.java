@@ -41,7 +41,8 @@ public abstract class PlayerPathNavigation {
     protected long timeoutTimer;
     protected long lastTimeoutCheck;
     protected double timeoutLimit;
-    protected float maxDistanceToWaypoint = 0.5F;
+//    protected float maxDistanceToWaypoint = 0.5F;
+protected float maxDistanceToWaypoint = 1.5F;
     protected boolean hasDelayedRecomputation;
     protected long timeLastRecompute;
     protected PlayerNodeEvaluator nodeEvaluator;
@@ -261,7 +262,7 @@ public abstract class PlayerPathNavigation {
 
     protected void followThePath() {
         Vec3 vec3 = this.getTempMobPos();
-        this.maxDistanceToWaypoint = this.player.getBbWidth() > 0.75F ? this.player.getBbWidth() / 2.0F : 0.75F - this.player.getBbWidth() / 2.0F;
+//        this.maxDistanceToWaypoint = this.player.getBbWidth() > 0.75F ? this.player.getBbWidth() / 2.0F : 0.75F - this.player.getBbWidth() / 2.0F;
         Vec3i vec3i = this.path.getNextNodePos();
         double d0 = Math.abs(this.player.getX() - ((double) vec3i.getX() + (this.player.getBbWidth() + 1) / 2D)); //Forge: Fix MC-94054
         double d1 = Math.abs(this.player.getY() - (double) vec3i.getY());
