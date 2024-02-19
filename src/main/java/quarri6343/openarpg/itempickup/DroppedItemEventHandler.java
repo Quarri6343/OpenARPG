@@ -10,6 +10,7 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import quarri6343.openarpg.Config;
 import quarri6343.openarpg.Network;
 import quarri6343.openarpg.ProjectionUtil;
 
@@ -51,7 +52,7 @@ public class DroppedItemEventHandler {
             return;
 
         clickableItemInfoList.clear();
-        float scale = 0.5f;
+        float scale = Config.getDroppedItemScale();
         renderedItemEntityList.forEach(entity -> {
             Vec3 screenPos = ProjectionUtil.worldToScreen(entity.getPosition(event.getPartialTick()));
             String itemName = entity.getItem().getDisplayName().getString();

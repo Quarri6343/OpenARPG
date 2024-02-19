@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import quarri6343.openarpg.Config;
 
 @Mixin(ModelBlockRenderer.class)
 public class ModelBlockRendererMixin {
@@ -32,11 +33,11 @@ public class ModelBlockRendererMixin {
         Vec3 camPlayerPosVec = Minecraft.getInstance().player.getPosition(0).subtract(cam.getPosition()); //TODO: tick()で再取得しなくて済むように
         
         float angle = camPlayerPosVec.toVector3f().angle(camBlockPosVec.toVector3f());
-        if(Math.abs(angle) > 30f * ((float) Math.PI / 180F)){
+        if(Math.abs(angle) > Config.getObstacleTrimmedAngle() * ((float) Math.PI / 180F)){
             return;
         }
         
-        if(camBlockPosVec.lengthSqr() * 2 > camPlayerPosVec.lengthSqr()){
+        if(camBlockPosVec.lengthSqr() * Config.getObstacleTrimmedDistance() > camPlayerPosVec.lengthSqr()){
             return;
         }
         

@@ -3,14 +3,10 @@ package quarri6343.openarpg.mixin;
 import net.minecraft.client.Camera;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import quarri6343.openarpg.Config;
 
 @Mixin(Camera.class)
 public class CameraMixin {
-
-    /**
-     * 3人称カメラがどれだけプレイヤーから引くか
-     */
-    private static final float ZOOM = 12f;
     
     /**
      * @author Quarri6343
@@ -18,6 +14,6 @@ public class CameraMixin {
      */
     @Overwrite
     private double getMaxZoom(double pStartingDistance) {
-        return ZOOM;
+        return Config.getZoom();
     }
 }
