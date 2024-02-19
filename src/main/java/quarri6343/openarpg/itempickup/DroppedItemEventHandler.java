@@ -32,8 +32,6 @@ public class DroppedItemEventHandler {
      */
     private static List<ClickableItemInfo> clickableItemInfoList = new ArrayList<>();
 
-    private static final float pickUpRange = 3f;
-
     @SubscribeEvent
     public static void onPlayerPickUp(EntityItemPickupEvent event) {
         event.setCanceled(true);
@@ -110,7 +108,7 @@ public class DroppedItemEventHandler {
                 continue;
             }
 
-            if (Minecraft.getInstance().player.position().distanceToSqr(clickableItemInfo.itemEntity().position()) > pickUpRange) {
+            if (Minecraft.getInstance().player.position().distanceToSqr(clickableItemInfo.itemEntity().position()) > FloatConfig.PICKUPRANGE.getValue()) {
                 continue;
             }
 
