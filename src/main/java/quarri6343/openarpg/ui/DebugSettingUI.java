@@ -20,7 +20,7 @@ import static icyllis.modernui.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 public class DebugSettingUI extends Fragment implements ScreenCallback {
 
     public static final int ID_TAB_CONTAINER = 0x0002;
-    private static final String title = "デバッグ設定";
+    private static final String TITLE = "デバッグ設定";
     
     @Nullable
     @Override
@@ -34,7 +34,7 @@ public class DebugSettingUI extends Fragment implements ScreenCallback {
 
         //タイトル
         var titleText = new TextView(requireContext());
-        titleText.setText(title);
+        titleText.setText(TITLE);
         titleText.setTextColor(0xFFC5C9ED);
         int titleTextHorizonSize = root.dp(350);
         int titleTextVerticalSize = root.dp(30);
@@ -63,17 +63,17 @@ public class DebugSettingUI extends Fragment implements ScreenCallback {
             var inputFieldText = new TextView(requireContext());
             String displayName = config.getDisplayName();
             inputFieldText.setText(Objects.nonNull(displayName) ? displayName : "");
-            int checkBoxTextHorizonSize = content.dp(320);
-            int checkBoxTextVerticalSize = content.dp(30);
-            var checkTextparams = new LinearLayout.LayoutParams(checkBoxTextHorizonSize, checkBoxTextVerticalSize);
-            checkTextparams.setMarginsRelative(content.dp(16), content.dp(8), content.dp(16), content.dp(8));
+            int sideTextHorizonSize = content.dp(320);
+            int sideTextVerticalSize = content.dp(30);
+            var inputFieldparams = new LinearLayout.LayoutParams(sideTextHorizonSize, sideTextVerticalSize);
+            inputFieldparams.setMarginsRelative(content.dp(16), content.dp(8), content.dp(16), content.dp(8));
             inputFieldText.setGravity(Gravity.START);
             inputFieldText.setGravity(Gravity.CENTER_VERTICAL);
             
             //テキストのツールチップ
             inputFieldText.setTooltipText(config.getDescription());
 
-            inputFieldColumn.addView(inputFieldText, checkTextparams);
+            inputFieldColumn.addView(inputFieldText, inputFieldparams);
 
             //入力欄
             var inputField = new EditText(requireContext());
@@ -100,6 +100,7 @@ public class DebugSettingUI extends Fragment implements ScreenCallback {
         return root;
     }
 
+    @Override
     public boolean hasDefaultBackground() {
         return false;
     }

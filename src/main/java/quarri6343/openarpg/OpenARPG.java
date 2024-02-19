@@ -31,6 +31,7 @@ import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import quarri6343.openarpg.camera.EntityCamera;
 import quarri6343.openarpg.ui.DebugSettingUI;
+import quarri6343.openarpg.ui.MonsterSummonUI;
 
 import static quarri6343.openarpg.CreativeTabInit.addToTab;
 
@@ -109,12 +110,18 @@ public class OpenARPG {
         }
 
         LiteralArgumentBuilder<CommandSourceStack> builder = Commands.literal("arpg")
-                .executes(context -> {
+                .then(Commands.literal("settings").executes(context -> {
                     Minecraft.getInstance().execute(()->{
                         MuiForgeApi.openScreen(new DebugSettingUI());
                     });
                     return Command.SINGLE_SUCCESS;
-                });
+                }))
+                .then(Commands.literal("summon").executes(context -> {
+                    Minecraft.getInstance().execute(()->{
+                        MuiForgeApi.openScreen(new MonsterSummonUI());
+                    });
+                    return Command.SINGLE_SUCCESS;
+                }));
         // コマンドの登録
         event.getDispatcher().register(builder);
     }

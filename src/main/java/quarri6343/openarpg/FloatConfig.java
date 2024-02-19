@@ -7,7 +7,7 @@ public enum FloatConfig {
     OBSTACLETRIMMEDANGLE(30f, "切り取り角度", "3人称視点で、プレイヤーとカメラの間の壁をどれくらいの角度まで切り落とすか", 0f, 100f),
     OBSTACLETRIMMEDDISTANCE(2f, "切り取り距離", "3人称視点で、プレイヤーとカメラの間の壁をどれくらいの距離まで切り落とすか(逆数、小さくすればするほど長い距離の壁が切り落とされる)", 1f, 10f),
     MAXMOVEHEIGHT(3f, "最大反応高度", "3人称視点でプレイヤーより高い位置がクリックされた時、プレイヤーがどこまで反応するか", 1f, 10f),
-    PICKUPRANGE(3f, "拾得範囲", "プレイヤーがアイテムを拾える範囲", 0f, 100f);
+    PICKUPRANGE(6f, "拾得範囲", "プレイヤーがアイテムを拾える範囲", 0f, 100f);
     
     private float value;
     private final String displayName;

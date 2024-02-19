@@ -43,7 +43,7 @@ public class PlayerAttackPacket {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
-            ServerPlayer sender = context.getSender();
+            ServerPlayer sender = context.getSender(); //TODO: 不正防止
             sender.attack(target);
         });
         return true;

@@ -6,6 +6,7 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
+import quarri6343.openarpg.combat.DebugMonsterSpawnPacket;
 import quarri6343.openarpg.combat.PlayerAttackPacket;
 import quarri6343.openarpg.itempickup.ItemPickUpPacket;
 
@@ -32,6 +33,8 @@ public class Network {
                 ItemPickUpPacket::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         INSTANCE.registerMessage(id(), PlayerAttackPacket.class, PlayerAttackPacket::encode, PlayerAttackPacket::decode,
                 PlayerAttackPacket::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+        INSTANCE.registerMessage(id(), DebugMonsterSpawnPacket.class, DebugMonsterSpawnPacket::encode, DebugMonsterSpawnPacket::decode,
+                DebugMonsterSpawnPacket::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
     }
 
     public static <MSG> void sendToServer(MSG message) {
