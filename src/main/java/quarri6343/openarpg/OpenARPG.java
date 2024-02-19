@@ -1,6 +1,12 @@
 package quarri6343.openarpg;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.logging.LogUtils;
+import icyllis.modernui.mc.forge.MuiForgeApi;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -11,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,6 +30,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import quarri6343.openarpg.camera.EntityCamera;
+import quarri6343.openarpg.ui.DebugSettingUI;
 
 import static quarri6343.openarpg.CreativeTabInit.addToTab;
 
@@ -84,7 +92,7 @@ public class OpenARPG {
         return server;
     }
 
-    public static Entity getEntityById(int entityId) {
+    public static Entity getEntityById(int entityId) { //TODO: こういうのが溜まってきたらutilitiesに移行
         for (ServerLevel world : OpenARPG.getServer().getAllLevels()) {
             Entity entity = world.getEntity(entityId);
             if(entity != null) {
@@ -92,6 +100,23 @@ public class OpenARPG {
             }
         }
         return null;
+    }
+
+    @SubscribeEvent
+    public void onRegisterCommand(RegisterCommandsEvent event) {
+        if(!Dist.CLIENT.isClient()){
+            return;
+        }
+
+        LiteralArgumentBuilder<CommandSourceStack> builder = Commands.literal("arpg")
+                .executes(context -> {
+                    Minecraft.getInstance().execute(()->{
+                        MuiForgeApi.openScreen(new DebugSettingUI());
+                    });
+                    return Command.SINGLE_SUCCESS;
+                });
+        // コマンドの登録
+        event.getDispatcher().register(builder);
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
