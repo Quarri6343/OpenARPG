@@ -1,14 +1,13 @@
 package quarri6343.openarpg.movement.playerai;
 
-import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import quarri6343.openarpg.Config;
 import quarri6343.openarpg.OpenARPG;
 
 public class PlayerMover {
     private final Player player;
-    private final double speedModifier;
     private int timeToRecalcPath;
     private final float stopDistance;
     private float oldWaterCost;
@@ -17,9 +16,8 @@ public class PlayerMover {
     /**
      * Constructs a goal allowing a player to follow others. The player must have Ground or Flying navigation.
      */
-    public PlayerMover(Player player, double pSpeedModifier, float pStopDistance, float pAreaSize) {
+    public PlayerMover(Player player, float pStopDistance, float pAreaSize) {
         this.player = player;
-        this.speedModifier = pSpeedModifier;
         this.stopDistance = pStopDistance;
         this.areaSize = pAreaSize;
 //        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
@@ -39,7 +37,7 @@ public class PlayerMover {
                 double d2 = this.player.getZ() - destination.z;
                 double d3 = d0 * d0 + d1 * d1 + d2 * d2;
                 if (!(d3 <= (double) (this.stopDistance * this.stopDistance))) {
-                    PlayerAIEventHandler.playerPathNavigation.moveTo(destination.x, destination.y, destination.z, this.speedModifier);
+                    PlayerAIEventHandler.playerPathNavigation.moveTo(destination.x, destination.y, destination.z, Config.getMovementSpeedModifier());
                 } else {
                     PlayerAIEventHandler.playerPathNavigation.stop();
                 }

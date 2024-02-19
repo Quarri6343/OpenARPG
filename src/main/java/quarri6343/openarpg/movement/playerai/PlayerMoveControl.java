@@ -1,5 +1,6 @@
 package quarri6343.openarpg.movement.playerai;
 
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
@@ -100,9 +101,9 @@ public class PlayerMoveControl implements Control {
 
             float f9 = (float) (Mth.atan2(d1, d0) * (double) (180F / (float) Math.PI)) - 90.0F;
             this.player.setYRot(this.rotlerp(this.player.getYRot(), f9, 90.0F));
-            this.player.setSpeed((float) (this.speedModifier * this.player.getAttributeValue(Attributes.MOVEMENT_SPEED)));
+            this.player.setSpeed((float) this.speedModifier);
             //追加
-            this.player.zza = (float) (this.speedModifier * this.player.getAttributeValue(Attributes.MOVEMENT_SPEED));
+            this.player.zza = (float) this.speedModifier;
             //
             BlockPos blockpos = this.player.blockPosition();
             BlockState blockstate = this.player.level().getBlockState(blockpos);
@@ -112,9 +113,9 @@ public class PlayerMoveControl implements Control {
                 this.operation = Operation.JUMPING;
             }
         } else if (this.operation == Operation.JUMPING) {
-            this.player.setSpeed((float) (this.speedModifier * this.player.getAttributeValue(Attributes.MOVEMENT_SPEED)));
+            this.player.setSpeed((float) this.speedModifier);
             //追加
-            this.player.zza = (float) (this.speedModifier * this.player.getAttributeValue(Attributes.MOVEMENT_SPEED));
+            this.player.zza = (float) this.speedModifier;
             //
             if (this.player.onGround()) {
                 this.operation = Operation.WAIT;

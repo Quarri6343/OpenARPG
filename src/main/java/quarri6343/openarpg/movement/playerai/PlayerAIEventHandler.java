@@ -25,7 +25,7 @@ public class PlayerAIEventHandler {
         playerPathNavigation = new PlayerGroundPathNavigation(Minecraft.getInstance().player, Minecraft.getInstance().player.level());
         playerJumpControl = new PlayerJumpControl(Minecraft.getInstance().player);
         playerMoveControl = new PlayerMoveControl(Minecraft.getInstance().player);
-        playerMover = new PlayerMover(Minecraft.getInstance().player, 100, 1, 0);
+        playerMover = new PlayerMover(Minecraft.getInstance().player, 1, 0);
     }
 
     @SubscribeEvent

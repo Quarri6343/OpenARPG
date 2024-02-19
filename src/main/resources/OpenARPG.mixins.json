@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_16",
   "refmap": "OpenARPG.refmap.json",
   "mixins": [
+    "PlayerMixin"
   ],
   "client": [
     "ItemEntityRendererMixin",
