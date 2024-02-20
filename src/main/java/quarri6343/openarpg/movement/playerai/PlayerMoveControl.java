@@ -104,6 +104,7 @@ public class PlayerMoveControl implements Control {
             this.player.setSpeed((float) this.speedModifier);
             //追加
             this.player.zza = (float) this.speedModifier;
+            this.player.setXRot(0);
             //
             BlockPos blockpos = this.player.blockPosition();
             BlockState blockstate = this.player.level().getBlockState(blockpos);
@@ -116,6 +117,7 @@ public class PlayerMoveControl implements Control {
             this.player.setSpeed((float) this.speedModifier);
             //追加
             this.player.zza = (float) this.speedModifier;
+            this.player.setXRot(0);
             //
             if (this.player.onGround()) {
                 this.operation = Operation.WAIT;
