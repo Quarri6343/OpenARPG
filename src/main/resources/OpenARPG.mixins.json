@@ -12,7 +12,8 @@
     "CameraMixin",
     "ModelBlockRendererMixin",
     "CameraTypeMixin",
-    "LocalPlayerMixin"
+    "LocalPlayerMixin",
+    "MutliPlayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

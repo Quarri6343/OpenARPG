@@ -2,30 +2,18 @@ package quarri6343.openarpg.camera;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import quarri6343.openarpg.OpenARPG;
-import quarri6343.openarpg.ProjectionUtil;
 
-import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
 import static quarri6343.openarpg.OpenARPG.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
@@ -35,11 +23,13 @@ public class CameraEventHandler {
     private static final float XROT = 53.1301024f;
     private static final float YROT = 45f;
     
+    private static final int RERENDER_TICK = 20;
+    
     private static float renderTickCount;
 
     @SubscribeEvent
     public static void onCameraRotate(ViewportEvent.ComputeCameraAngles event) {
-        if(renderTickCount ++ % 60 == 0){
+        if(renderTickCount ++ % RERENDER_TICK == 0){
             if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
                 return;
             }
