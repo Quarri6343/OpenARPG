@@ -11,7 +11,8 @@
     "ItemEntityRendererMixin",
     "CameraMixin",
     "ModelBlockRendererMixin",
-    "CameraTypeMixin"
+    "CameraTypeMixin",
+    "LocalPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
