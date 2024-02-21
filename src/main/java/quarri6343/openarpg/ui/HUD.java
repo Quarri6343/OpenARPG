@@ -35,6 +35,7 @@ import static quarri6343.openarpg.OpenARPG.MODID;
 public class HUD extends Fragment implements ScreenCallback {
     
     private static ProgressBar healthBar;
+    private static ProgressBar hungerBar;
     
     @Nullable
     @Override
@@ -50,32 +51,9 @@ public class HUD extends Fragment implements ScreenCallback {
             healthBar = new ProgressBar(requireContext());
             healthBar.setMin(0);
             healthBar.setMax(20);
-            
-            {
-                //ヘルスバーの赤い部分のレンダラの定義
-                final Drawable track;
-                {
-                    var shape = new ShapeDrawable();
-                    shape.setShape(ShapeDrawable.RECTANGLE);
-                    shape.setSize(-1, root.dp(10));
-                    shape.setColor(0xFFFF0000);
-                    track = new ScaleDrawable(shape, Gravity.LEFT, 1, -1);
-                }
-                //ヘルスバーの裏の黒い部分の定義
-                final Drawable secondaryTrack;
-                {
-                    var shape = new ShapeDrawable();
-                    shape.setShape(ShapeDrawable.RECTANGLE);
-                    shape.setSize(-1, root.dp(10));
-                    shape.setColor(SystemTheme.COLOR_FOREGROUND_DISABLED);
-                    secondaryTrack = shape;
-                }
-                //ヘルスバーにレンダラをセット
-                var progress = new LayerDrawable(secondaryTrack, track);
-                progress.setId(0, R.id.secondaryProgress);
-                progress.setId(1, R.id.progress);
-                healthBar.setProgressDrawable(progress);
-            }
+
+            var progress = initResourceHUD(root, 0xFFFF0000);
+            healthBar.setProgressDrawable(progress);
 
             //ヘルスバーの現在値を定義
             int health = (int) Minecraft.getInstance().player.getHealth();
@@ -87,7 +65,53 @@ public class HUD extends Fragment implements ScreenCallback {
             root.addView(healthBar, new AbsoluteLayout.LayoutParams(healthBarHorizonSize, healthBarVerticalSize, 
                     Minecraft.getInstance().getWindow().getWidth() / 2 - root.dp(120), Minecraft.getInstance().getWindow().getHeight() - root.dp(50)));
         }
+        {
+            //空腹度バー宣言
+            hungerBar = new ProgressBar(requireContext());
+            hungerBar.setMin(0);
+            hungerBar.setMax(20);
+
+            var progress = initResourceHUD(root, 0xFFB88458);
+            hungerBar.setProgressDrawable(progress);
+
+            //空腹度バーの現在値を定義
+            int hunger = Minecraft.getInstance().player.getFoodData().getFoodLevel();
+            hungerBar.setProgress(hunger, true);
+
+            //空腹度バーを絶対座標系に配置
+            int hungerBarHorizonSize = root.dp(100);
+            int hungerBarVerticalSize = root.dp(30);
+            root.addView(hungerBar, new AbsoluteLayout.LayoutParams(hungerBarHorizonSize, hungerBarVerticalSize,
+                    Minecraft.getInstance().getWindow().getWidth() / 2 + root.dp(20), Minecraft.getInstance().getWindow().getHeight() - root.dp(50)));
+        }
         return root;
+    }
+    
+    public LayerDrawable initResourceHUD(View root, int color){
+        //バーのフロント部分のレンダラの定義
+        final Drawable track;
+        {
+            var shape = new ShapeDrawable();
+            shape.setShape(ShapeDrawable.RECTANGLE);
+            shape.setSize(-1, root.dp(10));
+            shape.setColor(color);
+            track = new ScaleDrawable(shape, Gravity.LEFT, 1, -1);
+        }
+        //バーの裏の黒い部分の定義
+        final Drawable secondaryTrack;
+        {
+            var shape = new ShapeDrawable();
+            shape.setShape(ShapeDrawable.RECTANGLE);
+            shape.setSize(-1, root.dp(10));
+            shape.setColor(SystemTheme.COLOR_FOREGROUND_DISABLED);
+            secondaryTrack = shape;
+        }
+        //バーにレンダラをセット
+        var progress = new LayerDrawable(secondaryTrack, track);
+        progress.setId(0, R.id.secondaryProgress);
+        progress.setId(1, R.id.progress);
+        
+        return progress;
     }
 
     @Override
@@ -99,9 +123,16 @@ public class HUD extends Fragment implements ScreenCallback {
     public static void onRenderTick(@Nonnull TickEvent.RenderTickEvent event) {
         //UIスレッドでGUIを更新しないとクラッシュする
         Core.executeOnUiThread(() -> {
-            if(healthBar == null || Minecraft.getInstance().player == null)
+            if(Minecraft.getInstance().player == null)
                 return;
-            healthBar.setProgress((int)Minecraft.getInstance().player.getHealth(), true);
+            
+            if(healthBar != null){
+                healthBar.setProgress((int)Minecraft.getInstance().player.getHealth(), true);
+            }
+
+            if(hungerBar != null){
+                hungerBar.setProgress(Minecraft.getInstance().player.getFoodData().getFoodLevel(), true);
+            }
         });
     }
     
