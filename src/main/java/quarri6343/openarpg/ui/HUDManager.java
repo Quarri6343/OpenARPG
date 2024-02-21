@@ -5,9 +5,13 @@ import icyllis.modernui.mc.MuiScreen;
 import icyllis.modernui.mc.UIManager;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.OptionsScreen;
+import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -37,6 +41,25 @@ public class HUDManager {
     @SubscribeEvent
     public static void onLogout(ClientPlayerNetworkEvent.LoggingOut event){
         removeHUD();
+    }
+    
+    @SubscribeEvent
+    public static void onOpenScreen(ScreenEvent.Opening event){
+        if(hud == null)
+            return;
+        
+        if(event.getNewScreen() instanceof PauseScreen || event.getNewScreen() instanceof ChatScreen){
+            removeHUD();
+        }
+    }
+    
+    public static void onCloseScreen(Screen newScreen){
+        if(hud != null || Minecraft.getInstance().options.getCameraType() != CameraType.THIRD_PERSON_BACK)
+            return;
+
+        if(newScreen == null){
+            initHUD();
+        }
     }
     
     public static void initHUD(){

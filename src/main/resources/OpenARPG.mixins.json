@@ -15,7 +15,8 @@
     "LocalPlayerMixin",
     "MutliPlayerGameModeMixin",
     "GameRendererMixin",
-    "UIManagerMixin"
+    "UIManagerMixin",
+    "MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1
