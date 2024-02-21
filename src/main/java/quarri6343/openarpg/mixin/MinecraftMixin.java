@@ -8,13 +8,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quarri6343.openarpg.ui.HUDManager;
 
-import javax.annotation.Nullable;
-
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
 
     //ForgeのScreenEvent.ClosingにnewScreenのパラメータがない
-    @Inject(method = "setScreen",  at = @At(value = "TAIL"))
+    @Inject(method = "setScreen", at = @At(value = "TAIL"))
     public void setScreen(Screen pGuiScreen, CallbackInfo ci) {
         HUDManager.onCloseScreen(pGuiScreen); //TODO: Post Event
     }

@@ -8,7 +8,7 @@ public enum FloatConfig {
     OBSTACLETRIMMEDDISTANCE(2f, "切り取り距離", "3人称視点で、プレイヤーとカメラの間の壁をどれくらいの距離まで切り落とすか(逆数、小さくすればするほど長い距離の壁が切り落とされる)", 1f, 10f),
     MAXMOVEHEIGHT(3f, "最大反応高度", "3人称視点でプレイヤーより高い位置がクリックされた時、プレイヤーがどこまで反応するか", 1f, 10f),
     PICKUPRANGE(6f, "拾得範囲", "プレイヤーがアイテムを拾える範囲", 0f, 100f);
-    
+
     private float value;
     private final String displayName;
     private final String description;
@@ -22,31 +22,31 @@ public enum FloatConfig {
         this.minValue = minValue;
         this.maxValue = maxValue;
     }
-    
-    public float getValue(){
+
+    public float getValue() {
         return value;
     }
-    
-    public void setValue(float value){
-        if(value < minValue || value > maxValue)
+
+    public void setValue(float value) {
+        if (value < minValue || value > maxValue)
             return;
-        
+
         this.value = value;
     }
-    
-    public String getDisplayName(){
+
+    public String getDisplayName() {
         return displayName;
     }
-    
-    public String getDescription(){
+
+    public String getDescription() {
         return description;
     }
-    
-    public float getMinValue(){
+
+    public float getMinValue() {
         return minValue;
     }
-    
-    public float getMaxValue(){
+
+    public float getMaxValue() {
         return maxValue;
     }
 }

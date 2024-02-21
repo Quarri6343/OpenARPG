@@ -7,7 +7,7 @@ import quarri6343.openarpg.FloatConfig;
 
 @Mixin(Camera.class)
 public class CameraMixin {
-    
+
     /**
      * @author Quarri6343
      * @reason 独自にカメラを制御するため

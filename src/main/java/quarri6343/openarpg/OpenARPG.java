@@ -3,12 +3,8 @@ package quarri6343.openarpg;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.logging.LogUtils;
-import icyllis.modernui.fragment.Fragment;
-import icyllis.modernui.mc.MuiScreen;
-import icyllis.modernui.mc.UIManager;
 import icyllis.modernui.mc.forge.MuiForgeApi;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
@@ -19,7 +15,6 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -37,11 +32,6 @@ import quarri6343.openarpg.camera.EntityCamera;
 import quarri6343.openarpg.ui.DebugSettingUI;
 import quarri6343.openarpg.ui.HUDManager;
 import quarri6343.openarpg.ui.MonsterSummonUI;
-import quarri6343.openarpg.ui.HUD;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 
 import static quarri6343.openarpg.CreativeTabInit.addToTab;
 
@@ -106,7 +96,7 @@ public class OpenARPG {
     public static Entity getEntityById(int entityId) { //TODO: こういうのが溜まってきたらutilitiesに移行
         for (ServerLevel world : OpenARPG.getServer().getAllLevels()) {
             Entity entity = world.getEntity(entityId);
-            if(entity != null) {
+            if (entity != null) {
                 return entity;
             }
         }
@@ -115,29 +105,28 @@ public class OpenARPG {
 
     @SubscribeEvent
     public void onRegisterCommand(RegisterCommandsEvent event) {
-        if(!Dist.CLIENT.isClient()){
+        if (!Dist.CLIENT.isClient()) {
             return;
         }
 
         LiteralArgumentBuilder<CommandSourceStack> builder = Commands.literal("arpg")
                 .then(Commands.literal("settings").executes(context -> {
-                    Minecraft.getInstance().execute(()->{
+                    Minecraft.getInstance().execute(() -> {
                         MuiForgeApi.openScreen(new DebugSettingUI());
                     });
                     return Command.SINGLE_SUCCESS;
                 }))
                 .then(Commands.literal("summon").executes(context -> {
-                    Minecraft.getInstance().execute(()->{
+                    Minecraft.getInstance().execute(() -> {
                         MuiForgeApi.openScreen(new MonsterSummonUI());
                     });
                     return Command.SINGLE_SUCCESS;
                 }))
                 .then(Commands.literal("hud").executes(context -> {
-                    Minecraft.getInstance().execute(()->{
-                        if(HUDManager.getHud() == null){
+                    Minecraft.getInstance().execute(() -> {
+                        if (HUDManager.getHud() == null) {
                             HUDManager.initHUD();
-                        }
-                        else{
+                        } else {
                             HUDManager.removeHUD();
                         }
                     });

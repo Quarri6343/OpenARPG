@@ -24,7 +24,7 @@ public class ClickToAttackEventHandler {
         if (Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null) {
             return;
         }
-        
+
         if (event.getButton() != GLFW_MOUSE_BUTTON_1) {
             return;
         }
@@ -38,10 +38,10 @@ public class ClickToAttackEventHandler {
 
         EntityHitResult entityHitResult = ProjectionUtil.rayTraceEntity(hitVec);
         if (entityHitResult != null && entityHitResult.getType() == HitResult.Type.ENTITY) {
-            if(entityHitResult.getEntity().distanceToSqr(Minecraft.getInstance().player) >= Mth.square(Minecraft.getInstance().player.getEntityReach())){ //TODO:武器ごとに射程を変える
+            if (entityHitResult.getEntity().distanceToSqr(Minecraft.getInstance().player) >= Mth.square(Minecraft.getInstance().player.getEntityReach())) { //TODO:武器ごとに射程を変える
                 return;
             }
-            
+
             Network.sendToServer(new PlayerAttackPacket(entityHitResult.getEntity()));
             event.setCanceled(true);
         }

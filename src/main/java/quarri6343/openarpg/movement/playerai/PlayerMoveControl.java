@@ -1,6 +1,5 @@
 package quarri6343.openarpg.movement.playerai;
 
-import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;

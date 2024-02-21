@@ -26,8 +26,8 @@ abstract class PlayerMixin extends LivingEntity {
      */
     @Overwrite
     public float getSpeed() {
-        if(Minecraft.getInstance().options.getCameraType().isFirstPerson()){
-            return (float)this.getAttributeValue(Attributes.MOVEMENT_SPEED);
+        if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+            return (float) this.getAttributeValue(Attributes.MOVEMENT_SPEED);
         }
         return super.getSpeed();
     }

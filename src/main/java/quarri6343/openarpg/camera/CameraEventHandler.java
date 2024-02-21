@@ -19,22 +19,22 @@ import static quarri6343.openarpg.OpenARPG.MODID;
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class CameraEventHandler {
     private static EntityCamera cameraInstance;
-    
+
     private static final float XROT = 53.1301024f;
     private static final float YROT = 45f;
-    
+
     private static final int RERENDER_TICK = 20;
-    
+
     private static float renderTickCount;
 
     @SubscribeEvent
     public static void onCameraRotate(ViewportEvent.ComputeCameraAngles event) {
-        if(renderTickCount ++ % RERENDER_TICK == 0){
+        if (renderTickCount++ % RERENDER_TICK == 0) {
             if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
                 return;
             }
 
-            if(Minecraft.getInstance().player == null || Minecraft.getInstance().level == null){
+            if (Minecraft.getInstance().player == null || Minecraft.getInstance().level == null) {
                 return;
             }
 
@@ -49,23 +49,23 @@ public class CameraEventHandler {
             Minecraft.getInstance().levelRenderer.setBlocksDirty(minX, minY, minZ, maxX, maxY, maxZ);
         }
     }
-    
+
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
             Minecraft.getInstance().setCameraEntity(Minecraft.getInstance().player);
         } else {
             Level level = Minecraft.getInstance().level;
-            if(level == null){ //after logout
+            if (level == null) { //after logout
                 return;
             }
-            
-            
-            if(cameraInstance == null || !level.equals(cameraInstance.level())){
+
+
+            if (cameraInstance == null || !level.equals(cameraInstance.level())) {
                 cameraInstance = OpenARPG.CAMERA.get().create(level);
                 cameraInstance.setPosRaw(Minecraft.getInstance().player.getX(), Minecraft.getInstance().player.getY(), Minecraft.getInstance().player.getZ());
             }
-            
+
 //                    Minecraft.getInstance().gameRenderer.getMainCamera().tick();
             cameraInstance.setOldPosAndRot();
             cameraInstance.setXRot(XROT);

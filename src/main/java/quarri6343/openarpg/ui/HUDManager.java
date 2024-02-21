@@ -6,7 +6,6 @@ import icyllis.modernui.mc.UIManager;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
-import net.minecraft.client.gui.screens.OptionsScreen;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,42 +26,42 @@ public class HUDManager {
     private static Screen hud;
 
 
-    public static Screen getHud(){
+    public static Screen getHud() {
         return hud;
     }
-    
+
     @SubscribeEvent
-    public static void onLogin(ClientPlayerNetworkEvent.LoggingIn event){
-        if(Minecraft.getInstance().options.getCameraType() == CameraType.THIRD_PERSON_BACK){
+    public static void onLogin(ClientPlayerNetworkEvent.LoggingIn event) {
+        if (Minecraft.getInstance().options.getCameraType() == CameraType.THIRD_PERSON_BACK) {
             initHUD();
         }
     }
 
     @SubscribeEvent
-    public static void onLogout(ClientPlayerNetworkEvent.LoggingOut event){
+    public static void onLogout(ClientPlayerNetworkEvent.LoggingOut event) {
         removeHUD();
     }
-    
+
     @SubscribeEvent
-    public static void onOpenScreen(ScreenEvent.Opening event){
-        if(hud == null)
+    public static void onOpenScreen(ScreenEvent.Opening event) {
+        if (hud == null)
             return;
-        
-        if(event.getNewScreen() instanceof PauseScreen || event.getNewScreen() instanceof ChatScreen){
+
+        if (event.getNewScreen() instanceof PauseScreen || event.getNewScreen() instanceof ChatScreen) {
             removeHUD();
         }
     }
     
-    public static void onCloseScreen(Screen newScreen){
-        if(hud != null || Minecraft.getInstance().options.getCameraType() != CameraType.THIRD_PERSON_BACK)
+    public static void onCloseScreen(Screen newScreen) {
+        if (hud != null || Minecraft.getInstance().options.getCameraType() != CameraType.THIRD_PERSON_BACK)
             return;
 
-        if(newScreen == null){
+        if (newScreen == null) {
             initHUD();
         }
     }
-    
-    public static void initHUD(){
+
+    public static void initHUD() {
         try {
             Field uiManagerField = UIManager.class.getDeclaredField("sInstance");
             uiManagerField.setAccessible(true);
@@ -78,9 +77,9 @@ public class HUDManager {
         }
         hud.init(Minecraft.getInstance(), Minecraft.getInstance().getWindow().getGuiScaledWidth(), Minecraft.getInstance().getWindow().getGuiScaledHeight());
     }
-    
-    public static void removeHUD(){
-        if(hud == null){
+
+    public static void removeHUD() {
+        if (hud == null) {
             return;
         }
 

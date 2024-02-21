@@ -31,7 +31,7 @@ public class SimpleBackground extends Drawable {
 
         Paint paint = Paint.obtain();
         paint.setRGBA(0, 0, 0, 180);
-        canvas.drawRect(b.left + start , b.top + start, b.right - start, b.bottom - start, paint);
+        canvas.drawRect(b.left + start, b.top + start, b.right - start, b.bottom - start, paint);
         paint.recycle();
     }
 }

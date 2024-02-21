@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.*;
 import quarri6343.openarpg.ui.HUD;
 
 import javax.annotation.Nonnull;
-
 import java.lang.reflect.Field;
 
 import static icyllis.modernui.ModernUI.LOGGER;
@@ -59,7 +58,7 @@ public class UIManagerMixin {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        
+
         if (mScreen != screen) {
             if (mScreen != null) {
                 LOGGER.warn(MARKER, "You cannot set multiple screens.");
@@ -72,14 +71,14 @@ public class UIManagerMixin {
                     .commit();
             mRoot.mHandler.post(this::restoreLayoutTransition);
         }
-        if(!(screen.getFragment() instanceof HUD)){
+        if (!(screen.getFragment() instanceof HUD)) {
             mScreen = screen;
         }
         // ensure it's resized
         resize();
     }
 
-    
+
     /**
      * @author Quarri6343
      * @reason prevent HUD being removed when the current screen removal by
@@ -94,7 +93,7 @@ public class UIManagerMixin {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        
+
         MuiScreen screen = mScreen;
         if (screen == null) {
             return;
@@ -115,8 +114,10 @@ public class UIManagerMixin {
     }
 
     @Shadow
-    void suppressLayoutTransition() {}
+    void suppressLayoutTransition() {
+    }
 
     @Shadow
-    void restoreLayoutTransition() {}
+    void restoreLayoutTransition() {
+    }
 }

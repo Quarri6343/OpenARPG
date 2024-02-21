@@ -33,15 +33,15 @@ import static quarri6343.openarpg.OpenARPG.MODID;
  */
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class HUD extends Fragment implements ScreenCallback {
-    
+
     private static ProgressBar healthBar;
     private static ProgressBar hungerBar;
-    
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @icyllis.modernui.annotation.Nullable ViewGroup container,
                              @icyllis.modernui.annotation.Nullable DataSet savedInstanceState) {
-        
+
         //絶対値でviewの座標を決める親viewの作成
         var root = new AbsoluteLayout(requireContext());
         root.setLayoutParams(new AbsoluteLayout.LayoutParams(Minecraft.getInstance().getWindow().getWidth(), Minecraft.getInstance().getWindow().getHeight(), 0, 0));
@@ -62,7 +62,7 @@ public class HUD extends Fragment implements ScreenCallback {
             //ヘルスバーを絶対座標系に配置
             int healthBarHorizonSize = root.dp(100);
             int healthBarVerticalSize = root.dp(30);
-            root.addView(healthBar, new AbsoluteLayout.LayoutParams(healthBarHorizonSize, healthBarVerticalSize, 
+            root.addView(healthBar, new AbsoluteLayout.LayoutParams(healthBarHorizonSize, healthBarVerticalSize,
                     Minecraft.getInstance().getWindow().getWidth() / 2 - root.dp(120), Minecraft.getInstance().getWindow().getHeight() - root.dp(50)));
         }
         {
@@ -86,8 +86,8 @@ public class HUD extends Fragment implements ScreenCallback {
         }
         return root;
     }
-    
-    public LayerDrawable initResourceHUD(View root, int color){
+
+    public LayerDrawable initResourceHUD(View root, int color) {
         //バーのフロント部分のレンダラの定義
         final Drawable track;
         {
@@ -110,7 +110,7 @@ public class HUD extends Fragment implements ScreenCallback {
         var progress = new LayerDrawable(secondaryTrack, track);
         progress.setId(0, R.id.secondaryProgress);
         progress.setId(1, R.id.progress);
-        
+
         return progress;
     }
 
@@ -123,19 +123,19 @@ public class HUD extends Fragment implements ScreenCallback {
     public static void onRenderTick(@Nonnull TickEvent.RenderTickEvent event) {
         //UIスレッドでGUIを更新しないとクラッシュする
         Core.executeOnUiThread(() -> {
-            if(Minecraft.getInstance().player == null)
+            if (Minecraft.getInstance().player == null)
                 return;
-            
-            if(healthBar != null){
-                healthBar.setProgress((int)Minecraft.getInstance().player.getHealth(), true);
+
+            if (healthBar != null) {
+                healthBar.setProgress((int) Minecraft.getInstance().player.getHealth(), true);
             }
 
-            if(hungerBar != null){
+            if (hungerBar != null) {
                 hungerBar.setProgress(Minecraft.getInstance().player.getFoodData().getFoodLevel(), true);
             }
         });
     }
-    
+
     @Override
     public boolean shouldClose() {
         return false;

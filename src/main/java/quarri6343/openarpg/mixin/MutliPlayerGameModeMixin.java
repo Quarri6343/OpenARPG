@@ -13,7 +13,7 @@ public class MutliPlayerGameModeMixin {
 
     @Shadow
     private GameType localPlayerMode;
-    
+
     /**
      * @author Quarri6343
      * @reason 3人称カメラで経験値バーが表示されないようにする(リソパで消してもいいがドローコールが残るので無駄)

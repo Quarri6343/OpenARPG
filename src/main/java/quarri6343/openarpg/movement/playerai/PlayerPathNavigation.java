@@ -41,8 +41,8 @@ public abstract class PlayerPathNavigation {
     protected long timeoutTimer;
     protected long lastTimeoutCheck;
     protected double timeoutLimit;
-//    protected float maxDistanceToWaypoint = 0.5F;
-protected float maxDistanceToWaypoint = 1.5F;
+    //    protected float maxDistanceToWaypoint = 0.5F;
+    protected float maxDistanceToWaypoint = 1.5F;
     protected boolean hasDelayedRecomputation;
     protected long timeLastRecompute;
     protected PlayerNodeEvaluator nodeEvaluator;

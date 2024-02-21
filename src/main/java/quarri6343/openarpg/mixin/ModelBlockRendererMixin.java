@@ -31,16 +31,16 @@ public class ModelBlockRendererMixin {
         Camera cam = Minecraft.getInstance().getBlockEntityRenderDispatcher().camera;
         Vec3 camBlockPosVec = pPos.getCenter().subtract(cam.getPosition());
         Vec3 camPlayerPosVec = Minecraft.getInstance().player.getPosition(0).subtract(cam.getPosition()); //TODO: tick()で再取得しなくて済むように
-        
+
         float angle = camPlayerPosVec.toVector3f().angle(camBlockPosVec.toVector3f());
-        if(Math.abs(angle) > FloatConfig.OBSTACLETRIMMEDANGLE.getValue() * ((float) Math.PI / 180F)){
+        if (Math.abs(angle) > FloatConfig.OBSTACLETRIMMEDANGLE.getValue() * ((float) Math.PI / 180F)) {
             return;
         }
-        
-        if(camBlockPosVec.lengthSqr() * FloatConfig.OBSTACLETRIMMEDDISTANCE.getValue() > camPlayerPosVec.lengthSqr()){
+
+        if (camBlockPosVec.lengthSqr() * FloatConfig.OBSTACLETRIMMEDDISTANCE.getValue() > camPlayerPosVec.lengthSqr()) {
             return;
         }
-        
+
         ci.cancel();
     }
 }

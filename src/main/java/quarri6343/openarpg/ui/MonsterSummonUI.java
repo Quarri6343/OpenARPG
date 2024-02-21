@@ -12,11 +12,7 @@ import icyllis.modernui.view.ViewGroup;
 import icyllis.modernui.widget.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.joml.Vector3f;
 import quarri6343.openarpg.Network;
 import quarri6343.openarpg.combat.DebugMonsterSpawnPacket;
@@ -86,7 +82,7 @@ public class MonsterSummonUI extends Fragment implements ScreenCallback {
             button.setOnClickListener(v -> {
                 Level world = Minecraft.getInstance().level;
                 BlockPos playerPos = Minecraft.getInstance().player.blockPosition();
-                
+
                 BlockPos spawnPos = findSafeSpawnPos(world, playerPos);
 
                 Network.sendToServer(new DebugMonsterSpawnPacket("minecraft:zombie", new Vector3f(spawnPos.getX() + 0.5f, spawnPos.getY(), spawnPos.getZ() + 0.5f)));
@@ -108,7 +104,7 @@ public class MonsterSummonUI extends Fragment implements ScreenCallback {
         scroll.setLayoutParams(new FrameLayout.LayoutParams(WRAP_CONTENT, root.dp(320), Gravity.CENTER));
         scroll.addView(content);
         root.addView(scroll);
-        
+
         return root;
     }
 
@@ -119,10 +115,10 @@ public class MonsterSummonUI extends Fragment implements ScreenCallback {
 
     private static BlockPos findSafeSpawnPos(Level world, BlockPos center) {
         Random random = new Random();
-        
+
         for (int i = 0; i < 10; i++) {
             int offsetX = random.nextInt(11) - 5;
-            int offsetZ = random.nextInt(11) - 5; 
+            int offsetZ = random.nextInt(11) - 5;
             BlockPos spawnPos = center.offset(offsetX, 0, offsetZ);
 
             // 安全な場所かどうかをチェック
@@ -130,7 +126,7 @@ public class MonsterSummonUI extends Fragment implements ScreenCallback {
                 return spawnPos;
             }
         }
-        
+
         return center;
     }
 

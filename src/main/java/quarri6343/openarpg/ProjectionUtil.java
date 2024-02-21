@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.BlockGetter;
@@ -26,18 +25,18 @@ import org.joml.Vector4f;
 public class ProjectionUtil {
 
     private static final float REACH_DISTANCE = 30f;
-    
-    public static EntityHitResult rayTraceEntity(Vec3 hitVec){
-        
+
+    public static EntityHitResult rayTraceEntity(Vec3 hitVec) {
+
         Vec3 position = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
         Vec3 max = position.add(hitVec.x * REACH_DISTANCE, hitVec.y * REACH_DISTANCE, hitVec.z * REACH_DISTANCE);
         AABB searchBox =
                 Minecraft.getInstance().player.getBoundingBox().inflate(10.0D, 10.0D, 10.0D);
-        
+
         return ProjectileUtil.getEntityHitResult(Minecraft.getInstance().player, position, max, searchBox,
                 v -> true, REACH_DISTANCE * REACH_DISTANCE);
     }
-    
+
     public static BlockHitResult rayTrace(Vec3 hitVec) {
         Camera camera = Minecraft.getInstance().getEntityRenderDispatcher().camera;
         Vec3 startPos = new Vec3(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
@@ -105,7 +104,7 @@ public class ProjectionUtil {
         private final ProjectionUtil.ClipContextEX.Block block2;
 
         private final CollisionContext collisionContext2;
-        
+
         public ClipContextEX(Vec3 pFrom, Vec3 pTo, ProjectionUtil.ClipContextEX.Block pBlock, Fluid pFluid, @Nullable Entity pEntity) {
             super(pFrom, pTo, null, pFluid, pEntity);
             this.block2 = pBlock;
@@ -119,15 +118,15 @@ public class ProjectionUtil {
 
         public static enum Block implements ClipContext.ShapeGetter {
             NOTWALLORHIGHPLACE((pState, pBlock, pPos, pCollisionContext) -> {
-                if(Minecraft.getInstance().level == null || Minecraft.getInstance().player == null){
+                if (Minecraft.getInstance().level == null || Minecraft.getInstance().player == null) {
                     return Shapes.empty();
                 }
 
-                if(!Minecraft.getInstance().level.getBlockState(pPos.above()).getShape(Minecraft.getInstance().level, pPos).isEmpty()){ //上のブロックに実体がある時、それは壁なので無視してスキャンを続ける
+                if (!Minecraft.getInstance().level.getBlockState(pPos.above()).getShape(Minecraft.getInstance().level, pPos).isEmpty()) { //上のブロックに実体がある時、それは壁なので無視してスキャンを続ける
                     return Shapes.empty();
                 }
-                
-                if(pPos.getY() > Minecraft.getInstance().player.getY() + FloatConfig.MAXMOVEHEIGHT.getValue()){ //ブロックがプレイヤーに対して高過ぎるとき、無視してスキャンを続ける
+
+                if (pPos.getY() > Minecraft.getInstance().player.getY() + FloatConfig.MAXMOVEHEIGHT.getValue()) { //ブロックがプレイヤーに対して高過ぎるとき、無視してスキャンを続ける
                     return Shapes.empty();
                 }
 

@@ -20,7 +20,7 @@ public class PlayerJumpControl implements Control {
      */
     public void tick() {
 //        this.mob.setJumping(this.jump);
-        if(this.jump){
+        if (this.jump) {
             this.mob.jumpFromGround();
             this.mob.setOnGround(false);
         }

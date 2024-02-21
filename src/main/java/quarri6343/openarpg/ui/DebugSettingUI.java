@@ -1,23 +1,15 @@
 package quarri6343.openarpg.ui;
 
-import icyllis.modernui.R;
 import icyllis.modernui.annotation.NonNull;
 import icyllis.modernui.annotation.Nullable;
 import icyllis.modernui.fragment.Fragment;
-import icyllis.modernui.graphics.drawable.Drawable;
-import icyllis.modernui.graphics.drawable.LayerDrawable;
-import icyllis.modernui.graphics.drawable.ScaleDrawable;
-import icyllis.modernui.graphics.drawable.ShapeDrawable;
 import icyllis.modernui.mc.ScreenCallback;
-import icyllis.modernui.resources.SystemTheme;
 import icyllis.modernui.util.DataSet;
 import icyllis.modernui.view.Gravity;
 import icyllis.modernui.view.LayoutInflater;
 import icyllis.modernui.view.View;
 import icyllis.modernui.view.ViewGroup;
 import icyllis.modernui.widget.*;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Player;
 import quarri6343.openarpg.FloatConfig;
 
 import java.util.Objects;
@@ -29,12 +21,12 @@ public class DebugSettingUI extends Fragment implements ScreenCallback {
 
     public static final int ID_TAB_CONTAINER = 0x0002;
     private static final String TITLE = "デバッグ設定";
-    
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @icyllis.modernui.annotation.Nullable ViewGroup container,
                              @icyllis.modernui.annotation.Nullable DataSet savedInstanceState) {
-        
+
         //ルート
         var root = new LinearLayout(requireContext());
         root.setOrientation(LinearLayout.VERTICAL);
@@ -77,7 +69,7 @@ public class DebugSettingUI extends Fragment implements ScreenCallback {
             inputFieldparams.setMarginsRelative(content.dp(16), content.dp(8), content.dp(16), content.dp(8));
             inputFieldText.setGravity(Gravity.START);
             inputFieldText.setGravity(Gravity.CENTER_VERTICAL);
-            
+
             //テキストのツールチップ
             inputFieldText.setTooltipText(config.getDescription());
 
@@ -99,7 +91,7 @@ public class DebugSettingUI extends Fragment implements ScreenCallback {
             inputFieldColumn.addView(inputField, inputFieldParams);
             content.addView(inputFieldColumn, new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         }
-        
+
         //contentの最終設定
         scroll.setLayoutParams(new FrameLayout.LayoutParams(WRAP_CONTENT, root.dp(320), Gravity.CENTER));
         scroll.addView(content);
