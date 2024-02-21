@@ -3,6 +3,7 @@ package quarri6343.openarpg.ui;
 import icyllis.modernui.R;
 import icyllis.modernui.annotation.NonNull;
 import icyllis.modernui.annotation.Nullable;
+import icyllis.modernui.core.Core;
 import icyllis.modernui.fragment.Fragment;
 import icyllis.modernui.graphics.drawable.Drawable;
 import icyllis.modernui.graphics.drawable.LayerDrawable;
@@ -19,7 +20,16 @@ import icyllis.modernui.widget.AbsoluteLayout;
 import icyllis.modernui.widget.ProgressBar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
+import javax.annotation.Nonnull;
+
+import static quarri6343.openarpg.OpenARPG.MODID;
+
+@Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class TestHUD extends Fragment implements ScreenCallback {
     
     private static ProgressBar healthBar;
@@ -66,8 +76,7 @@ public class TestHUD extends Fragment implements ScreenCallback {
             }
 
             //ヘルスバーの現在値を定義
-            Player player = Minecraft.getInstance().player;
-            int health = (int) player.getHealth();
+            int health = (int) Minecraft.getInstance().player.getHealth();
             healthBar.setProgress(health, true);
 
             //ヘルスバーを絶対座標系に配置
@@ -80,6 +89,21 @@ public class TestHUD extends Fragment implements ScreenCallback {
 
     @Override
     public boolean hasDefaultBackground() {
+        return false;
+    }
+
+    @SubscribeEvent
+    public static void onRenderTick(@Nonnull TickEvent.RenderTickEvent event) {
+        //UIスレッドでGUIを更新しないとクラッシュする
+        Core.executeOnUiThread(() -> {
+            if(healthBar == null || Minecraft.getInstance().player == null)
+                return;
+            healthBar.setProgress((int)Minecraft.getInstance().player.getHealth(), true);
+        });
+    }
+    
+    @Override
+    public boolean shouldClose() {
         return false;
     }
 }
