@@ -35,8 +35,9 @@ import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import quarri6343.openarpg.camera.EntityCamera;
 import quarri6343.openarpg.ui.DebugSettingUI;
+import quarri6343.openarpg.ui.HUDManager;
 import quarri6343.openarpg.ui.MonsterSummonUI;
-import quarri6343.openarpg.ui.TestHUD;
+import quarri6343.openarpg.ui.HUD;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -65,8 +66,6 @@ public class OpenARPG {
 
     //プレイヤーの移動対象地点
     private static Vec3 destination;
-    
-    private static Screen hud;
 
     public OpenARPG() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -135,69 +134,17 @@ public class OpenARPG {
                 }))
                 .then(Commands.literal("hud").executes(context -> {
                     Minecraft.getInstance().execute(()->{
-                        if(hud == null){
-                            initHUD();
+                        if(HUDManager.getHud() == null){
+                            HUDManager.initHUD();
                         }
                         else{
-                            removeHUD();
+                            HUDManager.removeHUD();
                         }
                     });
                     return Command.SINGLE_SUCCESS;
                 }));
         // コマンドの登録
         event.getDispatcher().register(builder);
-    }
-    
-    public static Screen getHud(){
-        return hud;
-    }
-    
-    //ログアウト時にHUDだけを削除
-    @SubscribeEvent
-    public void onLogout(ClientPlayerNetworkEvent.LoggingOut event){
-        removeHUD();
-    }
-    
-    //TODO:クラス移行
-    public void initHUD(){
-        try {
-            Field uiManagerField = UIManager.class.getDeclaredField("sInstance");
-            uiManagerField.setAccessible(true);
-            UIManager uiManager = (UIManager) uiManagerField.get(null);
-
-            Class<?> c = Class.forName("icyllis.modernui.mc.forge.SimpleScreen");
-            Constructor<?> constructor = c.getDeclaredConstructor(UIManager.class, Fragment.class);
-            constructor.setAccessible(true);
-            hud = (Screen) constructor.newInstance(uiManager, new TestHUD());
-        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException |
-                 IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
-        hud.init(Minecraft.getInstance(), Minecraft.getInstance().getWindow().getGuiScaledWidth(), Minecraft.getInstance().getWindow().getGuiScaledHeight());
-    }
-    
-    //TODO:クラス移行
-    public void removeHUD(){
-        if(hud == null){
-            return;
-        }
-
-        try {
-            Field uiManagerField = UIManager.class.getDeclaredField("sInstance");
-            uiManagerField.setAccessible(true);
-            UIManager uiManager = (UIManager) uiManagerField.get(null);
-
-            Field mScreenField = UIManager.class.getDeclaredField("mScreen");
-            mScreenField.setAccessible(true);
-            MuiScreen currentScreen = (MuiScreen) mScreenField.get(uiManager);
-            mScreenField.set(uiManager, hud);
-            uiManager.removed();
-            mScreenField.set(uiManager, currentScreen);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
-
-        hud = null;
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent

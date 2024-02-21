@@ -1,20 +1,16 @@
 package quarri6343.openarpg.mixin;
 
 import com.mojang.blaze3d.platform.Window;
-import icyllis.modernui.annotation.MainThread;
 import icyllis.modernui.fragment.FragmentContainerView;
 import icyllis.modernui.fragment.FragmentController;
 import icyllis.modernui.fragment.FragmentTransaction;
 import icyllis.modernui.mc.MuiScreen;
 import icyllis.modernui.mc.UIManager;
 import icyllis.modernui.view.ViewRoot;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderBuffers;
 import org.apache.logging.log4j.Marker;
 import org.lwjgl.system.MemoryUtil;
 import org.spongepowered.asm.mixin.*;
-import quarri6343.openarpg.ui.TestHUD;
+import quarri6343.openarpg.ui.HUD;
 
 import javax.annotation.Nonnull;
 
@@ -76,7 +72,7 @@ public class UIManagerMixin {
                     .commit();
             mRoot.mHandler.post(this::restoreLayoutTransition);
         }
-        if(!(screen.getFragment() instanceof TestHUD)){
+        if(!(screen.getFragment() instanceof HUD)){
             mScreen = screen;
         }
         // ensure it's resized

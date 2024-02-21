@@ -19,7 +19,6 @@ import icyllis.modernui.view.ViewGroup;
 import icyllis.modernui.widget.AbsoluteLayout;
 import icyllis.modernui.widget.ProgressBar;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,8 +28,11 @@ import javax.annotation.Nonnull;
 
 import static quarri6343.openarpg.OpenARPG.MODID;
 
+/**
+ * 3人称時のHUD
+ */
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
-public class TestHUD extends Fragment implements ScreenCallback {
+public class HUD extends Fragment implements ScreenCallback {
     
     private static ProgressBar healthBar;
     
@@ -82,7 +84,8 @@ public class TestHUD extends Fragment implements ScreenCallback {
             //ヘルスバーを絶対座標系に配置
             int healthBarHorizonSize = root.dp(100);
             int healthBarVerticalSize = root.dp(30);
-            root.addView(healthBar, new AbsoluteLayout.LayoutParams(healthBarHorizonSize, healthBarVerticalSize, root.dp(40), Minecraft.getInstance().getWindow().getHeight() - root.dp(50)));
+            root.addView(healthBar, new AbsoluteLayout.LayoutParams(healthBarHorizonSize, healthBarVerticalSize, 
+                    Minecraft.getInstance().getWindow().getWidth() / 2 - root.dp(120), Minecraft.getInstance().getWindow().getHeight() - root.dp(50)));
         }
         return root;
     }
