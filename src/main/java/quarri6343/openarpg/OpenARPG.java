@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import quarri6343.openarpg.camera.EntityCamera;
 import quarri6343.openarpg.ui.DebugSettingUI;
 import quarri6343.openarpg.ui.MonsterSummonUI;
+import quarri6343.openarpg.ui.TestHUD;
 
 import static quarri6343.openarpg.CreativeTabInit.addToTab;
 
@@ -119,6 +120,12 @@ public class OpenARPG {
                 .then(Commands.literal("summon").executes(context -> {
                     Minecraft.getInstance().execute(()->{
                         MuiForgeApi.openScreen(new MonsterSummonUI());
+                    });
+                    return Command.SINGLE_SUCCESS;
+                }))
+                .then(Commands.literal("hud").executes(context -> {
+                    Minecraft.getInstance().execute(()->{
+                        MuiForgeApi.openScreen(new TestHUD());
                     });
                     return Command.SINGLE_SUCCESS;
                 }));

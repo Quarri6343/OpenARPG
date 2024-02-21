@@ -1,5 +1,9 @@
 package quarri6343.openarpg.camera;
 
+import icyllis.modernui.graphics.Canvas;
+import icyllis.modernui.graphics.GLSurfaceCanvas;
+import icyllis.modernui.mc.UIManager;
+import icyllis.modernui.mc.forge.UIManagerForge;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
@@ -13,6 +17,9 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import quarri6343.openarpg.OpenARPG;
+import quarri6343.openarpg.ui.TestHUD;
+
+import java.lang.reflect.Field;
 
 import static quarri6343.openarpg.OpenARPG.MODID;
 
@@ -88,11 +95,11 @@ public class CameraEventHandler {
 
     @SubscribeEvent
     public static void onRenderOverlay(RenderGuiOverlayEvent event) {
-        //debug
         if (Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null) {
             return;
         }
 
+        //debug
         double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
         double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
         double d0 = xPos * (double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / (double) Minecraft.getInstance().getWindow().getScreenWidth();
