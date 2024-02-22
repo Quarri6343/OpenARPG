@@ -3,6 +3,7 @@ package quarri6343.openarpg;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.logging.LogUtils;
+import icyllis.modernui.mc.forge.MenuScreenFactory;
 import icyllis.modernui.mc.forge.MuiForgeApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -160,7 +161,7 @@ public class OpenARPG {
         public static void onClientSetup(FMLClientSetupEvent event) {
             HUDManager.INSTANCE.init();
             event.enqueueWork(()->{
-                MenuScreens.register(EXAMPLE_SIDED_INVENTORY_MENU.get(), ExampleSidedInventoryScreen::new);
+                MenuScreens.register(EXAMPLE_SIDED_INVENTORY_MENU.get(), MenuScreenFactory.create(menu -> new ExampleSidedInventoryFragment(menu)));
             });
         }
     }

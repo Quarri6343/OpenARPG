@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 import quarri6343.openarpg.OpenARPG;
 
+@Deprecated
 public class ExampleSidedInventoryScreen extends AbstractContainerScreen<ExampleSidedInventoryMenu> {
     private static final ResourceLocation TEXTURE =
             new ResourceLocation(OpenARPG.MODID, "textures/gui/example_sided_inventory.png");
