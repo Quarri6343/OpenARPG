@@ -8,7 +8,9 @@ import quarri6343.openarpg.OpenARPG;
 
 import java.util.function.Supplier;
 
-//テスト用の攻撃パケット
+/**
+ * テスト用の攻撃パケット
+ */
 public class PlayerAttackPacket {
     private Entity target;
     private boolean isValid = false;

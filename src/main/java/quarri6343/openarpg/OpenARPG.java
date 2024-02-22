@@ -142,7 +142,7 @@ public class OpenARPG {
 
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-
+            HUDManager.INSTANCE.init();
         }
     }
 }

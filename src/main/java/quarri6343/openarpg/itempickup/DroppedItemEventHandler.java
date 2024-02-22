@@ -58,7 +58,7 @@ public class DroppedItemEventHandler {
             int textHeight = Minecraft.getInstance().font.lineHeight;
             PoseStack pose = event.getGuiGraphics().pose();
 
-            {
+            { //draw item text
                 pose.pushPose();
                 pose.scale(scale, scale, 1);
                 int x = (int) (((int) screenPos.x - textWidth * scale / 2) / scale);
@@ -66,7 +66,7 @@ public class DroppedItemEventHandler {
                 event.getGuiGraphics().drawString(Minecraft.getInstance().font, itemName, x, y, 0xFF000000);
                 pose.popPose();
             }
-            {
+            { //draw item frame
                 pose.pushPose();
                 pose.scale(scale, scale, 1);
                 int minX = (int) (((int) screenPos.x - textWidth * scale / 2) / scale);
@@ -76,7 +76,8 @@ public class DroppedItemEventHandler {
                 event.getGuiGraphics().fill(minX - 3, minY - 3,
                         maxX + 3, maxY + 3, 0xFFFFFFFF);
                 pose.popPose();
-
+            }
+            { //store info for handle click
                 int minXUnscaled = (int) (((int) screenPos.x - textWidth * scale / 2));
                 int minYUnscaled = (int) (((int) screenPos.y - textHeight * scale / 2));
                 int maxXUnscaled = (int) ((int) screenPos.x + textWidth * scale / 2);
@@ -97,6 +98,12 @@ public class DroppedItemEventHandler {
             return;
         }
 
+        if(tryClickItem()){
+            event.setCanceled(true); //移動しない
+        }
+    }
+    
+    private static boolean tryClickItem(){
         double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
         double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
         double d0 = xPos * (double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / (double) Minecraft.getInstance().getWindow().getScreenWidth();
@@ -113,10 +120,11 @@ public class DroppedItemEventHandler {
             }
 
             Network.sendToServer(new ItemPickUpPacket(clickableItemInfo.itemEntity()));
-
-            event.setCanceled(true); //移動しない
+            
             Minecraft.getInstance().mouseHandler.releaseMouse();
-            return;
+            return true;
         }
+        
+        return false;
     }
 }

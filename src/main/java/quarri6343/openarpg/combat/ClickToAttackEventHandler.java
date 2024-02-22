@@ -29,6 +29,16 @@ public class ClickToAttackEventHandler {
             return;
         }
 
+        if(tryAttack()){
+            event.setCanceled(true);
+        }
+    }
+
+    /**
+     * クリックされた場所に攻撃を試みる
+     * @return 攻撃成功かどうか
+     */
+    public static boolean tryAttack(){
         double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
         double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
 
@@ -39,11 +49,13 @@ public class ClickToAttackEventHandler {
         EntityHitResult entityHitResult = ProjectionUtil.rayTraceEntity(hitVec);
         if (entityHitResult != null && entityHitResult.getType() == HitResult.Type.ENTITY) {
             if (entityHitResult.getEntity().distanceToSqr(Minecraft.getInstance().player) >= Mth.square(Minecraft.getInstance().player.getEntityReach())) { //TODO:武器ごとに射程を変える
-                return;
+                return false;
             }
 
             Network.sendToServer(new PlayerAttackPacket(entityHitResult.getEntity()));
-            event.setCanceled(true);
+            return true;
         }
+        
+        return false;
     }
 }

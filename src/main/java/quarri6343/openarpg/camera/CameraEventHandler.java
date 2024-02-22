@@ -26,9 +26,16 @@ public class CameraEventHandler {
     private static final int RERENDER_TICK = 20;
 
     private static float renderTickCount;
-
+    
     @SubscribeEvent
     public static void onCameraRotate(ViewportEvent.ComputeCameraAngles event) {
+        sendTerrainRerenderEvent();
+    }
+
+    /**
+     * 地形をクリップするためにプレイヤー周辺の地形を再描画するイベントを送信
+     */
+    private static void sendTerrainRerenderEvent(){
         if (renderTickCount++ % RERENDER_TICK == 0) {
             if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
                 return;
@@ -55,26 +62,33 @@ public class CameraEventHandler {
         if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
             Minecraft.getInstance().setCameraEntity(Minecraft.getInstance().player);
         } else {
-            Level level = Minecraft.getInstance().level;
-            if (level == null) { //after logout
-                return;
-            }
+            setUpTopDownCamera();
+        }
+    }
+
+    /**
+     * 見下ろしカメラのセットアップ
+     */
+    private static void setUpTopDownCamera(){
+        Level level = Minecraft.getInstance().level;
+        if (level == null) { //after logout
+            return;
+        }
 
 
-            if (cameraInstance == null || !level.equals(cameraInstance.level())) {
-                cameraInstance = OpenARPG.CAMERA.get().create(level);
-                cameraInstance.setPosRaw(Minecraft.getInstance().player.getX(), Minecraft.getInstance().player.getY(), Minecraft.getInstance().player.getZ());
-            }
+        if (cameraInstance == null || !level.equals(cameraInstance.level())) {
+            cameraInstance = OpenARPG.CAMERA.get().create(level);
+            cameraInstance.setPosRaw(Minecraft.getInstance().player.getX(), Minecraft.getInstance().player.getY(), Minecraft.getInstance().player.getZ());
+        }
 
 //                    Minecraft.getInstance().gameRenderer.getMainCamera().tick();
-            cameraInstance.setOldPosAndRot();
-            cameraInstance.setXRot(XROT);
-            cameraInstance.setYRot(YROT);
-            cameraInstance.setPosRaw(Minecraft.getInstance().player.getX(), Minecraft.getInstance().player.getY(), Minecraft.getInstance().player.getZ());
+        cameraInstance.setOldPosAndRot();
+        cameraInstance.setXRot(XROT);
+        cameraInstance.setYRot(YROT);
+        cameraInstance.setPosRaw(Minecraft.getInstance().player.getX(), Minecraft.getInstance().player.getY(), Minecraft.getInstance().player.getZ());
 
-            if (Minecraft.getInstance().getCameraEntity() instanceof Player) {
-                Minecraft.getInstance().setCameraEntity(cameraInstance);
-            }
+        if (Minecraft.getInstance().getCameraEntity() instanceof Player) {
+            Minecraft.getInstance().setCameraEntity(cameraInstance);
         }
     }
 
@@ -84,19 +98,5 @@ public class CameraEventHandler {
             cameraInstance.remove(Entity.RemovalReason.DISCARDED);
             cameraInstance = null;
         }
-    }
-
-    @SubscribeEvent
-    public static void onRenderOverlay(RenderGuiOverlayEvent event) {
-        if (Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null) {
-            return;
-        }
-
-        //debug
-        double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
-        double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
-        double d0 = xPos * (double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / (double) Minecraft.getInstance().getWindow().getScreenWidth();
-        double d1 = yPos * (double) Minecraft.getInstance().getWindow().getGuiScaledHeight() / (double) Minecraft.getInstance().getWindow().getScreenHeight();
-        event.getGuiGraphics().fill((int) d0 - 5, (int) d1 - 5, (int) d0 + 5, (int) d1 + 5, 0xFFFFFFFF);
     }
 }

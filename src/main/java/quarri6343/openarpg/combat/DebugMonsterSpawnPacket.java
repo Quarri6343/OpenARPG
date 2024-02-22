@@ -16,6 +16,9 @@ import org.joml.Vector3f;
 
 import java.util.function.Supplier;
 
+/**
+ * 任意のモンスターを沸かせるパケット
+ */
 public class DebugMonsterSpawnPacket {
     private String target;
     private Vector3f spawnPos;

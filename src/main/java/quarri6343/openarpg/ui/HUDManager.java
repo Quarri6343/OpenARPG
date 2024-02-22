@@ -1,6 +1,7 @@
 package quarri6343.openarpg.ui;
 
 import icyllis.modernui.fragment.Fragment;
+import icyllis.modernui.mc.MuiModApi;
 import icyllis.modernui.mc.MuiScreen;
 import icyllis.modernui.mc.UIManager;
 import net.minecraft.client.CameraType;
@@ -13,6 +14,7 @@ import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -21,13 +23,23 @@ import java.lang.reflect.InvocationTargetException;
 import static quarri6343.openarpg.OpenARPG.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
-public class HUDManager {
+public class HUDManager implements MuiModApi.OnScreenChangeListener {
 
     private static Screen hud;
-
+    
+    //スクリーンリスナー用のインスタンス
+    public static final HUDManager INSTANCE = new HUDManager();
+    private boolean isInit;
 
     public static Screen getHud() {
         return hud;
+    }
+    
+    public void init(){
+        if(!isInit){
+            MuiModApi.addOnScreenChangeListener(this);
+            isInit = true;
+        }
     }
 
     @SubscribeEvent
@@ -40,25 +52,6 @@ public class HUDManager {
     @SubscribeEvent
     public static void onLogout(ClientPlayerNetworkEvent.LoggingOut event) {
         removeHUD();
-    }
-
-    @SubscribeEvent
-    public static void onOpenScreen(ScreenEvent.Opening event) {
-        if (hud == null)
-            return;
-
-        if (event.getNewScreen() instanceof PauseScreen || event.getNewScreen() instanceof ChatScreen) {
-            removeHUD();
-        }
-    }
-    
-    public static void onCloseScreen(Screen newScreen) {
-        if (hud != null || Minecraft.getInstance().options.getCameraType() != CameraType.THIRD_PERSON_BACK)
-            return;
-
-        if (newScreen == null) {
-            initHUD();
-        }
     }
 
     public static void initHUD() {
@@ -99,5 +92,19 @@ public class HUDManager {
         }
 
         hud = null;
+    }
+
+    @Override
+    public void onScreenChange(@Nullable Screen oldScreen, @Nullable Screen newScreen) {
+        if (hud == null && Minecraft.getInstance().options.getCameraType() == CameraType.THIRD_PERSON_BACK){
+            if (newScreen == null) {
+                initHUD();
+            }
+        }
+        else if (hud != null){
+            if (newScreen instanceof PauseScreen || newScreen instanceof ChatScreen) {
+                removeHUD();
+            }
+        }
     }
 }

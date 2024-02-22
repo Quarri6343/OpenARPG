@@ -13,7 +13,6 @@
     "GameRendererMixin",
     "ItemEntityRendererMixin",
     "LocalPlayerMixin",
-    "MinecraftMixin",
     "ModelBlockRendererMixin",
     "MutliPlayerGameModeMixin",
     "UIManagerMixin"
