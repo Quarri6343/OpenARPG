@@ -34,7 +34,9 @@ public class DroppedItemEventHandler {
 
     @SubscribeEvent
     public static void onPlayerPickUp(EntityItemPickupEvent event) {
-        event.setCanceled(true);
+        if(!Minecraft.getInstance().options.getCameraType().isFirstPerson()){
+            event.setCanceled(true);
+        }
     }
 
     public static void onRenderItemEntity(ItemEntity entity) {
