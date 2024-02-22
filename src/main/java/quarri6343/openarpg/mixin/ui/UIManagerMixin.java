@@ -1,4 +1,4 @@
-package quarri6343.openarpg.mixin;
+package quarri6343.openarpg.mixin.ui;
 
 import com.mojang.blaze3d.platform.Window;
 import icyllis.modernui.fragment.FragmentContainerView;

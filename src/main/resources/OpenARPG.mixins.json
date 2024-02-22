@@ -8,14 +8,14 @@
     "PlayerMixin"
   ],
   "client": [
-    "CameraMixin",
-    "CameraTypeMixin",
-    "GameRendererMixin",
-    "ItemEntityRendererMixin",
-    "LocalPlayerMixin",
-    "ModelBlockRendererMixin",
-    "MutliPlayerGameModeMixin",
-    "UIManagerMixin"
+    "camera.CameraMixin",
+    "camera.CameraTypeMixin",
+    "camera.ModelBlockRendererMixin",
+    "ui.ItemEntityRendererMixin",
+    "ui.MutliPlayerGameModeMixin",
+    "ui.GameRendererMixin",
+    "ui.UIManagerMixin",
+    "LocalPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

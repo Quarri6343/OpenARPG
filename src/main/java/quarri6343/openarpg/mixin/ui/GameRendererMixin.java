@@ -1,4 +1,4 @@
-package quarri6343.openarpg.mixin;
+package quarri6343.openarpg.mixin.ui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

@@ -1,4 +1,4 @@
-package quarri6343.openarpg.mixin;
+package quarri6343.openarpg.mixin.camera;
 
 import net.minecraft.client.Camera;
 import org.spongepowered.asm.mixin.Mixin;

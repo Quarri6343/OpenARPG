@@ -1,4 +1,4 @@
-package quarri6343.openarpg.mixin;
+package quarri6343.openarpg.mixin.camera;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
