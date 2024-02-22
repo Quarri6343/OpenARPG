@@ -6,6 +6,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import quarri6343.openarpg.OpenARPG;
 
@@ -13,13 +16,17 @@ public class ExampleSidedInventoryMenu extends AbstractContainerMenu {
 
     // Client Constructor
     public ExampleSidedInventoryMenu(int containerId, Inventory playerInv, FriendlyByteBuf additionalData) {
-        this(containerId, playerInv);
+        this(containerId, playerInv, new ItemStackHandler(3));
     }
 
     // Server Constructor
-    public ExampleSidedInventoryMenu(int containerId, Inventory playerInv) {
+    public ExampleSidedInventoryMenu(int containerId, Inventory playerInv, IItemHandler dataInventory) {
         super(OpenARPG.EXAMPLE_SIDED_INVENTORY_MENU.get(), containerId);
 
+        addSlot(new SlotItemHandler(dataInventory, 0, 44, 36));
+        addSlot(new SlotItemHandler(dataInventory, 1, 80, 36));
+        addSlot(new SlotItemHandler(dataInventory, 2, 116, 36));
+        
         createPlayerHotbar(playerInv);
         createPlayerInventory(playerInv);
 //        createBlockEntityInventory(be);

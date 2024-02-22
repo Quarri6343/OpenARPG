@@ -16,6 +16,7 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
@@ -29,6 +30,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -63,6 +65,8 @@ public class OpenARPG {
 
     public static final RegistryObject<MenuType<ExampleSidedInventoryMenu>> EXAMPLE_SIDED_INVENTORY_MENU = MENU_TYPES.register("example_sided_inventory_menu",
             () -> IForgeMenuType.create(ExampleSidedInventoryMenu::new));
+    
+    public static final ItemStackHandler testServerStorage = new ItemStackHandler(3);
 
     public OpenARPG() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -105,11 +109,12 @@ public class OpenARPG {
 
     @SubscribeEvent
     public void onRegisterCommand(RegisterCommandsEvent event) {
+        //server command
         LiteralArgumentBuilder<CommandSourceStack> serverBuilder = Commands.literal("arpgserver")
                 .then(Commands.literal("testcontainer").executes(context -> {
                     if(context.getSource().getEntity() instanceof ServerPlayer serverPlayer){
                         NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider(
-                                (containerId, playerInventory, player) -> new ExampleSidedInventoryMenu(containerId, playerInventory),
+                                (containerId, playerInventory, player) -> new ExampleSidedInventoryMenu(containerId, playerInventory, testServerStorage),
                                 Component.translatable("menu.title.test")));
                     }
                     return Command.SINGLE_SUCCESS;
