@@ -4,7 +4,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import quarri6343.openarpg.FloatConfig;
-import quarri6343.openarpg.OpenARPG;
 
 public class PlayerMover {
     private final Player player;
@@ -27,7 +26,7 @@ public class PlayerMover {
      * Keep ticking a continuous task that has already been started
      */
     public void tick() {
-        Vec3 destination = OpenARPG.getDestination();
+        Vec3 destination = PlayerAIManager.getDestination();
         if (destination != null) {
 //            this.player.lookAt(EntityAnchorArgument.Anchor.EYES, destination);
             if (--this.timeToRecalcPath <= 0) {
@@ -37,9 +36,9 @@ public class PlayerMover {
                 double d2 = this.player.getZ() - destination.z;
                 double d3 = d0 * d0 + d1 * d1 + d2 * d2;
                 if (!(d3 <= (double) (this.stopDistance * this.stopDistance))) {
-                    PlayerAIEventHandler.playerPathNavigation.moveTo(destination.x, destination.y, destination.z, FloatConfig.MOVEMENTSPEED.getValue());
+                    PlayerAIManager.playerPathNavigation.moveTo(destination.x, destination.y, destination.z, FloatConfig.MOVEMENTSPEED.getValue());
                 } else {
-                    PlayerAIEventHandler.playerPathNavigation.stop();
+                    PlayerAIManager.playerPathNavigation.stop();
                 }
             }
         }

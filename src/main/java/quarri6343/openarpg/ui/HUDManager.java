@@ -54,6 +54,9 @@ public class HUDManager implements MuiModApi.OnScreenChangeListener {
         removeHUD();
     }
 
+    /**
+     * HUDを表示
+     */
     public static void initHUD() {
         try {
             Field uiManagerField = UIManager.class.getDeclaredField("sInstance");
@@ -71,6 +74,9 @@ public class HUDManager implements MuiModApi.OnScreenChangeListener {
         hud.init(Minecraft.getInstance(), Minecraft.getInstance().getWindow().getGuiScaledWidth(), Minecraft.getInstance().getWindow().getGuiScaledHeight());
     }
 
+    /**
+     * HUDを消す
+     */
     public static void removeHUD() {
         if (hud == null) {
             return;

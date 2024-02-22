@@ -10,8 +10,8 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import quarri6343.openarpg.OpenARPG;
 import quarri6343.openarpg.ProjectionUtil;
+import quarri6343.openarpg.movement.playerai.PlayerAIManager;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
 import static quarri6343.openarpg.OpenARPG.MODID;
@@ -30,6 +30,11 @@ public class ClickToMoveEventHandler {
         if (event.getButton() != GLFW_MOUSE_BUTTON_1) {
             return;
         }
+        
+        tryMove();
+    }
+    
+    private static void tryMove(){
 
         double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
         double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
@@ -38,13 +43,12 @@ public class ClickToMoveEventHandler {
 
         Vec3 hitVec = ProjectionUtil.mouseToWorldRay((int) xPos, (int) yPos, Minecraft.getInstance().getWindow().getScreenWidth(), Minecraft.getInstance().getWindow().getScreenHeight());
 
-        BlockHitResult result = ProjectionUtil.rayTrace(hitVec);
+        BlockHitResult result = ProjectionUtil.rayTraceBlock(hitVec);
         if (result.getType() == HitResult.Type.MISS) {
             return;
         }
 
         Minecraft.getInstance().level.addParticle(ParticleTypes.EXPLOSION, result.getLocation().x, result.getLocation().y, result.getLocation().z, 0d, 0d, 0d);
-        OpenARPG.setDestination(result.getLocation());
-//            Minecraft.getInstance().player.setPos(result.getLocation().x, result.getLocation().y, result.getLocation().z);
+        PlayerAIManager.setDestination(result.getLocation());
     }
 }

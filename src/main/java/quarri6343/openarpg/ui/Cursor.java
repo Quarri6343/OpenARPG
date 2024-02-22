@@ -18,7 +18,7 @@ public class Cursor {
             return;
         }
         
-        draw(event.getGuiGraphics());
+        drawDebugCursor(event.getGuiGraphics());
     }
 
     /**
@@ -26,7 +26,7 @@ public class Cursor {
      * 
      * @param guiGraphics 現在のguiGraphics
      */
-    public static void draw(GuiGraphics guiGraphics){
+    public static void drawDebugCursor(GuiGraphics guiGraphics){
         double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
         double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
         double d0 = xPos * (double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / (double) Minecraft.getInstance().getWindow().getScreenWidth();

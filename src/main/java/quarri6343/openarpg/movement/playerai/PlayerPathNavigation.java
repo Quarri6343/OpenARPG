@@ -250,7 +250,7 @@ public abstract class PlayerPathNavigation {
 //            DebugPackets.sendPathFindingPacket(this.level, this.player, this.path, this.maxDistanceToWaypoint);
             if (!this.isDone()) {
                 Vec3 vec32 = this.path.getNextEntityPos(this.player);
-                PlayerAIEventHandler.playerMoveControl.setWantedPosition(vec32.x, this.getGroundY(vec32), vec32.z, this.speedModifier);
+                PlayerAIManager.playerMoveControl.setWantedPosition(vec32.x, this.getGroundY(vec32), vec32.z, this.speedModifier);
             }
         }
     }

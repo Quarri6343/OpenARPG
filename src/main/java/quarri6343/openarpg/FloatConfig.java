@@ -1,5 +1,8 @@
 package quarri6343.openarpg;
 
+/**
+ * 可変値を入れておくクラス TODO:save&load
+ */
 public enum FloatConfig {
     MOVEMENTSPEED(0.5f, "移動速度", "プレイヤーの移動速度", 0.1f, 3f),
     ZOOM(12f, "カメラのズーム", "3人称カメラがどれだけプレイヤーから引くか", 1f, 100f),

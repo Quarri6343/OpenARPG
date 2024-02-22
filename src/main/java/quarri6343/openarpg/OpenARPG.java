@@ -54,9 +54,6 @@ public class OpenARPG {
 
     public static final RegistryObject<EntityType<EntityCamera>> CAMERA = ENTITY_TYPES.register("camera", () -> EntityType.Builder.of(EntityCamera::new, MobCategory.MISC).build(MODID + ":camera"));
 
-    //プレイヤーの移動対象地点
-    private static Vec3 destination;
-
     public OpenARPG() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -69,14 +66,6 @@ public class OpenARPG {
         ITEMS.register(modEventBus);
         ENTITY_TYPES.register(modEventBus);
         CreativeTabInit.TABS.register(modEventBus);
-    }
-
-    public static void setDestination(Vec3 location) {
-        destination = location;
-    }
-
-    public static Vec3 getDestination() {
-        return destination;
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {

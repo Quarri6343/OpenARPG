@@ -26,6 +26,11 @@ public class ProjectionUtil {
 
     private static final float REACH_DISTANCE = 30f;
 
+    /**
+     * カメラから方向ベクトルを飛ばした先にエンティティがいないか調べる
+     * @param hitVec 方向ベクトル
+     * @return 結果
+     */
     public static EntityHitResult rayTraceEntity(Vec3 hitVec) {
 
         Vec3 position = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
@@ -37,14 +42,28 @@ public class ProjectionUtil {
                 v -> true, REACH_DISTANCE * REACH_DISTANCE);
     }
 
-    public static BlockHitResult rayTrace(Vec3 hitVec) {
+    /**
+     * カメラから方向ベクトルを飛ばした先にブロックがいないか調べる
+     * @param hitVec 方向ベクトル
+     * @return 結果
+     */
+    public static BlockHitResult rayTraceBlock(Vec3 hitVec) {
         Camera camera = Minecraft.getInstance().getEntityRenderDispatcher().camera;
         Vec3 startPos = new Vec3(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
         hitVec = hitVec.multiply(100, 100, 100); // Double view range to ensure pos can be seen.
         return Minecraft.getInstance().level.clip(new ClipContextEX(startPos, startPos.add(hitVec), ClipContextEX.Block.NOTWALLORHIGHPLACE, ClipContext.Fluid.ANY, null));
     }
-
-    //https://github.com/Muirrum/MatterOverdrive
+    
+    /**
+     * マウス座標をカメラの位置に基づいたワールド座標に変換する
+     * https://github.com/Muirrum/MatterOverdrive need to fix if this violates GPL
+     * 
+     * @param mouseX マウスx
+     * @param mouseY マウスy
+     * @param width スクリーンの幅
+     * @param height スクリーンの高さ
+     * @return ワールド座標
+     */
     public static Vec3 mouseToWorldRay(int mouseX, int mouseY, int width, int height) {
         double aspectRatio = ((double) width / (double) height);
         double fov = ((Minecraft.getInstance().options.fov().get() / 2d)) * (Math.PI / 180);
@@ -77,6 +96,11 @@ public class ProjectionUtil {
                 .normalize();
     }
 
+    /**
+     * ワールド座標をマウス座標に変換する
+     * @param pos ワールド座標
+     * @return マウス座標
+     */
     public static Vec3 worldToScreen(Vec3 pos) {
         Minecraft mc = Minecraft.getInstance();
         Camera cam = mc.gameRenderer.getMainCamera();
@@ -116,17 +140,21 @@ public class ProjectionUtil {
             return this.block2.get(pBlockState, pLevel, pPos, this.collisionContext2);
         }
 
-        public static enum Block implements ClipContext.ShapeGetter {
+        public enum Block implements ClipContext.ShapeGetter {
+            /**
+             * 上のブロックに実体がある時、それは壁なので無視してスキャンを続ける
+             * ブロックがプレイヤーに対して高過ぎるとき、無視してスキャンを続ける
+             */
             NOTWALLORHIGHPLACE((pState, pBlock, pPos, pCollisionContext) -> {
                 if (Minecraft.getInstance().level == null || Minecraft.getInstance().player == null) {
                     return Shapes.empty();
                 }
 
-                if (!Minecraft.getInstance().level.getBlockState(pPos.above()).getShape(Minecraft.getInstance().level, pPos).isEmpty()) { //上のブロックに実体がある時、それは壁なので無視してスキャンを続ける
+                if (!Minecraft.getInstance().level.getBlockState(pPos.above()).getShape(Minecraft.getInstance().level, pPos).isEmpty()) { 
                     return Shapes.empty();
                 }
 
-                if (pPos.getY() > Minecraft.getInstance().player.getY() + FloatConfig.MAXMOVEHEIGHT.getValue()) { //ブロックがプレイヤーに対して高過ぎるとき、無視してスキャンを続ける
+                if (pPos.getY() > Minecraft.getInstance().player.getY() + FloatConfig.MAXMOVEHEIGHT.getValue()) { 
                     return Shapes.empty();
                 }
 

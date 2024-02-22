@@ -20,6 +20,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * アイテム実装テスト
+ */
 public class ItemStoneSpear extends Item {
 
     private static final int DAMAGE = 5;
