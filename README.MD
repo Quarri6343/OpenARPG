@@ -20,3 +20,7 @@ The development is still in the early alpha stage, any feedback or contribution 
 ・This mod removes "mining" and "building" feature from minecraft entirely, so you can't play it with any tech mod, magic mod or exploration mod  
 ・Of course, it also crashes with camera-related mods  
 ・I have not tested it with optimization mods yet
+
+### Credits
+
+・Some resources in dev branch are from [Tutorial Mod](https://github.com/DaRealTurtyWurty/1.20-Tutorial-Mod) under [MIT License](https://choosealicense.com/licenses/mit/)
