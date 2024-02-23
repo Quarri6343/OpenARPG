@@ -62,10 +62,11 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
     private boolean skipNextRelease;
     private int quickCraftingRemainder;
     private long lastClickTime;
-    private int lastClickButton;
+    private int lastClickButton; //clicked button in the last action (cannot be -1)
     private boolean doubleclick;
     private ItemStack lastQuickMoved = ItemStack.EMPTY;
-    
+    private int currentClickButton = -1; //clicked button in the current frame
+
     private final FloatingItem floatingItem;
 
     //you must specify screen position because how minecraft implements slot.x and slot.y
@@ -76,6 +77,7 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
         this.floatingItem = floatingItem;
         mItemSize = dp(32);
         floatingItem.setItemSize(mItemSize);
+        skipNextRelease = true;
     }
 
     public void setContainerMenu(AbstractContainerMenu containerMenu) {
@@ -128,7 +130,7 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
     }
 
     public static void drawItemDecorations(@Nonnull Canvas canvas, @Nonnull ItemStack item,
-                                    float x, float y, float z, float size, int seed) {
+                                           float x, float y, float z, float size, int seed) {
         String count = String.valueOf(item.getCount());
 
         //テキストの位置調整
@@ -214,8 +216,10 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
                 invalidate();
             }
 
-            if(pButton != -1){
+            if (pButton != -1 && currentClickButton == -1) {
                 mouseClicked(pButton);
+            } else if (pButton == -1 && currentClickButton != -1) {
+                mouseReleased(lastClickButton);
             }
         });
     }
@@ -236,7 +240,7 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
     public boolean mouseClicked(int pButton) {
         int pMouseX = (int) Minecraft.getInstance().mouseHandler.xpos();
         int pMouseY = (int) Minecraft.getInstance().mouseHandler.ypos();
-        
+
         InputConstants.Key mouseKey = InputConstants.Type.MOUSE.getOrCreate(pButton);
         boolean flag = Minecraft.getInstance().options.keyPickItem.isActiveAndMatches(mouseKey);
         Slot slot = this.findSlot();
@@ -295,6 +299,7 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
         this.lastClickSlot = slot;
         this.lastClickTime = i;
         this.lastClickButton = pButton;
+        this.currentClickButton = pButton;
         return true;
     }
 
@@ -321,6 +326,122 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
 
         Minecraft.getInstance().gameMode.handleInventoryMouseClick(mContainerMenu.containerId, pSlotId, pMouseButton, pType, Minecraft.getInstance().player);
     }
-    
+
+    public boolean mouseReleased(int pButton) {
+        int pMouseX = (int) Minecraft.getInstance().mouseHandler.xpos();
+        int pMouseY = (int) Minecraft.getInstance().mouseHandler.ypos();
+
+//        super.mouseReleased(pMouseX, pMouseY, pButton); //Forge, Call parent to release buttons
+        Slot slot = this.findSlot();
+        int i = this.leftPos;
+        int j = this.topPos;
+        boolean flag = this.hasClickedOutside(pMouseX, pMouseY);
+        if (slot != null) flag = false; // Forge, prevent dropping of items through slots outside of GUI boundaries
+        InputConstants.Key mouseKey = InputConstants.Type.MOUSE.getOrCreate(pButton);
+        int k = -1;
+        if (slot != null) {
+            k = slot.index;
+        }
+
+        if (flag) {
+            k = -999;
+        }
+
+        if (this.doubleclick && slot != null && pButton == 0 && mContainerMenu.canTakeItemForPickAll(ItemStack.EMPTY, slot)) {
+            if (hasShiftDown()) {
+                if (!this.lastQuickMoved.isEmpty()) {
+                    for (Slot slot2 : mContainerMenu.slots) {
+                        if (slot2 != null && slot2.mayPickup(Minecraft.getInstance().player) && slot2.hasItem() && slot2.isSameInventory(slot) && AbstractContainerMenu.canItemQuickReplace(slot2, this.lastQuickMoved, true)) {
+                            this.slotClicked(slot2, slot2.index, pButton, ClickType.QUICK_MOVE);
+                        }
+                    }
+                }
+            } else {
+                this.slotClicked(slot, k, pButton, ClickType.PICKUP_ALL);
+            }
+
+            this.doubleclick = false;
+            this.lastClickTime = 0L;
+        } else {
+            if (this.isQuickCrafting && this.quickCraftingButton != pButton) {
+                this.isQuickCrafting = false;
+                this.quickCraftSlots.clear();
+                this.skipNextRelease = true;
+                currentClickButton = -1;
+                return true;
+            }
+
+            if (this.skipNextRelease) {
+                this.skipNextRelease = false;
+                currentClickButton = -1;
+                return true;
+            }
+
+//            if (this.clickedSlot != null && this.minecraft.options.touchscreen().get()) {
+//                if (pButton == 0 || pButton == 1) {
+//                    if (this.draggingItem.isEmpty() && slot != this.clickedSlot) {
+//                        this.draggingItem = this.clickedSlot.getItem();
+//                    }
+//
+//                    boolean flag2 = AbstractContainerMenu.canItemQuickReplace(slot, this.draggingItem, false);
+//                    if (k != -1 && !this.draggingItem.isEmpty() && flag2) {
+//                        this.slotClicked(this.clickedSlot, this.clickedSlot.index, pButton, ClickType.PICKUP);
+//                        this.slotClicked(slot, k, 0, ClickType.PICKUP);
+//                        if (this.menu.getCarried().isEmpty()) {
+//                            this.snapbackItem = ItemStack.EMPTY;
+//                        } else {
+//                            this.slotClicked(this.clickedSlot, this.clickedSlot.index, pButton, ClickType.PICKUP);
+//                            this.snapbackStartX = Mth.floor(pMouseX - (double)i);
+//                            this.snapbackStartY = Mth.floor(pMouseY - (double)j);
+//                            this.snapbackEnd = this.clickedSlot;
+//                            this.snapbackItem = this.draggingItem;
+//                            this.snapbackTime = Util.getMillis();
+//                        }
+//                    } else if (!this.draggingItem.isEmpty()) {
+//                        this.snapbackStartX = Mth.floor(pMouseX - (double)i);
+//                        this.snapbackStartY = Mth.floor(pMouseY - (double)j);
+//                        this.snapbackEnd = this.clickedSlot;
+//                        this.snapbackItem = this.draggingItem;
+//                        this.snapbackTime = Util.getMillis();
+//                    }
+//
+//                    this.clearDraggingState();
+//                }
+//            } else 
+            if (this.isQuickCrafting && !this.quickCraftSlots.isEmpty()) {
+                this.slotClicked(null, -999, AbstractContainerMenu.getQuickcraftMask(0, this.quickCraftingType), ClickType.QUICK_CRAFT);
+
+                for (Slot slot1 : this.quickCraftSlots) {
+                    this.slotClicked(slot1, slot1.index, AbstractContainerMenu.getQuickcraftMask(1, this.quickCraftingType), ClickType.QUICK_CRAFT);
+                }
+
+                this.slotClicked(null, -999, AbstractContainerMenu.getQuickcraftMask(2, this.quickCraftingType), ClickType.QUICK_CRAFT);
+            } else if (!mContainerMenu.getCarried().isEmpty()) {
+                if (Minecraft.getInstance().options.keyPickItem.isActiveAndMatches(mouseKey)) {
+                    this.slotClicked(slot, k, pButton, ClickType.CLONE);
+                } else {
+                    boolean flag1 = k != -999 && (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 340) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 344));
+                    if (flag1) {
+                        this.lastQuickMoved = slot != null && slot.hasItem() ? slot.getItem().copy() : ItemStack.EMPTY;
+                    }
+
+                    this.slotClicked(slot, k, pButton, flag1 ? ClickType.QUICK_MOVE : ClickType.PICKUP);
+                }
+            }
+        }
+
+        if (mContainerMenu.getCarried().isEmpty()) {
+            this.lastClickTime = 0L;
+        }
+
+        this.isQuickCrafting = false;
+        currentClickButton = -1;
+        return true;
+    }
+
     //TODO:MouseDragged, MouseReleased, keyPressed, tick
+
+    public static boolean hasShiftDown() {
+        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 340) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 344);
+    }
 }

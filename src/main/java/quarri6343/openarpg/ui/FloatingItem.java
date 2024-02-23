@@ -22,7 +22,7 @@ public class FloatingItem extends View {
 
     @Override
     protected void onDraw(@Nonnull Canvas canvas) {
-        if(floatingStack == ItemStack.EMPTY){
+        if(floatingStack.isEmpty()){
             return;
         }
         

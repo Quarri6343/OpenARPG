@@ -23,12 +23,12 @@ public class ExampleSidedInventoryMenu extends AbstractContainerMenu {
     public ExampleSidedInventoryMenu(int containerId, Inventory playerInv, IItemHandler dataInventory) {
         super(OpenARPG.EXAMPLE_SIDED_INVENTORY_MENU.get(), containerId);
 
+        createPlayerHotbar(playerInv);
+        createPlayerInventory(playerInv);
+        
         addSlot(new SlotItemHandler(dataInventory, 0, 44, 36));
         addSlot(new SlotItemHandler(dataInventory, 1, 80, 36));
         addSlot(new SlotItemHandler(dataInventory, 2, 116, 36));
-        
-        createPlayerHotbar(playerInv);
-        createPlayerInventory(playerInv);
 //        createBlockEntityInventory(be);
     }
 
