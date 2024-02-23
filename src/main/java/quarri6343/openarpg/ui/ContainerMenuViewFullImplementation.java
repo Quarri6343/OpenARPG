@@ -4,6 +4,7 @@ import icyllis.arc3d.core.ImageInfo;
 import icyllis.arc3d.core.Matrix4;
 import icyllis.arc3d.core.Rect2i;
 import icyllis.modernui.core.Context;
+import icyllis.modernui.core.Core;
 import icyllis.modernui.graphics.Canvas;
 import icyllis.modernui.graphics.CustomDrawable;
 import icyllis.modernui.graphics.Paint;
@@ -17,16 +18,35 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nonnull;
 
+import static quarri6343.openarpg.OpenARPG.MODID;
+
+//the parent must be the root view and AbsoluteLayout (for now)
+@Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class ContainerMenuViewFullImplementation extends View implements CustomDrawable {
 
     private AbstractContainerMenu mContainerMenu;
     private final int mItemSize;
-
-    public ContainerMenuViewFullImplementation(Context context) {
+    
+    //left and up position in the parent AbsoluteLayout
+    private final int leftPos;
+    private final int topPos;
+    
+    private int mMouseX;
+    private int mMouseY;
+    
+    //you must specify screen position because how minecraft implements slot.x and slot.y
+    public ContainerMenuViewFullImplementation(Context context, int leftPos, int topPos) {
         super(context);
+        this.leftPos = leftPos;
+        this.topPos = topPos;
         mItemSize = dp(32);
     }
 
@@ -46,10 +66,16 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
         if (menu == null) {
             return;
         }
+        
         for (int i = 0; i < menu.slots.size(); ++i) {
             Slot slot = menu.slots.get(i);
             if (slot.isActive()) {
                 drawSlot(canvas, slot);
+            }
+            if (isHoveringSlot(slot.x, slot.y) && slot.isActive()) {
+                if (slot.isHighlightable()) {
+                    drawHighlight(canvas, slot.x, slot.y);
+                }
             }
         }
     }
@@ -67,6 +93,7 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
         int x = dp(slot.x * 2) + screenWidth;
         int y = dp(slot.y * 2) + screenHeight;
         ContainerDrawHelper.drawItem(canvas, item, x, y, 0, mItemSize, x + y * getWidth());
+        //todo:カスタムのdrawableの中にセットしてアイテムが移動した時ちゃんと反映されるようにする
         drawItemDecorations(canvas, item, x, y, 0, mItemSize, x + y * getWidth());
     }
     
@@ -83,7 +110,7 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
         y += screenY;
         
         Paint paint = Paint.obtain();
-        paint.setRGBA(255, 255, 255, 180);
+        paint.setRGBA(255, 255, 255, 255);
         paint.setFontSize(30); //テキストの大きさを決める
         TextPaint textPaint = TextPaint.obtain();
         textPaint.setFontSize(30); //テキストの幅を決める
@@ -101,6 +128,20 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
         //TODO:enchant,durability,cooldown
         //see GuiGraphics#renderItemDecorations
     }
+    
+    public void drawHighlight(@Nonnull Canvas canvas, float x, float y){
+        int screenX = (int) (x * (double) Minecraft.getInstance().getWindow().getScreenWidth() / (double) Minecraft.getInstance().getWindow().getGuiScaledWidth());
+        int screenY = (int) (y * (double) Minecraft.getInstance().getWindow().getScreenHeight() / (double) Minecraft.getInstance().getWindow().getGuiScaledHeight());
+        int guiXOffset = 16;
+        int guiYOffset = 16;
+        int screenXOffset = (int) (guiXOffset * (double) Minecraft.getInstance().getWindow().getScreenWidth() / (double) Minecraft.getInstance().getWindow().getGuiScaledWidth());
+        int screenYOffset = (int) (guiYOffset * (double) Minecraft.getInstance().getWindow().getScreenHeight() / (double) Minecraft.getInstance().getWindow().getGuiScaledHeight());
+        
+        Paint paint = Paint.obtain();
+        paint.setRGBA(255, 255, 255, 127);
+        canvas.drawRect(screenX, screenY, screenX + screenXOffset, screenY + screenYOffset, paint);
+        paint.recycle();
+    }
 
     @Override
     public DrawHandler snapDrawHandler(int backendApi, Matrix4 viewMatrix, Rect2i clipBounds, ImageInfo targetInfo) {
@@ -110,5 +151,44 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
     @Override
     public RectF getBounds() {
         return null;
+    }
+
+    protected boolean isHoveringSlot(int pX, int pY) {
+        mMouseX = (int) Minecraft.getInstance().mouseHandler.xpos();
+        mMouseY = (int) Minecraft.getInstance().mouseHandler.ypos();
+        int pMouseX = mMouseX - this.leftPos; //mMouseX(スクリーン座標系)からguiの左上座標(スクリーン座標系)を引く
+        int pMouseY = mMouseY - this.topPos;
+        int guiMouseX = (int) (pMouseX * (double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / (double) Minecraft.getInstance().getWindow().getScreenWidth());
+        int guiMouseY = (int) (pMouseY * (double) Minecraft.getInstance().getWindow().getGuiScaledHeight() / (double) Minecraft.getInstance().getWindow().getScreenHeight());
+        return guiMouseX >= (double)(pX - 1) && guiMouseX < (double)(pX + 16 + 1) && guiMouseY >= (double)(pY - 1) && guiMouseY < (double)(pY + 16 + 1);
+    }
+
+    @SubscribeEvent
+    public void onRenderTick(@Nonnull TickEvent.RenderTickEvent event) {
+        //TODO: find better implementation
+        Core.executeOnUiThread(() -> {
+            if (Minecraft.getInstance().player == null)
+                return;
+            
+            if(mMouseX == (int) Minecraft.getInstance().mouseHandler.xpos() && mMouseY == (int) Minecraft.getInstance().mouseHandler.ypos()){
+                return;
+            }
+
+            if(!isLayoutRequested()){
+                requestLayout();
+                invalidate();
+            }
+        });
+    }
+    
+    @Override
+    protected void onDetachedFromWindow(){
+        MinecraftForge.EVENT_BUS.unregister(this);
+    }
+    
+    @Override
+    protected void onAttachedToWindow(){
+        super.onAttachedToWindow();
+        MinecraftForge.EVENT_BUS.register(this);
     }
 }

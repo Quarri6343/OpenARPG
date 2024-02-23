@@ -10,10 +10,12 @@ import icyllis.modernui.view.View;
 import icyllis.modernui.view.ViewGroup;
 import icyllis.modernui.widget.AbsoluteLayout;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.MinecraftForge;
 
 public class ExampleSidedInventoryFragment extends Fragment implements ScreenCallback {
 
     private final ExampleSidedInventoryMenu menu;
+    private ContainerMenuViewFullImplementation containerMenuView;
     
     public ExampleSidedInventoryFragment(ExampleSidedInventoryMenu menu) {
         this.menu = menu;
@@ -25,16 +27,19 @@ public class ExampleSidedInventoryFragment extends Fragment implements ScreenCal
                              @icyllis.modernui.annotation.Nullable DataSet savedInstanceState) {
         var root = new AbsoluteLayout(requireContext());
         root.setLayoutParams(new AbsoluteLayout.LayoutParams(Minecraft.getInstance().getWindow().getWidth(), Minecraft.getInstance().getWindow().getHeight(), 0, 0));
-        
-        var containerMenuView = new ContainerMenuViewFullImplementation(requireContext()); //ContainerMenuはクライアントとサーバー両方に存在してUIスロットを互いに通信する存在、FragmentはUIを描画するキャンバス、ContainerMenuViewはFragmentがContainerMenuを受信して描画するときのペン
-        containerMenuView.setContainerMenu(menu);
-        containerMenuView.setBackground(new SimpleBackground(containerMenuView));
+
         int guiWidth = 176; // vanilla chest size
         int guiHeight = 166;
         int screenWidth = (int) (guiWidth * (double) Minecraft.getInstance().getWindow().getScreenWidth() / (double) Minecraft.getInstance().getWindow().getGuiScaledWidth());
         int screenHeight = (int) (guiHeight * (double) Minecraft.getInstance().getWindow().getScreenHeight() / (double) Minecraft.getInstance().getWindow().getGuiScaledHeight());
+        int screenX = Minecraft.getInstance().getWindow().getWidth() / 2 - screenWidth / 2;
+        int screenY = Minecraft.getInstance().getWindow().getHeight() / 2 - screenHeight / 2;
+        
+        containerMenuView = new ContainerMenuViewFullImplementation(requireContext(), screenX, screenY); //ContainerMenuはクライアントとサーバー両方に存在してUIスロットを互いに通信する存在、FragmentはUIを描画するキャンバス、ContainerMenuViewはFragmentがContainerMenuを受信して描画するときのペン
+        containerMenuView.setContainerMenu(menu);
+        containerMenuView.setBackground(new SimpleBackground(containerMenuView));
         //TODO:ContainerMenuView内にslotwidgetを作ってスロットのある場所に背景を描画
-        root.addView(containerMenuView, new AbsoluteLayout.LayoutParams(screenWidth, screenHeight,Minecraft.getInstance().getWindow().getWidth() / 2 - screenWidth / 2,Minecraft.getInstance().getWindow().getHeight() / 2 - screenHeight / 2));
+        root.addView(containerMenuView, new AbsoluteLayout.LayoutParams(screenWidth, screenHeight, screenX, screenY));
         
         return root;
     }
