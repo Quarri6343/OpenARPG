@@ -65,13 +65,17 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
     private int lastClickButton;
     private boolean doubleclick;
     private ItemStack lastQuickMoved = ItemStack.EMPTY;
+    
+    private final FloatingItem floatingItem;
 
     //you must specify screen position because how minecraft implements slot.x and slot.y
-    public ContainerMenuViewFullImplementation(Context context, int leftPos, int topPos) {
+    public ContainerMenuViewFullImplementation(Context context, int leftPos, int topPos, FloatingItem floatingItem) {
         super(context);
         this.leftPos = leftPos;
         this.topPos = topPos;
+        this.floatingItem = floatingItem;
         mItemSize = dp(32);
+        floatingItem.setItemSize(mItemSize);
     }
 
     public void setContainerMenu(AbstractContainerMenu containerMenu) {
@@ -104,9 +108,7 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
         }
 
         ItemStack itemstack = mContainerMenu.getCarried();
-        if (!itemstack.isEmpty()) {
-            drawFloatingItem(canvas, itemstack);
-        }
+        floatingItem.setFloatingStack(itemstack);
     }
 
     protected void drawSlot(@Nonnull Canvas canvas, @Nonnull Slot slot) {
@@ -125,15 +127,7 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
         drawItemDecorations(canvas, item, x, y, 0, mItemSize, x + y * getWidth());
     }
 
-    //TODO:別のviewを作ってインベントリ外のアイテムを描画できるようにする
-    protected void drawFloatingItem(@Nonnull Canvas canvas, @Nonnull ItemStack itemStack) {
-        int x = (int) Minecraft.getInstance().mouseHandler.xpos();
-        int y = (int) Minecraft.getInstance().mouseHandler.ypos();
-        ContainerDrawHelper.drawItem(canvas, itemStack, x - leftPos, y - topPos, 0, mItemSize, x + y * getWidth());
-        drawItemDecorations(canvas, itemStack, x - leftPos, y - topPos, 0, mItemSize, x + y * getWidth());
-    }
-
-    public void drawItemDecorations(@Nonnull Canvas canvas, @Nonnull ItemStack item,
+    public static void drawItemDecorations(@Nonnull Canvas canvas, @Nonnull ItemStack item,
                                     float x, float y, float z, float size, int seed) {
         String count = String.valueOf(item.getCount());
 
