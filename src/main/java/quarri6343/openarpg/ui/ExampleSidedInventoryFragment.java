@@ -1,15 +1,22 @@
 package quarri6343.openarpg.ui;
 
+import icyllis.modernui.animation.ObjectAnimator;
+import icyllis.modernui.animation.PropertyValuesHolder;
+import icyllis.modernui.animation.TimeInterpolator;
 import icyllis.modernui.annotation.NonNull;
 import icyllis.modernui.annotation.Nullable;
 import icyllis.modernui.fragment.Fragment;
 import icyllis.modernui.mc.ScreenCallback;
+import icyllis.modernui.text.Typeface;
 import icyllis.modernui.util.DataSet;
 import icyllis.modernui.view.LayoutInflater;
 import icyllis.modernui.view.View;
 import icyllis.modernui.view.ViewGroup;
 import icyllis.modernui.widget.AbsoluteLayout;
+import icyllis.modernui.widget.Button;
 import net.minecraft.client.Minecraft;
+
+import static icyllis.modernui.view.View.*;
 
 public class ExampleSidedInventoryFragment extends Fragment implements ScreenCallback {
 
@@ -35,7 +42,7 @@ public class ExampleSidedInventoryFragment extends Fragment implements ScreenCal
         int screenX = Minecraft.getInstance().getWindow().getWidth() / 2 - screenWidth / 2;
         int screenY = Minecraft.getInstance().getWindow().getHeight() / 2 - screenHeight / 2;
         
-        containerMenuView = new ContainerMenuViewFullImplementation(requireContext(), screenX, screenY, floatingItem); //ContainerMenuはクライアントとサーバー両方に存在してUIスロットを互いに通信する存在、FragmentはUIを描画するキャンバス、ContainerMenuViewはFragmentがContainerMenuを受信して描画するときのペン
+        containerMenuView = new ExampleContainerMenuView(requireContext(), screenX, screenY, floatingItem); //ContainerMenuはクライアントとサーバー両方に存在してUIスロットを互いに通信する存在、FragmentはUIを描画するキャンバス、ContainerMenuViewはFragmentがContainerMenuを受信して描画するときのペン
         containerMenuView.setContainerMenu(menu);
         containerMenuView.setBackground(new SimpleBackground(containerMenuView));
         //TODO:ContainerMenuView内にslotwidgetを作ってスロットのある場所に背景を描画

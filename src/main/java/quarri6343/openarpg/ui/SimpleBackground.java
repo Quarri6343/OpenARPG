@@ -16,7 +16,7 @@ public class SimpleBackground extends Drawable {
 
     public SimpleBackground(View v) {
         mRadius = v.dp(16);
-        setColor(NETWORK_COLOR);
+        setColor(0xFF000000);
     }
 
     public void setColor(int color) {
@@ -30,7 +30,8 @@ public class SimpleBackground extends Drawable {
         float start = stroke * 0.5f;
 
         Paint paint = Paint.obtain();
-        paint.setRGBA(0, 0, 0, 180);
+        paint.setColor(mColor);
+        paint.setAlpha(180);
         canvas.drawRect(b.left + start, b.top + start, b.right - start, b.bottom - start, paint);
         paint.recycle();
     }

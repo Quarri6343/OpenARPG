@@ -5,6 +5,11 @@ import com.mojang.blaze3d.platform.InputConstants;
 import icyllis.arc3d.core.ImageInfo;
 import icyllis.arc3d.core.Matrix4;
 import icyllis.arc3d.core.Rect2i;
+import icyllis.arc3d.engine.DirectContext;
+import icyllis.arc3d.engine.DrawableInfo;
+import icyllis.modernui.animation.ObjectAnimator;
+import icyllis.modernui.animation.PropertyValuesHolder;
+import icyllis.modernui.animation.TimeInterpolator;
 import icyllis.modernui.core.Context;
 import icyllis.modernui.core.Core;
 import icyllis.modernui.graphics.Canvas;
@@ -15,31 +20,40 @@ import icyllis.modernui.graphics.text.ShapedText;
 import icyllis.modernui.mc.ContainerDrawHelper;
 import icyllis.modernui.text.TextPaint;
 import icyllis.modernui.text.TextShaper;
-import icyllis.modernui.view.View;
+import icyllis.modernui.widget.*;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Set;
 
 import static quarri6343.openarpg.OpenARPG.MODID;
 
 //the parent must be the root view and AbsoluteLayout (for now)
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
-public class ContainerMenuViewFullImplementation extends View implements CustomDrawable {
+public class ContainerMenuViewFullImplementation extends AbsoluteLayout implements CustomDrawable {
 
-    private AbstractContainerMenu mContainerMenu;
+    protected AbstractContainerMenu mContainerMenu;
     private final int mItemSize;
 
     //left and up position in the parent AbsoluteLayout
@@ -68,6 +82,8 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
     private int currentClickButton = -1; //clicked button in the current frame
 
     private final FloatingItem floatingItem;
+    
+    private boolean pendingTooltipDraw;
 
     //you must specify screen position because how minecraft implements slot.x and slot.y
     public ContainerMenuViewFullImplementation(Context context, int leftPos, int topPos, FloatingItem floatingItem) {
@@ -92,17 +108,21 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
 
     @Override
     protected void onDraw(@Nonnull Canvas canvas) {
+        super.onDraw(canvas);
         var menu = mContainerMenu;
         if (menu == null) {
             return;
         }
 
+        this.hoveredSlot = null;
         for (int i = 0; i < menu.slots.size(); ++i) {
             Slot slot = menu.slots.get(i);
             if (slot.isActive()) {
+                drawSlotBG(canvas, slot);
                 drawSlot(canvas, slot);
             }
             if (isHoveringSlot(slot.x, slot.y) && slot.isActive()) {
+                hoveredSlot = slot;
                 if (slot.isHighlightable()) {
                     drawHighlight(canvas, slot.x, slot.y);
                 }
@@ -111,6 +131,26 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
 
         ItemStack itemstack = mContainerMenu.getCarried();
         floatingItem.setFloatingStack(itemstack);
+    }
+
+    protected List<Component> getTooltipFromContainerItem(ItemStack pStack) {
+        return Screen.getTooltipFromItem(Minecraft.getInstance(), pStack);
+    }
+    
+    //TODO: custom drawable
+    protected void drawSlotBG(@Nonnull Canvas canvas, @Nonnull Slot slot){
+        Paint paint = Paint.obtain();
+        paint.setRGBA(92,92,35, 255);
+
+        int guiWidth = 16;
+        int guiHeight = 16;
+        int screenWidth = (int) (guiWidth * (double) Minecraft.getInstance().getWindow().getScreenWidth() / (double) Minecraft.getInstance().getWindow().getGuiScaledWidth());
+        int screenHeight = (int) (guiHeight * (double) Minecraft.getInstance().getWindow().getScreenHeight() / (double) Minecraft.getInstance().getWindow().getGuiScaledHeight());
+        int x = dp(slot.x * 2);
+        int y = dp(slot.y * 2);
+        
+        canvas.drawRect(x, y, x + screenWidth, y + screenHeight, paint);
+        paint.recycle();
     }
 
     protected void drawSlot(@Nonnull Canvas canvas, @Nonnull Slot slot) {
@@ -173,11 +213,6 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
         paint.setRGBA(255, 255, 255, 127);
         canvas.drawRect(screenX, screenY, screenX + screenXOffset, screenY + screenYOffset, paint);
         paint.recycle();
-    }
-
-    @Override
-    public DrawHandler snapDrawHandler(int backendApi, Matrix4 viewMatrix, Rect2i clipBounds, ImageInfo targetInfo) {
-        return null;
     }
 
     @Override
@@ -443,5 +478,30 @@ public class ContainerMenuViewFullImplementation extends View implements CustomD
 
     public static boolean hasShiftDown() {
         return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 340) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 344);
+    }
+
+    @Override
+    public DrawHandler snapDrawHandler(int backendApi, Matrix4 viewMatrix, Rect2i clipBounds, ImageInfo targetInfo) {
+        return null;
+    }
+    
+    /**
+     * We want to use icyllis.modernui.mc.UIManager.ViewRootImpl#drawExtTooltipLocked ,
+     * which is called when {@link net.minecraft.client.gui.GuiGraphics#renderTooltip} is invoked.
+     * However, it must be called in the main thread.
+     * To make the thing worse, If we call this method by using {@link Core#executeOnMainThread(Runnable)} or any vanilla event while the fragment is on the view, mPendingDraw will be always true.
+     */
+    @SubscribeEvent
+    public void renderTooltipWorkAround(TickEvent.RenderTickEvent event){
+        if (event.phase == TickEvent.Phase.START && mContainerMenu.getCarried().isEmpty() && hoveredSlot != null && hoveredSlot.hasItem()) {
+            ItemStack itemstack = hoveredSlot.getItem();
+            GuiGraphics guigraphics = new GuiGraphics(Minecraft.getInstance(), Minecraft.getInstance().renderBuffers().bufferSource());
+            int pX = (int) Minecraft.getInstance().mouseHandler.xpos();
+            int pY = (int) Minecraft.getInstance().mouseHandler.ypos();
+            int d0 = (int) (pX * (double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / (double) Minecraft.getInstance().getWindow().getScreenWidth());
+            int d1 = (int) (pY * (double) Minecraft.getInstance().getWindow().getGuiScaledHeight() / (double) Minecraft.getInstance().getWindow().getScreenHeight());
+            
+            guigraphics.renderTooltip(Minecraft.getInstance().font, getTooltipFromContainerItem(itemstack), itemstack.getTooltipImage(), itemstack, d0, d1);
+        }
     }
 }
