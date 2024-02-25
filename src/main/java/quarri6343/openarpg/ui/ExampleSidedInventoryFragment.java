@@ -35,6 +35,8 @@ public class ExampleSidedInventoryFragment extends Fragment implements ScreenCal
         root.setLayoutParams(new AbsoluteLayout.LayoutParams(Minecraft.getInstance().getWindow().getWidth(), Minecraft.getInstance().getWindow().getHeight(), 0, 0));
         
         FloatingItem floatingItem = new FloatingItem(requireContext());
+        MUITooltip muiTooltip = new MUITooltip(requireContext());
+        
         int guiWidth = 176; // vanilla chest size
         int guiHeight = 166;
         int screenWidth = (int) (guiWidth * (double) Minecraft.getInstance().getWindow().getScreenWidth() / (double) Minecraft.getInstance().getWindow().getGuiScaledWidth());
@@ -42,12 +44,13 @@ public class ExampleSidedInventoryFragment extends Fragment implements ScreenCal
         int screenX = Minecraft.getInstance().getWindow().getWidth() / 2 - screenWidth / 2;
         int screenY = Minecraft.getInstance().getWindow().getHeight() / 2 - screenHeight / 2;
         
-        containerMenuView = new ExampleContainerMenuView(requireContext(), screenX, screenY, floatingItem); //ContainerMenuはクライアントとサーバー両方に存在してUIスロットを互いに通信する存在、FragmentはUIを描画するキャンバス、ContainerMenuViewはFragmentがContainerMenuを受信して描画するときのペン
+        containerMenuView = new ExampleContainerMenuView(requireContext(), screenX, screenY, floatingItem, muiTooltip); //ContainerMenuはクライアントとサーバー両方に存在してUIスロットを互いに通信する存在、FragmentはUIを描画するキャンバス、ContainerMenuViewはFragmentがContainerMenuを受信して描画するときのペン
         containerMenuView.setContainerMenu(menu);
         containerMenuView.setBackground(new SimpleBackground(containerMenuView));
         //TODO:ContainerMenuView内にslotwidgetを作ってスロットのある場所に背景を描画
         root.addView(containerMenuView, new AbsoluteLayout.LayoutParams(screenWidth, screenHeight, screenX, screenY));
         root.addView(floatingItem, new AbsoluteLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
+        root.addView(muiTooltip, new AbsoluteLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
         
         return root;
     }

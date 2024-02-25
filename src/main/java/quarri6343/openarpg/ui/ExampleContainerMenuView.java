@@ -7,10 +7,8 @@ import icyllis.modernui.core.Context;
 import icyllis.modernui.text.Editable;
 import icyllis.modernui.text.TextWatcher;
 import icyllis.modernui.text.Typeface;
-import icyllis.modernui.view.Gravity;
 import icyllis.modernui.widget.*;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class ExampleContainerMenuView extends ContainerMenuViewFullImplementation{
@@ -18,8 +16,8 @@ public class ExampleContainerMenuView extends ContainerMenuViewFullImplementatio
     //debug only
     private ObjectAnimator rightAnim;
     
-    public ExampleContainerMenuView(Context context, int leftPos, int topPos, FloatingItem floatingItem) {
-        super(context, leftPos, topPos, floatingItem);
+    public ExampleContainerMenuView(Context context, int leftPos, int topPos, FloatingItem floatingItem, MUITooltip muiTooltip) {
+        super(context, leftPos, topPos, floatingItem, muiTooltip);
 
 
         //debug only
