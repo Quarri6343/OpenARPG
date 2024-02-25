@@ -36,7 +36,8 @@ public class MUITooltip extends View {
     public static volatile float sShadowRadius = 10;
 
     // space between mouse and tooltip
-    public static final int TOOLTIP_SPACE = 12;
+//    public static final int TOOLTIP_SPACE = 12;
+    public static final int TOOLTIP_SPACE = 48;
     public static final int H_BORDER = 4;
     public static final int V_BORDER = 4;
     //public static final int LINE_HEIGHT = 10;
@@ -193,7 +194,8 @@ public class MUITooltip extends View {
             }
             partialX = (tooltipX - (int) tooltipX);
 
-            tooltipY = mouseY - TOOLTIP_SPACE + partialY;
+//            tooltipY = mouseY - TOOLTIP_SPACE + partialY;
+            tooltipY = mouseY + partialY;
             if (tooltipY + tooltipHeight + 6 > screenHeight) {
                 tooltipY = screenHeight - tooltipHeight - 6;
             }
