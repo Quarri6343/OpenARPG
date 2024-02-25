@@ -1,29 +1,18 @@
 package quarri6343.openarpg;
 
-import com.mojang.brigadier.Command;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.logging.LogUtils;
 import icyllis.modernui.mc.forge.MenuScreenFactory;
-import icyllis.modernui.mc.forge.MuiForgeApi;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,7 +21,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -67,7 +55,7 @@ public class OpenARPG {
     public static final RegistryObject<MenuType<ExampleSidedInventoryMenu>> EXAMPLE_SIDED_INVENTORY_MENU = MENU_TYPES.register("example_sided_inventory_menu",
             () -> IForgeMenuType.create(ExampleSidedInventoryMenu::new));
     
-    public static final ItemStackHandler testServerStorage = new ItemStackHandler(3);
+    public static final ItemStackHandler TEST_SERVER_STORAGE = new ItemStackHandler(3);
 
     public OpenARPG() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -106,51 +94,6 @@ public class OpenARPG {
             }
         }
         return null;
-    }
-
-    @SubscribeEvent
-    public void onRegisterCommand(RegisterCommandsEvent event) {
-        //server command
-        LiteralArgumentBuilder<CommandSourceStack> serverBuilder = Commands.literal("arpgserver")
-                .then(Commands.literal("testcontainer").executes(context -> {
-                    if(context.getSource().getEntity() instanceof ServerPlayer serverPlayer){
-                        NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider(
-                                (containerId, playerInventory, player) -> new ExampleSidedInventoryMenu(containerId, playerInventory, testServerStorage),
-                                Component.translatable("menu.title.test")));
-                    }
-                    return Command.SINGLE_SUCCESS;
-                }));
-        event.getDispatcher().register(serverBuilder);
-        
-        if (!Dist.CLIENT.isClient()) {
-            return;
-        }
-
-        LiteralArgumentBuilder<CommandSourceStack> builder = Commands.literal("arpg")
-                .then(Commands.literal("settings").executes(context -> {
-                    Minecraft.getInstance().execute(() -> {
-                        MuiForgeApi.openScreen(new DebugSettingUI());
-                    });
-                    return Command.SINGLE_SUCCESS;
-                }))
-                .then(Commands.literal("summon").executes(context -> {
-                    Minecraft.getInstance().execute(() -> {
-                        MuiForgeApi.openScreen(new MonsterSummonUI());
-                    });
-                    return Command.SINGLE_SUCCESS;
-                }))
-                .then(Commands.literal("hud").executes(context -> {
-                    Minecraft.getInstance().execute(() -> {
-                        if (HUDManager.getHud() == null) {
-                            HUDManager.initHUD();
-                        } else {
-                            HUDManager.removeHUD();
-                        }
-                    });
-                    return Command.SINGLE_SUCCESS;
-                }));
-        // コマンドの登録
-        event.getDispatcher().register(builder);
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
