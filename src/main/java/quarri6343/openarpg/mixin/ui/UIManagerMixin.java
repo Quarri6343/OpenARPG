@@ -5,12 +5,16 @@ import icyllis.modernui.fragment.FragmentContainerView;
 import icyllis.modernui.fragment.FragmentController;
 import icyllis.modernui.fragment.FragmentTransaction;
 import icyllis.modernui.mc.MuiScreen;
+import icyllis.modernui.mc.TooltipRenderer;
 import icyllis.modernui.mc.UIManager;
 import icyllis.modernui.view.ViewRoot;
 import org.apache.logging.log4j.Marker;
 import org.lwjgl.system.MemoryUtil;
 import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import quarri6343.openarpg.ui.HUD;
+import quarri6343.openarpg.ui.MUITooltip;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
@@ -119,5 +123,11 @@ public class UIManagerMixin {
 
     @Shadow
     void restoreLayoutTransition() {
+    }
+
+    @Redirect(method = "onRenderTick", at = @At(value = "INVOKE", target = "Licyllis/modernui/mc/TooltipRenderer;update(JJ)V"))
+    protected void onRenderTick(TooltipRenderer tooltipRenderer, long deltaMillis, long timeMillis) {
+        tooltipRenderer.update(deltaMillis, timeMillis);
+        MUITooltip.update(deltaMillis, timeMillis);
     }
 }

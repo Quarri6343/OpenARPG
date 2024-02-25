@@ -3,19 +3,26 @@ package quarri6343.openarpg;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.logging.LogUtils;
+import icyllis.modernui.mc.forge.MenuScreenFactory;
 import icyllis.modernui.mc.forge.MuiForgeApi;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -24,14 +31,14 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import quarri6343.openarpg.camera.EntityCamera;
-import quarri6343.openarpg.ui.DebugSettingUI;
-import quarri6343.openarpg.ui.HUDManager;
-import quarri6343.openarpg.ui.MonsterSummonUI;
+import quarri6343.openarpg.ui.*;
 
 import static quarri6343.openarpg.CreativeTabInit.addToTab;
 
@@ -54,6 +61,14 @@ public class OpenARPG {
 
     public static final RegistryObject<EntityType<EntityCamera>> CAMERA = ENTITY_TYPES.register("camera", () -> EntityType.Builder.of(EntityCamera::new, MobCategory.MISC).build(MODID + ":camera"));
 
+    public static final DeferredRegister<MenuType<?>> MENU_TYPES =
+            DeferredRegister.create(ForgeRegistries.MENU_TYPES, OpenARPG.MODID);
+
+    public static final RegistryObject<MenuType<ExampleSidedInventoryMenu>> EXAMPLE_SIDED_INVENTORY_MENU = MENU_TYPES.register("example_sided_inventory_menu",
+            () -> IForgeMenuType.create(ExampleSidedInventoryMenu::new));
+    
+    public static final ItemStackHandler testServerStorage = new ItemStackHandler(3);
+
     public OpenARPG() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -65,6 +80,7 @@ public class OpenARPG {
 
         ITEMS.register(modEventBus);
         ENTITY_TYPES.register(modEventBus);
+        MENU_TYPES.register(modEventBus);
         CreativeTabInit.TABS.register(modEventBus);
     }
 
@@ -94,6 +110,18 @@ public class OpenARPG {
 
     @SubscribeEvent
     public void onRegisterCommand(RegisterCommandsEvent event) {
+        //server command
+        LiteralArgumentBuilder<CommandSourceStack> serverBuilder = Commands.literal("arpgserver")
+                .then(Commands.literal("testcontainer").executes(context -> {
+                    if(context.getSource().getEntity() instanceof ServerPlayer serverPlayer){
+                        NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider(
+                                (containerId, playerInventory, player) -> new ExampleSidedInventoryMenu(containerId, playerInventory, testServerStorage),
+                                Component.translatable("menu.title.test")));
+                    }
+                    return Command.SINGLE_SUCCESS;
+                }));
+        event.getDispatcher().register(serverBuilder);
+        
         if (!Dist.CLIENT.isClient()) {
             return;
         }
@@ -132,6 +160,9 @@ public class OpenARPG {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             HUDManager.INSTANCE.init();
+            event.enqueueWork(()->{
+                MenuScreens.register(EXAMPLE_SIDED_INVENTORY_MENU.get(), MenuScreenFactory.create(menu -> new ExampleSidedInventoryFragment(menu)));
+            });
         }
     }
 }

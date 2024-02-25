@@ -15,7 +15,8 @@
     "ui.MutliPlayerGameModeMixin",
     "ui.GameRendererMixin",
     "ui.UIManagerMixin",
-    "LocalPlayerMixin"
+    "LocalPlayerMixin",
+    "ConfigMixin"
   ],
   "injectors": {
     "defaultRequire": 1
