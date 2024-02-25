@@ -115,9 +115,9 @@ public class MUITooltip extends View {
         this.positioner = positioner;
         this.list2 = list2;
         
-        fontSize = 15 * Minecraft.getInstance().getWindow().getScreenHeight() / Minecraft.getInstance().getWindow().getGuiScaledWidth();
-        globalMultiX = (float) (1.6d * Minecraft.getInstance().getWindow().getScreenWidth() / Minecraft.getInstance().getWindow().getGuiScaledWidth());
-        globalMultiY = (float) (1.6d * Minecraft.getInstance().getWindow().getScreenHeight() / Minecraft.getInstance().getWindow().getGuiScaledHeight());
+        fontSize = 10 * Minecraft.getInstance().getWindow().getScreenWidth() / Minecraft.getInstance().getWindow().getGuiScaledWidth();
+        globalMultiX = (float) (1.3d * Minecraft.getInstance().getWindow().getScreenWidth() / Minecraft.getInstance().getWindow().getGuiScaledWidth());
+        globalMultiY = 1.4f;
     }
     
     public static void update(long deltaMillis, long timeMillis) {
@@ -155,14 +155,14 @@ public class MUITooltip extends View {
         if (list.size() == 1) {
             ClientTooltipComponent component = list.get(0);
             tooltipWidth = (int) (component.getWidth(font) * globalMultiX);
-            tooltipHeight = (int) (component.getHeight() * globalMultiY - TITLE_GAP);
+            tooltipHeight = (int) (fontSize * globalMultiY - TITLE_GAP);
         } else {
             tooltipWidth = 0;
             tooltipHeight = 0;
             for (int i = 0; i < list.size(); i++) {
                 ClientTooltipComponent component = list.get(i);
                 tooltipWidth = (int) Math.max(tooltipWidth, component.getWidth(font) * globalMultiX);
-                int componentHeight = (int) (component.getHeight() * globalMultiY);
+                int componentHeight = (int) (fontSize * globalMultiY);
                 tooltipHeight += componentHeight;
                 if (i == 0 && !itemStack.isEmpty() &&
                         component instanceof ClientTextTooltip) {
@@ -356,7 +356,7 @@ public class MUITooltip extends View {
             sActiveStrokeColor[i] = (color & 0xFFFFFF) | (alpha << 24);
         }*/
         paint.setStyle(Paint.STROKE);
-        paint.setStrokeWidth(sBorderWidth);
+        paint.setStrokeWidth(sBorderWidth * 4);
         canvas.drawRoundRectGradient(tooltipX - H_BORDER, tooltipY - V_BORDER,
                 tooltipX + tooltipWidth + H_BORDER,
                 tooltipY + tooltipHeight + V_BORDER,
