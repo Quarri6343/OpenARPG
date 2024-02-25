@@ -8,13 +8,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quarri6343.openarpg.itempickup.DroppedItemEventHandler;
+import quarri6343.openarpg.itempickup.DroppedItemHandler;
 
 @Mixin(ItemEntityRenderer.class)
 public class ItemEntityRendererMixin {
 
     @Inject(method = "render(Lnet/minecraft/world/entity/item/ItemEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "HEAD"))
     public void render(ItemEntity pEntity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, CallbackInfo ci) {
-        DroppedItemEventHandler.onRenderItemEntity(pEntity);
+        DroppedItemHandler.onRenderItemEntity(pEntity);
     }
 }

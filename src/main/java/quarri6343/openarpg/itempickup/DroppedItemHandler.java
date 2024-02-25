@@ -21,7 +21,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
 import static quarri6343.openarpg.OpenARPG.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID)
-public class DroppedItemEventHandler {
+public class DroppedItemHandler {
 
     /**
      * クライアントの描画範囲内にあるアイテムのリスト
@@ -43,6 +43,7 @@ public class DroppedItemEventHandler {
         renderedItemEntityList.add(entity);
     }
 
+    //TODO:Move Class to UI, Render on HUD
     @SubscribeEvent
     public static void onRenderOverlay(RenderGuiOverlayEvent event) {
         if (Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null) {

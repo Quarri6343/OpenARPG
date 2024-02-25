@@ -13,8 +13,8 @@ import org.lwjgl.system.MemoryUtil;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import quarri6343.openarpg.ui.HUD;
-import quarri6343.openarpg.ui.MUITooltip;
+import quarri6343.openarpg.ui.fragment.HUD;
+import quarri6343.openarpg.ui.widget.MUITooltip;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;

@@ -1,4 +1,4 @@
-package quarri6343.openarpg.ui;
+package quarri6343.openarpg.ui.widget;
 
 import icyllis.modernui.graphics.Canvas;
 import icyllis.modernui.graphics.Paint;

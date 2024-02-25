@@ -1,22 +1,17 @@
-package quarri6343.openarpg.ui;
+package quarri6343.openarpg.ui.fragment;
 
-import icyllis.modernui.animation.ObjectAnimator;
-import icyllis.modernui.animation.PropertyValuesHolder;
-import icyllis.modernui.animation.TimeInterpolator;
 import icyllis.modernui.annotation.NonNull;
 import icyllis.modernui.annotation.Nullable;
 import icyllis.modernui.fragment.Fragment;
 import icyllis.modernui.mc.ScreenCallback;
-import icyllis.modernui.text.Typeface;
 import icyllis.modernui.util.DataSet;
 import icyllis.modernui.view.LayoutInflater;
 import icyllis.modernui.view.View;
 import icyllis.modernui.view.ViewGroup;
 import icyllis.modernui.widget.AbsoluteLayout;
-import icyllis.modernui.widget.Button;
 import net.minecraft.client.Minecraft;
-
-import static icyllis.modernui.view.View.*;
+import quarri6343.openarpg.ui.*;
+import quarri6343.openarpg.ui.widget.*;
 
 public class ExampleSidedInventoryFragment extends Fragment implements ScreenCallback {
 

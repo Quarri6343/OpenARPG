@@ -1,4 +1,4 @@
-package quarri6343.openarpg.ui;
+package quarri6343.openarpg.ui.fragment;
 
 import icyllis.modernui.R;
 import icyllis.modernui.annotation.NonNull;

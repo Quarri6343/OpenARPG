@@ -27,6 +27,7 @@ import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import quarri6343.openarpg.camera.EntityCamera;
 import quarri6343.openarpg.ui.*;
+import quarri6343.openarpg.ui.fragment.ExampleSidedInventoryFragment;
 
 import static quarri6343.openarpg.CreativeTabInit.addToTab;
 

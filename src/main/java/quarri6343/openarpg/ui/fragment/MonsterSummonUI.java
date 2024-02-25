@@ -1,4 +1,4 @@
-package quarri6343.openarpg.ui;
+package quarri6343.openarpg.ui.fragment;
 
 import icyllis.modernui.annotation.NonNull;
 import icyllis.modernui.annotation.Nullable;
@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import org.joml.Vector3f;
 import quarri6343.openarpg.Network;
 import quarri6343.openarpg.combat.DebugMonsterSpawnPacket;
+import quarri6343.openarpg.ui.widget.SimpleBackground;
 
 import java.util.Objects;
 import java.util.Random;

@@ -13,10 +13,10 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkHooks;
-import quarri6343.openarpg.ui.DebugSettingUI;
+import quarri6343.openarpg.ui.fragment.DebugSettingUI;
 import quarri6343.openarpg.ui.ExampleSidedInventoryMenu;
 import quarri6343.openarpg.ui.HUDManager;
-import quarri6343.openarpg.ui.MonsterSummonUI;
+import quarri6343.openarpg.ui.fragment.MonsterSummonUI;
 
 import static quarri6343.openarpg.OpenARPG.MODID;
 

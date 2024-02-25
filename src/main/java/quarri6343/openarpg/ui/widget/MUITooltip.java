@@ -1,4 +1,4 @@
-package quarri6343.openarpg.ui;
+package quarri6343.openarpg.ui.widget;
 
 import icyllis.arc3d.core.Matrix4;
 import icyllis.modernui.core.Context;

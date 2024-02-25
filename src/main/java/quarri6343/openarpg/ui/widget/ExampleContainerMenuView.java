@@ -1,15 +1,11 @@
-package quarri6343.openarpg.ui;
+package quarri6343.openarpg.ui.widget;
 
 import icyllis.modernui.animation.ObjectAnimator;
 import icyllis.modernui.animation.PropertyValuesHolder;
 import icyllis.modernui.animation.TimeInterpolator;
 import icyllis.modernui.core.Context;
-import icyllis.modernui.text.Editable;
-import icyllis.modernui.text.TextWatcher;
 import icyllis.modernui.text.Typeface;
 import icyllis.modernui.widget.*;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 public class ExampleContainerMenuView extends ContainerMenuViewFullImplementation{
     

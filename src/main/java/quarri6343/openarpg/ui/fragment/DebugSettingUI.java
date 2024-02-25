@@ -1,4 +1,4 @@
-package quarri6343.openarpg.ui;
+package quarri6343.openarpg.ui.fragment;
 
 import icyllis.modernui.annotation.NonNull;
 import icyllis.modernui.annotation.Nullable;
@@ -11,6 +11,8 @@ import icyllis.modernui.view.View;
 import icyllis.modernui.view.ViewGroup;
 import icyllis.modernui.widget.*;
 import quarri6343.openarpg.FloatConfig;
+import quarri6343.openarpg.ui.FloatTextWatcher;
+import quarri6343.openarpg.ui.widget.SimpleBackground;
 
 import java.util.Objects;
 

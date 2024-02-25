@@ -1,4 +1,4 @@
-package quarri6343.openarpg.ui;
+package quarri6343.openarpg.ui.widget;
 
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.InputConstants;
