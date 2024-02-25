@@ -47,7 +47,7 @@ public class ExampleSidedInventoryFragment extends Fragment implements ScreenCal
         containerMenuView = new ExampleContainerMenuView(requireContext(), screenX, screenY, floatingItem, muiTooltip); //ContainerMenuはクライアントとサーバー両方に存在してUIスロットを互いに通信する存在、FragmentはUIを描画するキャンバス、ContainerMenuViewはFragmentがContainerMenuを受信して描画するときのペン
         containerMenuView.setContainerMenu(menu);
         containerMenuView.setBackground(new SimpleBackground(containerMenuView));
-        //TODO:ContainerMenuView内にslotwidgetを作ってスロットのある場所に背景を描画
+
         root.addView(containerMenuView, new AbsoluteLayout.LayoutParams(screenWidth, screenHeight, screenX, screenY));
         root.addView(floatingItem, new AbsoluteLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
         root.addView(muiTooltip, new AbsoluteLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));

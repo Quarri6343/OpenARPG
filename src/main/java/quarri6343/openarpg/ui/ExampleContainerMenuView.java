@@ -42,29 +42,6 @@ public class ExampleContainerMenuView extends ContainerMenuViewFullImplementatio
         });
         addView(animButton, new AbsoluteLayout.LayoutParams(dp(100), dp(30), 0, 0));
         var inputField = new EditText(context);
-        inputField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                ItemStack itemStack = mContainerMenu.getSlot(37).getItem().copy();
-                if(itemStack.isEmpty())
-                    return;
-                
-                CompoundTag nbt = itemStack.getOrCreateTag();
-                nbt.putString("displayname", s.toString());
-                itemStack.setTag(nbt);
-                mContainerMenu.getSlot(37).set(itemStack);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                
-            }
-        });
         SimpleBackground background = new SimpleBackground(inputField);
         background.setColor(0xFF28A3F3);
         inputField.setBackground(background);
