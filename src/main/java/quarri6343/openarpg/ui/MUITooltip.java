@@ -9,6 +9,7 @@ import icyllis.modernui.graphics.text.ShapedText;
 import icyllis.modernui.text.TextPaint;
 import icyllis.modernui.text.TextShaper;
 import icyllis.modernui.view.View;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -58,10 +59,10 @@ public class MUITooltip extends View {
     public static volatile boolean sRoundedShapes = true;
     public static volatile boolean sCenterTitle = true;
     public static volatile boolean sTitleBreak = true;
-
-    //TODO: change font size and tooltip frame size when at different screen size
-    private static final int globalMulti = 4;
-    private static final int fontSize = 30;
+    
+    private static float globalMultiX;
+    private static float globalMultiY;
+    private static int fontSize;
 
     public volatile boolean mLayoutRTL;
 
@@ -113,6 +114,10 @@ public class MUITooltip extends View {
         this.partialY = partialY;
         this.positioner = positioner;
         this.list2 = list2;
+        
+        fontSize = 15 * Minecraft.getInstance().getWindow().getScreenHeight() / Minecraft.getInstance().getWindow().getGuiScaledWidth();
+        globalMultiX = (float) (1.6d * Minecraft.getInstance().getWindow().getScreenWidth() / Minecraft.getInstance().getWindow().getGuiScaledWidth());
+        globalMultiY = (float) (1.6d * Minecraft.getInstance().getWindow().getScreenHeight() / Minecraft.getInstance().getWindow().getGuiScaledHeight());
     }
     
     public static void update(long deltaMillis, long timeMillis) {
@@ -142,23 +147,22 @@ public class MUITooltip extends View {
         }
         
         mDraw = true;
-
-        //全部X倍してなんとか見えるレベルにしてる
+        //TODO: フォントサイズに合わせたスケーリング
         int tooltipWidth;
         int tooltipHeight;
         boolean titleGap = false;
         int titleBreakHeight = 0;
         if (list.size() == 1) {
             ClientTooltipComponent component = list.get(0);
-            tooltipWidth = component.getWidth(font) * globalMulti;
-            tooltipHeight = component.getHeight() * globalMulti - TITLE_GAP;
+            tooltipWidth = (int) (component.getWidth(font) * globalMultiX);
+            tooltipHeight = (int) (component.getHeight() * globalMultiY - TITLE_GAP);
         } else {
             tooltipWidth = 0;
             tooltipHeight = 0;
             for (int i = 0; i < list.size(); i++) {
                 ClientTooltipComponent component = list.get(i);
-                tooltipWidth = Math.max(tooltipWidth, component.getWidth(font) * globalMulti);
-                int componentHeight = component.getHeight() * globalMulti;
+                tooltipWidth = (int) Math.max(tooltipWidth, component.getWidth(font) * globalMultiX);
+                int componentHeight = (int) (component.getHeight() * globalMultiY);
                 tooltipHeight += componentHeight;
                 if (i == 0 && !itemStack.isEmpty() &&
                         component instanceof ClientTextTooltip) {
@@ -170,8 +174,7 @@ public class MUITooltip extends View {
                 tooltipHeight -= TITLE_GAP;
             }
         }
-
-        //TODO: これをずらしてマウスとツールチップが重ならないようにする
+        
         float tooltipX;
         float tooltipY;
         if (positioner != null) {
@@ -260,7 +263,7 @@ public class MUITooltip extends View {
 //        final MultiBufferSource.BufferSource source = gr.bufferSource();
 //        gr.pose().translate(partialX, partialY, 0);
         for (int i = 0; i < list2.size(); i++) {
-            drawY += 30;
+            drawY += fontSize;
             
             Component component = list2.get(i);
             Paint paint = Paint.obtain();
@@ -278,17 +281,17 @@ public class MUITooltip extends View {
             if (titleGap && i == 0 && sCenterTitle) {
                 ClientTooltipComponent clientComponent = list.get(0);
 //                component.renderText(font, drawX + (tooltipWidth - component.getWidth(font)) / 2, drawY, pose, source);
-                canvas.drawShapedText(shapedText, drawX + (float) (tooltipWidth - clientComponent.getWidth(font) * globalMulti) / 2, drawY, paint);
+                canvas.drawShapedText(shapedText, drawX + (float) (tooltipWidth - clientComponent.getWidth(font) * globalMultiX) / 2, drawY, paint);
             } else if (mLayoutRTL) {
 //                component.renderText(font, drawX + tooltipWidth - component.getWidth(font), drawY, pose, source);
                 ClientTooltipComponent clientComponent = list.get(i);
-                canvas.drawShapedText(shapedText, drawX + tooltipWidth - clientComponent.getWidth(font) * globalMulti, drawY, paint);
+                canvas.drawShapedText(shapedText, drawX + tooltipWidth - clientComponent.getWidth(font) * globalMultiX, drawY, paint);
             } else {
 //                component.renderText(font, drawX, drawY, pose, source);
                 canvas.drawShapedText(shapedText, drawX, drawY, paint);
             }
             if (titleGap && i == 0) {
-                drawY += TITLE_GAP * globalMulti;
+                drawY += TITLE_GAP + fontSize;
             }
             textPaint.recycle();
             paint.recycle();
@@ -335,13 +338,13 @@ public class MUITooltip extends View {
                     tooltipY + tooltipHeight + V_BORDER + spread,
                     sFillColor[0], sFillColor[1],
                     sFillColor[2], sFillColor[3],
-                    (3 + spread) * globalMulti, paint);
+                    (3 + spread) * 4, paint);
             paint.setSmoothWidth(0);
         }
 
         if (titleGap && sTitleBreak) {
             paint.setColor(0xE0C8C8C8);
-            paint.setStrokeWidth(1f * globalMulti);
+            paint.setStrokeWidth(1f * 4);
             canvas.drawLine(tooltipX, tooltipY + titleBreakHeight,
                     tooltipX + tooltipWidth, tooltipY + titleBreakHeight,
                     paint);
@@ -359,7 +362,7 @@ public class MUITooltip extends View {
                 tooltipY + tooltipHeight + V_BORDER,
                 chooseBorderColor(0), chooseBorderColor(1),
                 chooseBorderColor(2), chooseBorderColor(3),
-                3 * globalMulti, paint);
+                3 * 4, paint);
 
         paint.recycle();
     }
