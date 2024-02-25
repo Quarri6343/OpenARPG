@@ -76,8 +76,8 @@ public class MUITooltip extends View {
     private static final long MARQUEE_DELAY_MILLIS = 1200;
 
     private boolean mFrameGap;
-    private long mCurrTimeMillis;
-    private long mCurrDeltaMillis;
+    private static long mCurrTimeMillis;
+    private static long mCurrDeltaMillis;
     private ItemStack itemStack;
     private List<ClientTooltipComponent> list;
     private List<Component> list2;
@@ -113,20 +113,19 @@ public class MUITooltip extends View {
         this.positioner = positioner;
         this.list2 = list2;
     }
-
-    //TODO: inject event
-    public void update(long deltaMillis, long timeMillis) {
-        if (mDraw) {
-            mDraw = false;
-            if (mFrameGap) {
-                mMarqueeEndMillis = timeMillis;
-                mMarqueeDir = 1;
-                mScroll = 0;
-            }
-            mFrameGap = false;
-        } else {
-            mFrameGap = true;
-        }
+    
+    public static void update(long deltaMillis, long timeMillis) {
+//        if (mDraw) {
+//            mDraw = false;
+//            if (mFrameGap) {
+//                mMarqueeEndMillis = timeMillis;
+//                mMarqueeDir = 1;
+//                mScroll = 0;
+//            }
+//            mFrameGap = false;
+//        } else {
+//            mFrameGap = true;
+//        }
         mCurrTimeMillis = timeMillis;
         mCurrDeltaMillis = deltaMillis;
     }
