@@ -60,9 +60,9 @@ public class ConfigMixin {
     @Mutable
     @Shadow
     public ForgeConfigSpec.DoubleValue mTooltipShadow;
-    
+
     @Inject(method = "reload", at = @At(value = "TAIL"))
-    private void reload(CallbackInfo ci){
+    private void reload(CallbackInfo ci) {
         MUITooltip.sTooltip = mTooltip.get();
 
         List<? extends String> inColors = mTooltipFill.get();

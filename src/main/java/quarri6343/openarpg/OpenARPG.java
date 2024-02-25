@@ -26,7 +26,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import quarri6343.openarpg.camera.EntityCamera;
-import quarri6343.openarpg.ui.*;
+import quarri6343.openarpg.ui.ExampleSidedInventoryMenu;
+import quarri6343.openarpg.ui.HUDManager;
 import quarri6343.openarpg.ui.fragment.ExampleSidedInventoryFragment;
 
 import static quarri6343.openarpg.CreativeTabInit.addToTab;
@@ -55,7 +56,7 @@ public class OpenARPG {
 
     public static final RegistryObject<MenuType<ExampleSidedInventoryMenu>> EXAMPLE_SIDED_INVENTORY_MENU = MENU_TYPES.register("example_sided_inventory_menu",
             () -> IForgeMenuType.create(ExampleSidedInventoryMenu::new));
-    
+
     public static final ItemStackHandler TEST_SERVER_STORAGE = new ItemStackHandler(3);
 
     public OpenARPG() {
@@ -104,7 +105,7 @@ public class OpenARPG {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             HUDManager.INSTANCE.init();
-            event.enqueueWork(()->{
+            event.enqueueWork(() -> {
                 MenuScreens.register(EXAMPLE_SIDED_INVENTORY_MENU.get(), MenuScreenFactory.create(menu -> new ExampleSidedInventoryFragment(menu)));
             });
         }

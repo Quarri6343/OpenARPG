@@ -34,7 +34,7 @@ public class DroppedItemHandler {
 
     @SubscribeEvent
     public static void onPlayerPickUp(EntityItemPickupEvent event) {
-        if(!Minecraft.getInstance().options.getCameraType().isFirstPerson()){
+        if (!Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
             event.setCanceled(true);
         }
     }
@@ -101,12 +101,12 @@ public class DroppedItemHandler {
             return;
         }
 
-        if(tryClickItem()){
+        if (tryClickItem()) {
             event.setCanceled(true); //移動しない
         }
     }
-    
-    private static boolean tryClickItem(){
+
+    private static boolean tryClickItem() {
         double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
         double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
         double d0 = xPos * (double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / (double) Minecraft.getInstance().getWindow().getScreenWidth();
@@ -123,11 +123,11 @@ public class DroppedItemHandler {
             }
 
             Network.sendToServer(new ItemPickUpPacket(clickableItemInfo.itemEntity()));
-            
+
             Minecraft.getInstance().mouseHandler.releaseMouse();
             return true;
         }
-        
+
         return false;
     }
 }

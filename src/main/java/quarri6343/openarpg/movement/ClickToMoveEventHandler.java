@@ -30,11 +30,11 @@ public class ClickToMoveEventHandler {
         if (event.getButton() != GLFW_MOUSE_BUTTON_1) {
             return;
         }
-        
+
         tryMove();
     }
-    
-    private static void tryMove(){
+
+    private static void tryMove() {
 
         double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
         double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();

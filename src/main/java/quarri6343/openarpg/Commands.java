@@ -13,9 +13,9 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkHooks;
-import quarri6343.openarpg.ui.fragment.DebugSettingUI;
 import quarri6343.openarpg.ui.ExampleSidedInventoryMenu;
 import quarri6343.openarpg.ui.HUDManager;
+import quarri6343.openarpg.ui.fragment.DebugSettingUI;
 import quarri6343.openarpg.ui.fragment.MonsterSummonUI;
 
 import static quarri6343.openarpg.OpenARPG.MODID;
@@ -28,7 +28,7 @@ public class Commands {
         //server command
         LiteralArgumentBuilder<CommandSourceStack> serverBuilder = net.minecraft.commands.Commands.literal("arpgserver")
                 .then(net.minecraft.commands.Commands.literal("testcontainer").executes(context -> {
-                    if(context.getSource().getEntity() instanceof ServerPlayer serverPlayer){
+                    if (context.getSource().getEntity() instanceof ServerPlayer serverPlayer) {
                         NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider(
                                 (containerId, playerInventory, player) -> new ExampleSidedInventoryMenu(containerId, playerInventory, OpenARPG.TEST_SERVER_STORAGE),
                                 Component.translatable("menu.title.test")));

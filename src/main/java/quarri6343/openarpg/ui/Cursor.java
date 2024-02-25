@@ -1,6 +1,5 @@
 package quarri6343.openarpg.ui;
 
-import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,16 +17,16 @@ public class Cursor {
         if (Minecraft.getInstance().options.getCameraType().isFirstPerson() || Minecraft.getInstance().screen != null) {
             return;
         }
-        
+
         drawDebugCursor(event.getGuiGraphics());
     }
 
     /**
      * カーソルを描画
-     * 
+     *
      * @param guiGraphics 現在のguiGraphics
      */
-    public static void drawDebugCursor(GuiGraphics guiGraphics){
+    public static void drawDebugCursor(GuiGraphics guiGraphics) {
         double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
         double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
         double d0 = xPos * (double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / (double) Minecraft.getInstance().getWindow().getScreenWidth();

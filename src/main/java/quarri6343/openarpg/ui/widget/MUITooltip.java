@@ -59,7 +59,7 @@ public class MUITooltip extends View {
     public static volatile boolean sRoundedShapes = true;
     public static volatile boolean sCenterTitle = true;
     public static volatile boolean sTitleBreak = true;
-    
+
     private static float globalMultiX;
     private static float globalMultiY;
     private static int fontSize;
@@ -92,7 +92,7 @@ public class MUITooltip extends View {
     private float partialY;
     @Nullable
     private ClientTooltipPositioner positioner;
-    
+
     public MUITooltip(Context context) {
         super(context);
     }
@@ -101,7 +101,7 @@ public class MUITooltip extends View {
     public void setComponents(@Nonnull ItemStack itemStack,
                               @Nonnull List<ClientTooltipComponent> list, int mouseX, int mouseY,
                               @Nonnull Font font, int screenWidth, int screenHeight,
-                              float partialX, float partialY, @Nullable ClientTooltipPositioner positioner, List<Component> list2){
+                              float partialX, float partialY, @Nullable ClientTooltipPositioner positioner, List<Component> list2) {
 
         this.itemStack = itemStack;
         this.list = list;
@@ -114,12 +114,12 @@ public class MUITooltip extends View {
         this.partialY = partialY;
         this.positioner = positioner;
         this.list2 = list2;
-        
+
         fontSize = 10 * Minecraft.getInstance().getWindow().getScreenWidth() / Minecraft.getInstance().getWindow().getGuiScaledWidth();
         globalMultiX = (float) (1.3d * Minecraft.getInstance().getWindow().getScreenWidth() / Minecraft.getInstance().getWindow().getGuiScaledWidth());
         globalMultiY = 1.4f;
     }
-    
+
     public static void update(long deltaMillis, long timeMillis) {
 //        if (mDraw) {
 //            mDraw = false;
@@ -135,17 +135,17 @@ public class MUITooltip extends View {
         mCurrTimeMillis = timeMillis;
         mCurrDeltaMillis = deltaMillis;
     }
-    
+
     @Override
     public void draw(Canvas canvas) {
         drawTooltip(canvas);
     }
 
     public void drawTooltip(@Nonnull Canvas canvas) {
-        if(itemStack == null || itemStack.isEmpty()){
+        if (itemStack == null || itemStack.isEmpty()) {
             return;
         }
-        
+
         mDraw = true;
         //TODO: フォントサイズに合わせたスケーリング
         int tooltipWidth;
@@ -174,7 +174,7 @@ public class MUITooltip extends View {
                 tooltipHeight -= TITLE_GAP;
             }
         }
-        
+
         float tooltipX;
         float tooltipY;
         if (positioner != null) {
@@ -233,7 +233,7 @@ public class MUITooltip extends View {
         if (sBorderColorCycle > 0) {
             updateBorderColor();
         }
-        
+
 //        gr.pose().pushPose();
 //        // because of the order of draw calls, we actually don't need z-shifting
 //        gr.pose().translate(0, -mScroll, 400);
@@ -242,7 +242,7 @@ public class MUITooltip extends View {
         // we should disable depth test, because texts may be translucent
         // for compatibility reasons, we keep this enabled, and it doesn't seem to be a big problem
 //        RenderSystem.enableDepthTest();
-        
+
         if (sRoundedShapes) {
             drawRoundBackGround(canvas,
                     tooltipX, tooltipY, tooltipWidth, tooltipHeight,
@@ -259,12 +259,12 @@ public class MUITooltip extends View {
 //        RenderSystem.enableDepthTest();
 //        RenderSystem.enableBlend();
 //        RenderSystem.defaultBlendFunc();
-        
+
 //        final MultiBufferSource.BufferSource source = gr.bufferSource();
 //        gr.pose().translate(partialX, partialY, 0);
         for (int i = 0; i < list2.size(); i++) {
             drawY += fontSize;
-            
+
             Component component = list2.get(i);
             Paint paint = Paint.obtain();
             paint.setRGBA(255, 255, 255, 255);
@@ -314,11 +314,11 @@ public class MUITooltip extends View {
 //        }
 //        gr.pose().popPose();
     }
-    
+
     private void drawRoundBackGround(Canvas canvas,
                                      float tooltipX, float tooltipY,
                                      int tooltipWidth, int tooltipHeight,
-                                     boolean titleGap, int titleBreakHeight){
+                                     boolean titleGap, int titleBreakHeight) {
         Paint paint = Paint.obtain();
         
         /*for (int i = 0; i < 4; i++) {
@@ -385,7 +385,7 @@ public class MUITooltip extends View {
             }
         }
     }
-    
+
     private int chooseBorderColor(int corner) {
         if (sBorderColorCycle > 0) {
             return mActiveStrokeColor[corner];

@@ -8,8 +8,6 @@ import icyllis.modernui.view.View;
 
 import javax.annotation.Nonnull;
 
-import static icyllis.modernui.mc.testforge.TestPauseFragment.NETWORK_COLOR;
-
 public class SimpleBackground extends Drawable {
     private final float mRadius;
     private int mColor;

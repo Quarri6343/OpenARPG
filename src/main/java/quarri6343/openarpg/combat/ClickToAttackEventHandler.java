@@ -29,16 +29,17 @@ public class ClickToAttackEventHandler {
             return;
         }
 
-        if(tryAttack()){
+        if (tryAttack()) {
             event.setCanceled(true);
         }
     }
 
     /**
      * クリックされた場所に攻撃を試みる
+     *
      * @return 攻撃成功かどうか
      */
-    public static boolean tryAttack(){
+    public static boolean tryAttack() {
         double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
         double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
 
@@ -55,7 +56,7 @@ public class ClickToAttackEventHandler {
             Network.sendToServer(new PlayerAttackPacket(entityHitResult.getEntity()));
             return true;
         }
-        
+
         return false;
     }
 }

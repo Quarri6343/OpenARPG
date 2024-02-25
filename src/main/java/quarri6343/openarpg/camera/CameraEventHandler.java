@@ -6,7 +6,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -26,7 +25,7 @@ public class CameraEventHandler {
     private static final int RERENDER_TICK = 20;
 
     private static float renderTickCount;
-    
+
     @SubscribeEvent
     public static void onCameraRotate(ViewportEvent.ComputeCameraAngles event) {
         sendTerrainRerenderEvent();
@@ -35,7 +34,7 @@ public class CameraEventHandler {
     /**
      * 地形をクリップするためにプレイヤー周辺の地形を再描画するイベントを送信
      */
-    private static void sendTerrainRerenderEvent(){
+    private static void sendTerrainRerenderEvent() {
         if (renderTickCount++ % RERENDER_TICK == 0) {
             if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
                 return;
@@ -69,7 +68,7 @@ public class CameraEventHandler {
     /**
      * 見下ろしカメラのセットアップ
      */
-    private static void setUpTopDownCamera(){
+    private static void setUpTopDownCamera() {
         Level level = Minecraft.getInstance().level;
         if (level == null) { //after logout
             return;

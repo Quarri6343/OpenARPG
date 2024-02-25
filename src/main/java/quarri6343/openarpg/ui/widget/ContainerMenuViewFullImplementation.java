@@ -72,7 +72,7 @@ public class ContainerMenuViewFullImplementation extends AbsoluteLayout implemen
     private int currentClickButton = -1; //clicked button in the current frame
 
     private final FloatingItem floatingItem;
-    
+
     private final MUITooltip muiTooltip;
 
     //you must specify screen position because how minecraft implements slot.x and slot.y
@@ -130,11 +130,11 @@ public class ContainerMenuViewFullImplementation extends AbsoluteLayout implemen
     protected List<Component> getTooltipFromContainerItem(ItemStack pStack) {
         return Screen.getTooltipFromItem(Minecraft.getInstance(), pStack);
     }
-    
+
     //TODO: custom drawable
-    protected void drawSlotBG(@Nonnull Canvas canvas, @Nonnull Slot slot){
+    protected void drawSlotBG(@Nonnull Canvas canvas, @Nonnull Slot slot) {
         Paint paint = Paint.obtain();
-        paint.setRGBA(92,92,35, 255);
+        paint.setRGBA(92, 92, 35, 255);
 
         int guiWidth = 16;
         int guiHeight = 16;
@@ -142,7 +142,7 @@ public class ContainerMenuViewFullImplementation extends AbsoluteLayout implemen
         int screenHeight = (int) (guiHeight * (double) Minecraft.getInstance().getWindow().getScreenHeight() / (double) Minecraft.getInstance().getWindow().getGuiScaledHeight());
         int x = dp(slot.x * 2);
         int y = dp(slot.y * 2);
-        
+
         canvas.drawRect(x, y, x + screenWidth, y + screenHeight, paint);
         paint.recycle();
     }
@@ -478,17 +478,17 @@ public class ContainerMenuViewFullImplementation extends AbsoluteLayout implemen
     public DrawHandler snapDrawHandler(int backendApi, Matrix4 viewMatrix, Rect2i clipBounds, ImageInfo targetInfo) {
         return null;
     }
-    
-    public void setTooltip(){
-        if(muiTooltip == null){
+
+    public void setTooltip() {
+        if (muiTooltip == null) {
             return;
         }
-        
+
         if (hoveredSlot == null || !mContainerMenu.getCarried().isEmpty() || !hoveredSlot.hasItem()) {
             muiTooltip.setComponents(ItemStack.EMPTY, null, 0, 0, Minecraft.getInstance().font, 0, 0, 0, 0, null, null);
             return;
         }
-        
+
         ItemStack itemstack = hoveredSlot.getItem();
 //        GuiGraphics guigraphics = new GuiGraphics(Minecraft.getInstance(), Minecraft.getInstance().renderBuffers().bufferSource());
         int pX = (int) Minecraft.getInstance().mouseHandler.xpos();
@@ -500,8 +500,8 @@ public class ContainerMenuViewFullImplementation extends AbsoluteLayout implemen
         Optional<TooltipComponent> pVisualTooltipComponent = itemstack.getTooltipImage();
         List<ClientTooltipComponent> list = net.minecraftforge.client.ForgeHooksClient.gatherTooltipComponents(itemstack, pTooltipLines, pVisualTooltipComponent,
                 d0, Minecraft.getInstance().getWindow().getGuiScaledWidth(), Minecraft.getInstance().getWindow().getGuiScaledHeight(), Minecraft.getInstance().font);
-        
-        muiTooltip.setComponents(itemstack, list, pX, pY, Minecraft.getInstance().font, 
+
+        muiTooltip.setComponents(itemstack, list, pX, pY, Minecraft.getInstance().font,
                 Minecraft.getInstance().getWindow().getScreenWidth(), Minecraft.getInstance().getWindow().getScreenHeight(), 0, 0, null, pTooltipLines);
     }
 }

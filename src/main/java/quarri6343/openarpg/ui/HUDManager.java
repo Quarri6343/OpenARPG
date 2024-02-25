@@ -26,7 +26,7 @@ import static quarri6343.openarpg.OpenARPG.MODID;
 public class HUDManager implements MuiModApi.OnScreenChangeListener {
 
     private static Screen hud;
-    
+
     //スクリーンリスナー用のインスタンス
     public static final HUDManager INSTANCE = new HUDManager();
     private boolean isInit;
@@ -34,9 +34,9 @@ public class HUDManager implements MuiModApi.OnScreenChangeListener {
     public static Screen getHud() {
         return hud;
     }
-    
-    public void init(){
-        if(!isInit){
+
+    public void init() {
+        if (!isInit) {
             MuiModApi.addOnScreenChangeListener(this);
             isInit = true;
         }
@@ -102,12 +102,11 @@ public class HUDManager implements MuiModApi.OnScreenChangeListener {
 
     @Override
     public void onScreenChange(@Nullable Screen oldScreen, @Nullable Screen newScreen) {
-        if (hud == null && Minecraft.getInstance().options.getCameraType() == CameraType.THIRD_PERSON_BACK){
+        if (hud == null && Minecraft.getInstance().options.getCameraType() == CameraType.THIRD_PERSON_BACK) {
             if (newScreen == null) {
                 initHUD();
             }
-        }
-        else if (hud != null){
+        } else if (hud != null) {
             if (newScreen instanceof PauseScreen || newScreen instanceof ChatScreen) {
                 removeHUD();
             }

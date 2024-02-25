@@ -5,13 +5,15 @@ import icyllis.modernui.animation.PropertyValuesHolder;
 import icyllis.modernui.animation.TimeInterpolator;
 import icyllis.modernui.core.Context;
 import icyllis.modernui.text.Typeface;
-import icyllis.modernui.widget.*;
+import icyllis.modernui.widget.AbsoluteLayout;
+import icyllis.modernui.widget.Button;
+import icyllis.modernui.widget.EditText;
 
-public class ExampleContainerMenuView extends ContainerMenuViewFullImplementation{
-    
+public class ExampleContainerMenuView extends ContainerMenuViewFullImplementation {
+
     //debug only
     private ObjectAnimator rightAnim;
-    
+
     public ExampleContainerMenuView(Context context, int leftPos, int topPos, FloatingItem floatingItem, MUITooltip muiTooltip) {
         super(context, leftPos, topPos, floatingItem, muiTooltip);
 

@@ -28,6 +28,7 @@ public class ProjectionUtil {
 
     /**
      * カメラから方向ベクトルを飛ばした先にエンティティがいないか調べる
+     *
      * @param hitVec 方向ベクトル
      * @return 結果
      */
@@ -44,6 +45,7 @@ public class ProjectionUtil {
 
     /**
      * カメラから方向ベクトルを飛ばした先にブロックがいないか調べる
+     *
      * @param hitVec 方向ベクトル
      * @return 結果
      */
@@ -53,14 +55,14 @@ public class ProjectionUtil {
         hitVec = hitVec.multiply(100, 100, 100); // Double view range to ensure pos can be seen.
         return Minecraft.getInstance().level.clip(new ClipContextEX(startPos, startPos.add(hitVec), ClipContextEX.Block.NOTWALLORHIGHPLACE, ClipContext.Fluid.ANY, null));
     }
-    
+
     /**
      * マウス座標をカメラの位置に基づいたワールド座標に変換する
      * https://github.com/Muirrum/MatterOverdrive need to fix if this violates GPL
-     * 
+     *
      * @param mouseX マウスx
      * @param mouseY マウスy
-     * @param width スクリーンの幅
+     * @param width  スクリーンの幅
      * @param height スクリーンの高さ
      * @return ワールド座標
      */
@@ -98,6 +100,7 @@ public class ProjectionUtil {
 
     /**
      * ワールド座標をマウス座標に変換する
+     *
      * @param pos ワールド座標
      * @return マウス座標
      */
@@ -150,11 +153,11 @@ public class ProjectionUtil {
                     return Shapes.empty();
                 }
 
-                if (!Minecraft.getInstance().level.getBlockState(pPos.above()).getShape(Minecraft.getInstance().level, pPos).isEmpty()) { 
+                if (!Minecraft.getInstance().level.getBlockState(pPos.above()).getShape(Minecraft.getInstance().level, pPos).isEmpty()) {
                     return Shapes.empty();
                 }
 
-                if (pPos.getY() > Minecraft.getInstance().player.getY() + FloatConfig.MAXMOVEHEIGHT.getValue()) { 
+                if (pPos.getY() > Minecraft.getInstance().player.getY() + FloatConfig.MAXMOVEHEIGHT.getValue()) {
                     return Shapes.empty();
                 }
 

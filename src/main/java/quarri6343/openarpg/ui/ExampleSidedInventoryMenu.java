@@ -25,7 +25,7 @@ public class ExampleSidedInventoryMenu extends AbstractContainerMenu {
 
         createPlayerHotbar(playerInv);
         createPlayerInventory(playerInv);
-        
+
         addSlot(new SlotItemHandler(dataInventory, 0, 44, 36));
         addSlot(new SlotItemHandler(dataInventory, 1, 80, 36));
         addSlot(new SlotItemHandler(dataInventory, 2, 116, 36));
