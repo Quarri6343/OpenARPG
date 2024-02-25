@@ -140,4 +140,9 @@ public class HUD extends Fragment implements ScreenCallback {
     public boolean shouldClose() {
         return false;
     }
+
+    @Override
+    public boolean shouldBlurBackground() {
+        return false;
+    }
 }
