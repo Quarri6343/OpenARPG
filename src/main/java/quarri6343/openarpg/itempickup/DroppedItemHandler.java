@@ -123,8 +123,6 @@ public class DroppedItemHandler {
             }
 
             Network.sendToServer(new ItemPickUpPacket(clickableItemInfo.itemEntity()));
-
-            Minecraft.getInstance().mouseHandler.releaseMouse();
             return true;
         }
 

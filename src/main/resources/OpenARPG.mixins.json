@@ -15,6 +15,7 @@
     "ui.MutliPlayerGameModeMixin",
     "ui.GameRendererMixin",
     "ui.UIManagerMixin",
+    "ui.MouseHandlerMixin",
     "LocalPlayerMixin",
     "ConfigMixin"
   ],

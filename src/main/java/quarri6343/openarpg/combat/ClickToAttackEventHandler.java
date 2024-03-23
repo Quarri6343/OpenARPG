@@ -43,8 +43,6 @@ public class ClickToAttackEventHandler {
         double xPos = (int) Minecraft.getInstance().mouseHandler.xpos();
         double yPos = (int) Minecraft.getInstance().mouseHandler.ypos();
 
-        Minecraft.getInstance().mouseHandler.releaseMouse();
-
         Vec3 hitVec = ProjectionUtil.mouseToWorldRay((int) xPos, (int) yPos, Minecraft.getInstance().getWindow().getScreenWidth(), Minecraft.getInstance().getWindow().getScreenHeight());
 
         EntityHitResult entityHitResult = ProjectionUtil.rayTraceEntity(hitVec);
