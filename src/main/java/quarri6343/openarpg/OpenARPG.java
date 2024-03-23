@@ -26,10 +26,15 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import quarri6343.openarpg.camera.EntityCamera;
+import quarri6343.openarpg.combat.Skills;
 import quarri6343.openarpg.ui.ExampleSidedInventoryMenu;
 import quarri6343.openarpg.ui.HUDManager;
 import quarri6343.openarpg.ui.fragment.ExampleSidedInventoryFragment;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.lwjgl.glfw.GLFW.*;
 import static quarri6343.openarpg.CreativeTabInit.addToTab;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -58,6 +63,9 @@ public class OpenARPG {
             () -> IForgeMenuType.create(ExampleSidedInventoryMenu::new));
 
     public static final ItemStackHandler TEST_SERVER_STORAGE = new ItemStackHandler(3);
+    
+    //キーとスキルの対応map
+    public static final Map<Integer, Skills> keySkillMap = new HashMap<>();
 
     public OpenARPG() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -108,6 +116,14 @@ public class OpenARPG {
             event.enqueueWork(() -> {
                 MenuScreens.register(EXAMPLE_SIDED_INVENTORY_MENU.get(), MenuScreenFactory.create(menu -> new ExampleSidedInventoryFragment(menu)));
             });
+            
+            registerDefaultKeyBind();
+        }
+        
+        public static void registerDefaultKeyBind(){
+            keySkillMap.put(GLFW_MOUSE_BUTTON_1, Skills.ATTACK);
+            keySkillMap.put(GLFW_MOUSE_BUTTON_2, Skills.LIGHTNING_STRIKE);
+            keySkillMap.put(GLFW_KEY_SPACE, Skills.DODGE);
         }
     }
 }
