@@ -84,10 +84,10 @@ public class DebugSettingUI extends Fragment implements ScreenCallback {
             //入力欄の初期テキスト
             inputField.setText(String.valueOf(config.getValue()), TextView.BufferType.EDITABLE);
             //入力欄のその他処理
-            int inputFieldHorizonSize = content.dp(100);
+            int inputFieldHorizonSize = content.dp(40);
             int inputFieldVerticalSize = content.dp(30);
             inputField.setGravity(Gravity.END);
-            inputFieldText.setGravity(Gravity.CENTER_VERTICAL);
+            inputField.setGravity(Gravity.CENTER_VERTICAL);
             var inputFieldParams = new LinearLayout.LayoutParams(inputFieldHorizonSize, inputFieldVerticalSize);
             inputFieldParams.setMarginsRelative(content.dp(4), content.dp(4), content.dp(16), content.dp(4));
             inputFieldColumn.addView(inputField, inputFieldParams);

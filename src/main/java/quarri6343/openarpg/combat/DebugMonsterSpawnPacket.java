@@ -3,11 +3,13 @@ package quarri6343.openarpg.combat;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent;
@@ -56,8 +58,10 @@ public class DebugMonsterSpawnPacket {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
-            ServerPlayer sender = context.getSender(); //TODO: 不正防止
-            spawnEntity(target, sender.serverLevel(), new Vec3(spawnPos));
+            ServerPlayer sender = context.getSender(); 
+            if(sender.gameMode.getGameModeForPlayer() == GameType.CREATIVE) {
+                spawnEntity(target, sender.serverLevel(), new Vec3(spawnPos));//TODO: 高度な不正防止
+            }
         });
         return true;
     }

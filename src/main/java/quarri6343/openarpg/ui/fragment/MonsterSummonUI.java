@@ -15,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import org.joml.Vector3f;
 import quarri6343.openarpg.Network;
+import quarri6343.openarpg.SummonableMonsters;
 import quarri6343.openarpg.combat.DebugMonsterSpawnPacket;
 import quarri6343.openarpg.ui.widget.SimpleBackground;
 
@@ -59,14 +60,14 @@ public class MonsterSummonUI extends Fragment implements ScreenCallback {
         var content = new LinearLayout(requireContext());
         content.setOrientation(LinearLayout.VERTICAL);
 
-        {
+        for (SummonableMonsters monster : SummonableMonsters.values()) {
             var buttonColumn = new LinearLayout(requireContext());
             buttonColumn.setOrientation(LinearLayout.HORIZONTAL);
             buttonColumn.setHorizontalGravity(Gravity.CENTER_HORIZONTAL);
 
             //ボタンの横のテキスト
             var buttonText = new TextView(requireContext());
-            String displayName = "ゾンビ";
+            String displayName = monster.getDisplayName();
             buttonText.setText(Objects.nonNull(displayName) ? displayName : "");
             int sideTextHorizonSize = content.dp(320);
             int sideTextVerticalSize = content.dp(30);
@@ -86,15 +87,18 @@ public class MonsterSummonUI extends Fragment implements ScreenCallback {
 
                 BlockPos spawnPos = findSafeSpawnPos(world, playerPos);
 
-                Network.sendToServer(new DebugMonsterSpawnPacket("minecraft:zombie", new Vector3f(spawnPos.getX() + 0.5f, spawnPos.getY(), spawnPos.getZ() + 0.5f)));
+                Network.sendToServer(new DebugMonsterSpawnPacket(monster.getRegistryName(), new Vector3f(spawnPos.getX() + 0.5f, spawnPos.getY(), spawnPos.getZ() + 0.5f)));
             });
             //ボタンの初期テキスト
             button.setText("スポーン", TextView.BufferType.EDITABLE);
+            SimpleBackground bg = new SimpleBackground(button);
+            bg.setColor(0xFFD6DB76);
+            button.setBackground(bg);
             //ボタンのその他処理
             int buttonHorizonSize = content.dp(100);
             int buttonVerticalSize = content.dp(30);
             button.setGravity(Gravity.END);
-            buttonText.setGravity(Gravity.CENTER_VERTICAL);
+            button.setGravity(Gravity.CENTER_HORIZONTAL);
             var buttonParams = new LinearLayout.LayoutParams(buttonHorizonSize, buttonVerticalSize);
             buttonParams.setMarginsRelative(content.dp(4), content.dp(4), content.dp(16), content.dp(4));
             buttonColumn.addView(button, buttonParams);
