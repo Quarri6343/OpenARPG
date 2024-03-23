@@ -93,6 +93,10 @@ public class PlayerSkillPacket {
             if(skill == Skills.ATTACK) {
                 sender.attack(targetEntity);
             } else if(skill == Skills.LIGHTNING_STRIKE) {
+                if(location == null) {
+                    return;
+                }
+                
                 LightningBolt lightningbolt = EntityType.LIGHTNING_BOLT.create(sender.serverLevel());
                 if (lightningbolt != null) {
                     lightningbolt.moveTo(location);
@@ -101,12 +105,14 @@ public class PlayerSkillPacket {
                 }
             }
             else if(skill == Skills.DODGE) {
+                if(location == null) {
+                    return;
+                }
+                
                 Vec3 offset = location.subtract(new Vec3(sender.getX(), sender.getY(), sender.getZ()));
                 offset = new Vec3(offset.x, 0, offset.z);
                 offset = offset.normalize().scale(3f);
-                Vec3 velocity = sender.getDeltaMovement();
-                velocity = velocity.add(offset.scale(3f));
-                sender.setDeltaMovement(velocity); //プレイヤーはAI制御なのでこのコードは動作しないが、問題なく呼ばれる
+                sender.teleportTo(sender.getX() + offset.x, sender.getY() + offset.y, sender.getZ() + offset.z); //障害物を考慮していないが仮実装なので許して
             }
         });
         return true;

@@ -123,7 +123,7 @@ public class OpenARPG {
         public static void registerDefaultKeyBind(){
             keySkillMap.put(GLFW_MOUSE_BUTTON_1, Skills.ATTACK);
             keySkillMap.put(GLFW_MOUSE_BUTTON_2, Skills.LIGHTNING_STRIKE);
-            keySkillMap.put(GLFW_KEY_SPACE, Skills.DODGE);
+            keySkillMap.put(GLFW_KEY_Q, Skills.DODGE);
         }
     }
 }
